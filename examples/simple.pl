@@ -9,6 +9,15 @@ $|++;
 
 my $template = Liquid::Template->new();
 $template->parse(<<'END');
+
+{% if false %}
+    A
+{% elsif true %}
+    B
+{% else %}
+    C
+{% endif %}
+
 {% for xyz in (1..10) %}{{ xyz }} {%endfor%}
 
 {%comment%}This is a test.{%endcomment%}
@@ -45,7 +54,7 @@ Liquid                          | [done]                    |
         Liquid::Tag::Comment    | [done]                    | Liquid::Tag
         Liquid::Tag::Cycle      |                           |
         Liquid::Tag::For        | [done] for loop construct | Liquid::Tag
-        Liquid::Tag::If         |                           |
+        Liquid::Tag::If         | [done] if/elsif/else      | Liquid::Tag
         Liquid::Tag::IfChanged  |                           |
         Liquid::Tag::Include    |                           |
         Liquid::Tag::Unless     |                           | Liquid::Tag::If

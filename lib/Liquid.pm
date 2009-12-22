@@ -265,8 +265,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
     }
     { package Liquid::Tag::Case; }
     { package Liquid::Tag::Cycle; }
-    { package Liquid::Tag::If; }
-    { package Liquid::Tag::If; }
     { package Liquid::Tag::IfChanged; }
     { package Liquid::Tag::Include; }
     {
