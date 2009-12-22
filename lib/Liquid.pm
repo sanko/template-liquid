@@ -260,7 +260,7 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
         use strict;
         use warnings;
         BEGIN { our @ISA = qw[Liquid::Document]; }
-        sub tag { return $_[0]->{'tag'}; }
+        sub tag { return $_[0]->{'tag_name'}; }
         sub end_tag { return $_[0]->{'end_tag'} || ''; }
     }
     { package Liquid::Tag::Case; }

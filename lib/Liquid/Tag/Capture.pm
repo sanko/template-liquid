@@ -28,9 +28,9 @@ package Liquid::Tag::Capture;
         }
         my $self = bless {name          => 'c-' . $1,
                           nodelist      => [],
-                          tag_name      => $args->{'tag'},
+                          tag_name      => $args->{'tag_name'},
                           variable_name => $1,
-                          end_tag       => 'end' . $args->{'tag'},
+                          end_tag       => 'end' . $args->{'tag_name'},
                           parent        => $args->{'parent'},
                           markup        => $args->{'markup'},
         }, $class;

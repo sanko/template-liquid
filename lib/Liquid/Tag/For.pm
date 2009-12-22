@@ -41,9 +41,9 @@
                           name            => $var . '-' . $range,
                           nodelist        => [],
                           reversed        => $reversed,
-                          tag_name        => $args->{'tag'},
+                          tag_name        => $args->{'tag_name'},
                           variable_name   => $var,
-                          end_tag         => 'end' . $args->{'tag'},
+                          end_tag         => 'end' . $args->{'tag_name'},
                           parent          => $args->{'parent'}
         }, $class;
         $self->parse({}, $tokens);

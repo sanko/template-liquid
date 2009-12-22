@@ -23,8 +23,8 @@
         }
         my $self = bless {name     => '#-' . $1,
                           nodelist => [],
-                          tag_name => $args->{'tag'},
-                          end_tag  => 'end' . $args->{'tag'},
+                          tag_name => $args->{'tag_name'},
+                          end_tag  => 'end' . $args->{'tag_name'},
                           parent   => $args->{'parent'},
                           markup   => $args->{'markup'}
         }, $class;

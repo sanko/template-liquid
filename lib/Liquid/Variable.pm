@@ -5,6 +5,8 @@ package Liquid::Variable;
     use lib '../../lib';
     use Liquid::Error;
     BEGIN { our @ISA = qw[Liquid::Document]; }
+
+    #
     sub variable { return $_[0]->{'variable'} }
 
     sub new {
