@@ -27,7 +27,7 @@ Module                            Purpose/Notes              Inheritance
 -----------------------------------------------------------------------------------------------------------------------------------------
 Liquid                          | [done]                    |
     Liquid::Block               |                           |
-    Liquid::Condition           |                           |
+    Liquid::Condition           | [done]                    |
     Liquid::Context             | [done]                    |
     Liquid::Document            | [done]                    |
     Liquid::Drop                |                           |

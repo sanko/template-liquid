@@ -8,6 +8,7 @@
     #
     use Liquid::Document;
     use Liquid::Block;
+    use Liquid::Condition;
 
     sub import {
 
@@ -160,7 +161,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 =cut
 
 {
-    { package Liquid::Condition; }
     {
 
         package Liquid::Context;
