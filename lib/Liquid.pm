@@ -4,18 +4,39 @@
     use strict;
     use warnings;
     our $VERSION = '0.001';
-    {    # Load all the tags of the standard library
+
+    sub import {
+
+        # Load all the tags and filters from the standard library
         require File::Find;
         require File::Spec;
         require File::Basename;
+        use lib '../';
         File::Find::find(
-            {wanted => sub { require $_ if m[\.pm$] },    # follow => 1
+            {wanted => sub {
+                 require $_ if m[(.+)\.pm$];
+             },
+             no_chdir => 1
             },
             File::Spec->rel2abs(
                             File::Basename::dirname(__FILE__) . '/Liquid/Tag/'
-            )
+            ),
         );
+        register_filter('Liquid::Filters::Standard');
     }
+    my (%tags, @filters);
+
+    sub register_tag {
+        $tags{$_[1]} = $_[2] || (caller());
+    }
+    sub tags { return \%tags }
+
+    sub register_filter {
+        my ($name) = @_;            # warn 'Registering filter ' . $name;
+        eval qq[require $name;];    # just in case
+        push @filters, $name;
+    }
+    sub filters { return \@filters }
 }
 1;
 
@@ -381,17 +402,10 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
         sub new {
             my ($class) = @_;
-            my $self = bless {
-                tags => {    # XXX - Make this dynamic
-                          assign  => 'Liquid::Tag::Assign',
-                          capture => 'Liquid::Tag::Capture',
-                          comment => 'Liquid::Tag::Comment',
-                          for     => 'Liquid::Tag::For'
-                },
-                filters => []
+            my $self = bless {tags    => Liquid->tags(),
+                              filters => Liquid->filters()
             }, $class;
             $self->{'context'} = Liquid::Context->new({parent => $self});
-            $self->register_filter('Liquid::Filters::Standard');
             return $self;
         }
 

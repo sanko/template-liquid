@@ -9,6 +9,9 @@
     use Liquid::Utility;
     BEGIN { our @ISA = qw[Liquid::Tag]; }
 
+    my $Help_String = 'TODO';
+    Liquid->register_tag('for', __PACKAGE__) if $Liquid::VERSION;
+
     sub new {
         my ($class, $args, $tokens) = @_;
         raise Liquid::ContextError {message => 'Missing parent argument',

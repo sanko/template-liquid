@@ -3,10 +3,11 @@
     package Liquid::Tag::Comment;
     use strict;
     use warnings;
-    our $VERSION = 1.0;
+    our $VERSION = 0.001;
     use lib '../../../lib';
     use Liquid::Error;
     BEGIN { our @ISA = qw[Liquid::Tag]; }
+    Liquid->register_tag('comment', __PACKAGE__) if $Liquid::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;

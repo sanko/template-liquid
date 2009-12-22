@@ -2,11 +2,12 @@ package Liquid::Tag::Capture;
 {
     use strict;
     use warnings;
-    our $VERSION = 1.0;
+    our $VERSION = 0.001;
     use lib '../../../lib';
     use Liquid::Error;
     use Liquid::Utility;
     BEGIN { our @ISA = qw[Liquid::Tag]; }
+    Liquid->register_tag('capture', __PACKAGE__) if $Liquid::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;
