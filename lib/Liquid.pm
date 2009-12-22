@@ -5,6 +5,10 @@
     use warnings;
     our $VERSION = '0.001';
 
+    #
+    use Liquid::Document;
+    use Liquid::Block;
+
     sub import {
 
         # Load all the tags and filters from the standard library
@@ -156,7 +160,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 =cut
 
 {
-    { package Liquid::Block; }
     { package Liquid::Condition; }
     {
 
@@ -243,121 +246,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
                     : '';
                 return $$cursor->{$_};
             }
-        }
-    }
-    {
-
-        package Liquid::Document;
-        use strict;
-        use warnings;
-        use lib 'lib';
-        use Liquid::Variable;
-        use Liquid::Utility;
-        sub parent  { return $_[0]->{'parent'} }
-        sub root    { return $_[0]->parent->root; }
-        sub context { return $_[0]->parent->context; }
-        sub filters { return $_[0]->parent->filters; }
-
-        sub resolve {
-            return $_[0]->context->resolve($_[1], defined $_[2] ? $_[2] : ());
-        }
-        sub stack  { return $_[0]->context->stack($_[1]); }
-        sub scopes { return $_[0]->context->scopes; }
-
-        #sub scope  { return $_[0]->context->scope; }
-        sub merge { return $_[0]->context->merge($_[1]); }
-
-        #BEGIN { our @ISA = qw[Liquid::Template]; }
-        sub parse {
-            my ($class, $args, $tokens) = @_;
-            my $self;
-            if (ref $class) { $self = $class; }
-            else {
-                $args->{'nodelist'}
-                    ||= [];    # XXX - In the future, this may be preloaded?
-                $self = bless $args, $class;
-            }
-        NODE: while (my $token = shift @{$tokens}) {
-                if ($token =~ qr[^${Liquid::Utility::TagStart}  # {%
-                                (.+?)                           # etc
-                              ${Liquid::Utility::TagEnd}        # %}
-                             $]x
-                    )
-                {   my ($tag, $attrs) = (split ' ', $1, 2);
-
-                    #warn $tag;
-                    #use Data::Dumper;
-                    #warn Dumper $self;
-                    my ($package, $call) = $self->parent->tags->{$tag};
-                    if ($package
-                        && ($call = $self->parent->tags->{$tag}->can('new')))
-                    {   push @{$self->{'nodelist'}},
-                            $call->($package,
-                                    {parent => $self->parent,
-                                     tag    => $tag,
-                                     markup => $token,
-                                     attrs  => $attrs
-                                    },
-                                    $tokens
-                            );
-                    }
-                    elsif ($self->can('end_tag') && $tag eq $self->end_tag) {
-                        last NODE;
-                    }
-                    else {
-                        push @{$self->{'nodelist'}},
-                            Liquid::SyntaxError->new(
-                                                    'Unknown tag: ' . $token);
-                    }
-                }
-                elsif (
-                    $token =~ qr
-                    [^${Liquid::Utility::VariableStart}
-                        (.+?)
-                        ${Liquid::Utility::VariableEnd}
-                    $]x
-                    )
-                {   my ($variable, $filters) = split qr[\s*\|\s*], $1, 2;
-                    my @filters;
-                    for my $filter (split $Liquid::Utility::FilterSeparator,
-                                    $filters || '')
-                    {   my ($filter, $args)
-                            = split $Liquid::Utility::FilterArgumentSeparator,
-                            $filter, 2;
-                        $filter
-                            =~ s[\s*$][]; # XXX - the splitter should clean...
-                        $filter =~ s[^\s*][];    # XXX -  ...this up for us.
-                        my @args
-                            = $args
-                            ? split
-                            $Liquid::Utility::VariableFilterArgumentParser,
-                            $args
-                            : ();
-                        push @filters, [$filter, \@args];
-                    }
-                    push @{$self->{'nodelist'}},
-                        Liquid::Variable->new({parent   => $self,
-                                               markup   => $token,
-                                               variable => $variable,
-                                               filters  => \@filters
-                                              }
-                        );
-                }
-                else {
-                    push @{$self->{'nodelist'}}, $token;
-                }
-            }
-            return $self;
-        }
-
-        sub render {
-            my ($self) = @_;
-            my $return = '';
-            for my $node (@{$self->{'nodelist'}}) {
-                my $rendering = ref $node ? $node->render() : $node;
-                $return .= defined $rendering ? $rendering : '';
-            }
-            return $return;
         }
     }
     { package Liquid::Drop; }
