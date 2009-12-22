@@ -1,0 +1,16 @@
+Build.PL
+Changes
+examples/simple.pl
+lib/Liquid.pm
+lib/Liquid/Error.pm
+lib/Liquid/Filters/Standard.pm
+lib/Liquid/Tag/Assign.pm
+lib/Liquid/Tag/Capture.pm
+lib/Liquid/Tag/Comment.pm
+lib/Liquid/Tag/For.pm
+lib/Liquid/Utility.pm
+lib/Liquid/Variable.pm
+MANIFEST			This list of files
+META.yml
+README
+t/0100_filters/0101_standard_filters.t

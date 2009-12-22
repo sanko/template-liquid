@@ -1,0 +1,89 @@
+NAME
+    Liquid - Simple, Stateless Template System
+
+Synopsis
+        use Liquid;
+
+        my $template = Liquid::Template->new( );
+        $template->parse(
+            '{%for x in (1..3) reversed %}{{x}}, {%endfor%}{{some.text}}'
+        );
+        print $template->render( { some => { text => 'Contact!' } } );
+
+Desciption
+    Liquid is a template engine which was crafted for very specific
+    requirements:
+
+    *   It has to have simple markup and beautiful results. Template engines
+        which don’t produce good looking results are no fun to use.
+
+    *   It needs to be non-evaling and secure. Liquid templates are made so
+        that users can edit them. You don’t want to run code on your
+        server which your users wrote.
+
+    *   It has to be stateless. The compile and render steps have to be
+        separate, so that the expensive parsing and compiling can be done
+        once; later on, you can just render it by passing in a hash with
+        local variables and objects.
+
+    *   It needs to be able to style emails as well as HTML.
+
+  Why should I use Liquid?
+    *   You want to allow your users to edit the appearance of your
+        application, but don’t want them to run insecure code on your
+        server.
+
+    *   You want to render templates directly from the database.
+
+    *   You like Smarty-style template engines.
+
+    *   You need a template engine which does HTML just as well as emails.
+
+    *   You don’t like the markup language of your current template
+        engine.
+
+    *   You wasted three entire weekends patching this together when you
+        could have been doing something productive like voulenteering or
+        catching up on past seasons of *Dr. Who*.
+
+  Why shouldn't I use Liquid?
+    *   You've found or written your own template engine which fills your
+        needs better than Liquid ever could.
+
+        If you haven't found it yet, check the See Also section.
+
+    *   You eat paste.
+
+See Also
+    Liquid for Designers:
+    http://wiki.github.com/tobi/liquid/liquid-for-designers
+
+    Liquid's docs on custom filter creation
+
+  Other Template Engines
+    *   The Template Toolkit is the granddaddy of all Perl based template
+        engines.
+
+    *   ...which would make Template::Tiny the weird uncle.
+
+    *Note: This list is incomplete.*
+
+Author
+    Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
+
+    The original Liquid template system was developed by jadedPixel
+    (http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
+
+License and Legal
+    Copyright (C) 2009 by Sanko Robinson <sanko@cpan.org>
+
+    This program is free software; you can redistribute it and/or modify it
+    under the terms of The Artistic License 2.0. See the LICENSE file
+    included with this distribution or
+    http://www.perlfoundation.org/artistic_license_2_0. For clarification,
+    see http://www.perlfoundation.org/artistic_2_0_notes.
+
+    When separated from the distribution, all original POD documentation is
+    covered by the Creative Commons Attribution-Share Alike 3.0 License. See
+    http://creativecommons.org/licenses/by-sa/3.0/us/legalcode. For
+    clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
