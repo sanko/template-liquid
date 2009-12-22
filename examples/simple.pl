@@ -18,6 +18,17 @@ $template->parse(<<'END');
     C
 {% endif %}
 
+
+{% unless true%}
+    unless true
+{%else%}
+    else
+{%endunless%}
+
+
+--------------------------------------------------
+
+
 {% for xyz in (1..10) %}{{ xyz }} {%endfor%}
 
 {%comment%}This is a test.{%endcomment%}
@@ -57,7 +68,7 @@ Liquid                          | [done]                    |
         Liquid::Tag::If         | [done] if/elsif/else      | Liquid::Tag
         Liquid::Tag::IfChanged  |                           |
         Liquid::Tag::Include    |                           |
-        Liquid::Tag::Unless     |                           | Liquid::Tag::If
+        Liquid::Tag::Unless     | [done]                    | Liquid::Tag::If
     Liquid::Template            |                           |
     Liquid::Variable            | [done] echo statement     | Liquid::Document
 Liquid::Utility       *         | [temp] Non OO bin         |

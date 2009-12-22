@@ -269,13 +269,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
     { package Liquid::Tag::Include; }
     {
 
-        package Liquid::Tag::Unless;
-        use strict;
-        use warnings;
-        BEGIN { our @ISA = qw[Liquid::Tag::If]; }
-    }
-    {
-
         package Liquid::Template;
         use strict;
         use warnings;
