@@ -218,15 +218,15 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
         sub _merge {    # Deeply merges data structures
             my ($source, $target) = @_;
             for (keys %$source) {
-                if ('ARRAY' eq ref $source->{$_}
-                    && ('ARRAY' eq ref $target->{$_}
-                        || !ref $target->{$_})
+                if ('ARRAY' eq ref $target->{$_}
+                    && ('ARRAY' eq ref $source->{$_}
+                        || !ref $source->{$_})
                     )
                 {   CORE::push @{$target->{$_}}, @{$source->{$_}};
                 }
-                elsif ('HASH' eq ref $source->{$_}
-                       && ('HASH' eq ref $target->{$_}
-                           || !ref $target->{$_})
+                elsif ('HASH' eq ref $target->{$_}
+                       && ('HASH' eq ref $source->{$_}
+                           || !ref $source->{$_})
                     )
                 {   _merge($source->{$_}, $target->{$_});
                 }
