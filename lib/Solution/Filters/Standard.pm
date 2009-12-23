@@ -1,9 +1,10 @@
-package Liquid::Filters::Standard;
+package Solution::Filters::Standard;
 {
     use strict;
     use warnings;
 
     sub date {
+        $_[1] = defined $_[1]?$_[1]: '%c';
         return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
         return if $_[0] !~ m[^\d+$];
         require POSIX;
@@ -16,8 +17,9 @@ package Liquid::Filters::Standard;
     sub last       { return @{$_[0]}[-1] if ref $_[0] eq 'ARRAY'; }
 
     sub join {
-        return CORE::join($_[1] || ' ', @{$_[0]}) if ref $_[0] eq 'ARRAY';
-        return CORE::join($_[1] || ' ', keys %{$_[0]}) if ref $_[0] eq 'HASH';
+        $_[1] = defined $_[1] ? $_[1] : ' ';
+        return CORE::join($_[1], @{$_[0]})      if ref $_[0] eq 'ARRAY';
+        return CORE::join($_[1], keys %{$_[0]}) if ref $_[0] eq 'HASH';
         return $_[0];
     }
 
@@ -37,18 +39,24 @@ package Liquid::Filters::Standard;
     sub newline_to_br  { $_[0] =~ s[\n][<br />\n]g; return $_[0]; }
 
     sub replace {
-        $_[2] ||= '';
+        $_[2] = defined $_[2] ? $_[2] : '';
         $_[0] =~ s{$_[1]}{$_[2]}g if $_[1];
         return $_[0];
     }
-    sub replace_first { $_[2] ||= ''; $_[0] =~ s{$_[1]}{$_[2]}; return $_[0] }
+
+    sub replace_first {
+        $_[2] = defined $_[2] ? $_[2] : '';
+        $_[0] =~ s{$_[1]}{$_[2]};
+        return $_[0];
+    }
     sub remove       { $_[0] =~ s{$_[1]}{}g; return $_[0] }
     sub remove_first { $_[0] =~ s{$_[1]}{};  return $_[0] }
 
     sub truncate {
         my ($data, $length, $truncate_string) = @_;
-        $length          ||= 50;
-        $truncate_string ||= '...';
+        $length = defined $length ? $length : 50;
+        $truncate_string
+            = defined $truncate_string ? $truncate_string : '...';
         return if !$data;
         my $l = $length - length($truncate_string);
         $l = 0 if $l < 0;
@@ -60,8 +68,9 @@ package Liquid::Filters::Standard;
 
     sub truncatewords {
         my ($data, $words, $truncate_string) = @_;
-        $words           ||= 15;
-        $truncate_string ||= '...';
+        $words = defined $words ? $words : 15;
+        $truncate_string
+            = defined $truncate_string ? $truncate_string : '...';
         return if !$data;
         my @wordlist = split ' ', $data;
         my $l = $words - 1;
@@ -70,8 +79,8 @@ package Liquid::Filters::Standard;
             ? CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
             : $data;
     }
-    sub prepend { return $_[1] . $_[0]; }
-    sub append  { return $_[0] . $_[1]; }
+    sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
+    sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
 
     sub minus {
         return $_[0] =~ m[^\d+$] && $_[1] =~ m[^\d+$] ? $_[0] - $_[1] : ();
@@ -95,13 +104,13 @@ package Liquid::Filters::Standard;
 
 =head1 NAME
 
-Liquid::Filters::Standard - Default Liquid Filters
+Solution::Filters::Standard - Default Filters Based on Liquid's Standard Set
 
 =head1 Standard Filters
 
 These are the current default filters. They have been written to behave
-exactly like their RubyLiquid counterparts accept where Perl makes improvment
-irrisitable.
+exactly like their Ruby Liquid counterparts accept where Perl makes improvment
+irresistable.
 
 =head2 C<date>
 
@@ -183,7 +192,7 @@ a hash.
 =head2 C<strip_html>
 
 Strip html from string. Note that this filter uses C<s[<.*?>][]g> in
-emmulation of the RubyLiquid library's strip_html function. ...so don't email
+emmulation of the Ruby Liquid library's strip_html function. ...so don't email
 me if you (correcly) think this is a braindead way of stripping html.
 
     {{ '<div>Hello, <em id="whom">world!</em></div>' | strip_html }}  => Hello, world!
@@ -312,7 +321,7 @@ Simple division.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
+L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

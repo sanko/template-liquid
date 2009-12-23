@@ -1,11 +1,11 @@
-package Liquid::Document;
+package Solution::Document;
 {
     use strict;
     use warnings;
     use lib '../';
     our $VERSION = 0.001;
-    use Liquid::Variable;
-    use Liquid::Utility;
+    use Solution::Variable;
+    use Solution::Utility;
     sub parent  { return $_[0]->{'parent'} }
     sub root    { return $_[0]->parent->root; }
     sub context { return $_[0]->parent->context; }
@@ -20,7 +20,7 @@ package Liquid::Document;
     #sub scope  { return $_[0]->context->scope; }
     sub merge { return $_[0]->context->merge($_[1]); }
 
-    #BEGIN { our @ISA = qw[Liquid::Template]; }
+    #BEGIN { our @ISA = qw[Solution::Template]; }
     sub parse {
         my ($class, $args, $tokens) = @_;
         my $self;
@@ -31,9 +31,9 @@ package Liquid::Document;
             $self = bless $args, $class;
         }
     NODE: while (my $token = shift @{$tokens}) {
-            if ($token =~ qr[^${Liquid::Utility::TagStart}  # {%
+            if ($token =~ qr[^${Solution::Utility::TagStart}  # {%
                                 (.+?)                           # etc
-                              ${Liquid::Utility::TagEnd}        # %}
+                              ${Solution::Utility::TagEnd}        # %}
                              $]x
                 )
             {   my ($tag, $attrs) = (split ' ', $1, 2);
@@ -68,34 +68,34 @@ package Liquid::Document;
                 }
                 else {
                     push @{$self->{'nodelist'}},
-                        Liquid::SyntaxError->new('Unknown tag: ' . $token);
+                        Solution::SyntaxError->new('Unknown tag: ' . $token);
                 }
             }
             elsif (
                 $token =~ qr
-                    [^${Liquid::Utility::VariableStart}
+                    [^${Solution::Utility::VariableStart}
                         (.+?)
-                        ${Liquid::Utility::VariableEnd}
+                        ${Solution::Utility::VariableEnd}
                     $]x
                 )
             {   my ($variable, $filters) = split qr[\s*\|\s*], $1, 2;
                 my @filters;
-                for my $filter (split $Liquid::Utility::FilterSeparator,
+                for my $filter (split $Solution::Utility::FilterSeparator,
                                 $filters || '')
                 {   my ($filter, $args)
-                        = split $Liquid::Utility::FilterArgumentSeparator,
+                        = split $Solution::Utility::FilterArgumentSeparator,
                         $filter, 2;
                     $filter =~ s[\s*$][]; # XXX - the splitter should clean...
                     $filter =~ s[^\s*][]; # XXX -  ...this up for us.
                     my @args
                         = $args
                         ? split
-                        $Liquid::Utility::VariableFilterArgumentParser, $args
+                        $Solution::Utility::VariableFilterArgumentParser, $args
                         : ();
                     push @filters, [$filter, \@args];
                 }
                 push @{$self->{'nodelist'}},
-                    Liquid::Variable->new({parent   => $self,
+                    Solution::Variable->new({parent   => $self,
                                            markup   => $token,
                                            variable => $variable,
                                            filters  => \@filters

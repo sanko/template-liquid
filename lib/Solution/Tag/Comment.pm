@@ -1,22 +1,22 @@
 {
 
-    package Liquid::Tag::Comment;
+    package Solution::Tag::Comment;
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
-    use Liquid::Error;
-    BEGIN { our @ISA = qw[Liquid::Tag]; }
-    Liquid->register_tag('comment', __PACKAGE__) if $Liquid::VERSION;
+    use Solution::Error;
+    BEGIN { our @ISA = qw[Solution::Tag]; }
+    Solution->register_tag('comment', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
         if ($args->{'attrs'}) {
-            raise Liquid::SyntaxError {
+            raise Solution::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -39,7 +39,7 @@
 
 =head1 NAME
 
-Liquid::Tag::Comment - General Purpose Content Eater
+Solution::Tag::Comment - General Purpose Content Eater
 
 =head1 Synopsis
 

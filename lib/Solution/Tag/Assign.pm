@@ -1,22 +1,22 @@
 {
 
-    package Liquid::Tag::Assign;
+    package Solution::Tag::Assign;
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
-    use Liquid::Error;
-    use Liquid::Utility;
-    BEGIN { our @ISA = qw[Liquid::Tag]; }
-    Liquid->register_tag('assign', __PACKAGE__) if $Liquid::VERSION;
+    use Solution::Error;
+    use Solution::Utility;
+    BEGIN { our @ISA = qw[Solution::Tag]; }
+    Solution->register_tag('assign', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Liquid::SyntaxError {
+        raise Solution::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -27,15 +27,15 @@
         $args->{'name'}    = 'a-' . $args->{'attrs'};
         $args->{'filters'} = [];
         if ($filters) {
-            for my $filter (split $Liquid::Utility::FilterSeparator, $filters)
+            for my $filter (split $Solution::Utility::FilterSeparator, $filters)
             {   my ($filter, $f_args)
-                    = split $Liquid::Utility::FilterArgumentSeparator,
+                    = split $Solution::Utility::FilterArgumentSeparator,
                     $filter, 2;
                 $filter =~ s[\s*$][];    # XXX - the splitter should clean...
                 $filter =~ s[^\s*][];    # XXX -  ...this up for us.
                 my @f_args
                     = $f_args
-                    ? split $Liquid::Utility::VariableFilterArgumentParser,
+                    ? split $Solution::Utility::VariableFilterArgumentParser,
                     $f_args
                     : ();
                 push @{$args->{'filters'}}, [$filter, \@f_args];
@@ -49,7 +49,7 @@
         my $val    = $self->{'value'};
         my $var    = $self->{'variable'};
         $val = $2 if $val =~ m[^(['"])(.+)\1\s*$];
-        {    # XXX - Duplicated in Liquid::Variable::render
+        {    # XXX - Duplicated in Solution::Variable::render
         FILTER: for my $filter (@{$self->{'filters'}}) {
                 my ($name, $args) = @$filter;
                 map { $_ = m[^(['"])(.+)\1\s*$] ? $2 : $self->resolve($_) }
@@ -60,7 +60,7 @@
                         next FILTER;
                     }
                     else {
-                        raise Liquid::FilterNotFound $name;
+                        raise Solution::FilterNotFound $name;
                     }
                 }
             }
@@ -75,7 +75,7 @@
 
 =head1 NAME
 
-Liquid::Tag::Assign - Variable assignment construct
+Solution::Tag::Assign - Variable assignment construct
 
 =head1 Synopsis
 
@@ -90,7 +90,7 @@ a rather straightforward syntax.
     {% assign person.name = 'john' %}
     Hello, {{ person.name | capitalize }}.
 
-You can modify the value C<before> assignment with L<filters|Liquid::Filters>.
+You can modify the value C<before> assignment with L<filters|Solution::Filters>.
 
     {% assign person.name = 'john' | capitalize %}
     Hello, {{ person.name }}.

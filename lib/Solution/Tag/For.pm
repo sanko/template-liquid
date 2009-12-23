@@ -1,30 +1,30 @@
 {
 
-    package Liquid::Tag::For;
+    package Solution::Tag::For;
     use strict;
     use warnings;
     our $VERSION = 1.0;
     use lib '../../../lib';
-    use Liquid::Error;
-    use Liquid::Utility;
-    BEGIN { our @ISA = qw[Liquid::Tag]; }
+    use Solution::Error;
+    use Solution::Utility;
+    BEGIN { our @ISA = qw[Solution::Tag]; }
 
     my $Help_String = 'TODO';
-    Liquid->register_tag('for', __PACKAGE__) if $Liquid::VERSION;
+    Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Liquid::SyntaxError {
+        raise Solution::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
             if !defined $args->{'attrs'};
         if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$])
-        {   raise Liquid::SyntaxError {
+        {   raise Solution::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -32,7 +32,7 @@
         my ($var, $range, $attr) = ($1, $2, $3 || '');
         my $reversed = $attr =~ s[^reversed\s*?][] ? 1 : 0;
         my %attr = map {
-            my ($k, $v) = split $Liquid::Utility::FilterArgumentSeparator, $_,
+            my ($k, $v) = split $Solution::Utility::FilterArgumentSeparator, $_,
                 2;
             { $k => $v };
         } split qr[\s+], $attr || '';
@@ -119,7 +119,7 @@
 
 =head1 NAME
 
-Liquid::Tag::For - Simple loop construct
+Solution::Tag::For - Simple loop construct
 
 =head1 Synopsis
 
@@ -214,7 +214,7 @@ numbers:
 =head1 TODO
 
 Since this is a customer facing template engine, Liquid should provide some
-way to limit L<ranges|Liquid::Tag::For/"Numeric Ranges"> and/or depth to avoid
+way to limit L<ranges|Solution::Tag::For/"Numeric Ranges"> and/or depth to avoid
 (functionally) infinite loops with code like...
 
     {% for w in (1..10000000000) %}

@@ -1,14 +1,14 @@
 {
 
-    package Liquid;
+    package Solution;
     use strict;
     use warnings;
     our $VERSION = '0.001';
 
     #
-    use Liquid::Document;
-    use Liquid::Block;
-    use Liquid::Condition;
+    use Solution::Document;
+    use Solution::Block;
+    use Solution::Condition;
 
     sub import {
 
@@ -24,10 +24,10 @@
              no_chdir => 1
             },
             File::Spec->rel2abs(
-                            File::Basename::dirname(__FILE__) . '/Liquid/Tag/'
+                            File::Basename::dirname(__FILE__) . '/Solution/Tag/'
             ),
         );
-        register_filter('Liquid::Filters::Standard');
+        register_filter('Solution::Filters::Standard');
     }
     my (%tags, @filters);
 
@@ -55,7 +55,7 @@ Liquid - Simple, Stateless Template System
 
     use Liquid;
 
-    my $template = Liquid::Template->new( );
+    my $template = Solution::Template->new( );
     $template->parse(
         '{%for x in (1..3) reversed %}{{x}}, {%endfor%}{{some.text}}'
     );
@@ -112,17 +112,26 @@ past seasons of I<Dr. Who>.
 needs better than Liquid ever could.
 
 If you haven't found it yet, check the
-L<See Also|Liquid/"Other Template Engines"> section.
+L<See Also|Solution/"Other Template Engines"> section.
 
 =item * You eat paste.
 
 =back
 
+=head2 Why a new Top Level Namespace?
+
+I really don't have a good reason but I promise to send myself to bed without
+dinner as punishment.
+
+Eh... The name L<Solution|Solution> is a reference to the classical states of
+matter not an absolute answer. The engine is based on the Liquid Template
+Engine in Ruby but with a few extra things tossed it.
+
 =head1 See Also
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
+L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
 
 =head2 Other Template Engines
 
@@ -163,12 +172,12 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 {
     {
 
-        package Liquid::Context;
+        package Solution::Context;
         use strict;
         use warnings;
         use lib 'lib';
-        use Liquid::Utility;
-        use Liquid::Error;
+        use Solution::Utility;
+        use Solution::Error;
         sub scopes { return $_[0]->{'scopes'} }
         sub scope  { return $_[0]->scopes->[-1] }
 
@@ -180,14 +189,14 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
         sub push {
             my ($self) = @_;
-            return raise Liquid::ContextError 'Cannot push new scope!'
+            return raise Solution::ContextError 'Cannot push new scope!'
                 if scalar @{$self->{'scopes'}} == 100;
             return push @{$self->{'scopes'}}, {};
         }
 
         sub pop {
             my ($self) = @_;
-            return raise Liquid::ContextError 'Cannot pop scope!'
+            return raise Solution::ContextError 'Cannot pop scope!'
                 if scalar @{$self->{'scopes'}} == 1;
             return pop @{$self->{'scopes'}};
         }
@@ -202,7 +211,7 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
         sub merge {
             my ($self, $args) = @_;
-            return Liquid::Utility::merge($self->scope, $args);
+            return Solution::Utility::merge($self->scope, $args);
         }
 
         sub resolve {
@@ -221,7 +230,7 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
             return $1
                 if $path =~ m[^(\d+)$] and (caller(0))[3] ne (caller(1))[3];
             my $cursor = \$self->scope;
-            my @path   = split $Liquid::Utility::VariableAttributeSeparator,
+            my @path   = split $Solution::Utility::VariableAttributeSeparator,
                 $path;
 
             while (local $_ = shift @path) {
@@ -248,32 +257,32 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
             }
         }
     }
-    { package Liquid::Drop; }
-    { package Liquid::Extensions; }
-    { package Liquid::HTMLTags; }
-    { package Liquid::Module_Ex; }
-    { package Liquid::StandardFilters; }
-    { package Liquid::Strainer; }
+    { package Solution::Drop; }
+    { package Solution::Extensions; }
+    { package Solution::HTMLTags; }
+    { package Solution::Module_Ex; }
+    { package Solution::StandardFilters; }
+    { package Solution::Strainer; }
     {
 
-        package Liquid::Tag;
+        package Solution::Tag;
         use strict;
         use warnings;
-        BEGIN { our @ISA = qw[Liquid::Document]; }
+        BEGIN { our @ISA = qw[Solution::Document]; }
         sub tag { return $_[0]->{'tag_name'}; }
         sub end_tag { return $_[0]->{'end_tag'} || ''; }
     }
-    { package Liquid::Tag::Case; }
-    { package Liquid::Tag::Cycle; }
-    { package Liquid::Tag::IfChanged; }
-    { package Liquid::Tag::Include; }
+    { package Solution::Tag::Case; }
+    { package Solution::Tag::Cycle; }
+    { package Solution::Tag::IfChanged; }
+    { package Solution::Tag::Include; }
     {
 
-        package Liquid::Template;
+        package Solution::Template;
         use strict;
         use warnings;
         use lib 'lib';
-        use Liquid::Utility;
+        use Solution::Utility;
         sub context { return $_[0]->{'context'} }
         sub filters { return $_[0]->{'filters'} }
         sub tags    { return $_[0]->{'tags'} }
@@ -281,19 +290,19 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
         sub new {
             my ($class) = @_;
-            my $self = bless {tags    => Liquid->tags(),
-                              filters => Liquid->filters()
+            my $self = bless {tags    => Solution->tags(),
+                              filters => Solution->filters()
             }, $class;
-            $self->{'context'} = Liquid::Context->new({parent => $self});
+            $self->{'context'} = Solution::Context->new({parent => $self});
             return $self;
         }
 
         sub parse {
             my ($class, $source) = @_;
             my $self = ref $class ? $class : $class->new();
-            my @tokens = Liquid::Utility::tokenize($source);
+            my @tokens = Solution::Utility::tokenize($source);
             $self->{'root'}    # XXX - Unless a root is preexisting?
-                = Liquid::Document->parse({parent => $self}, \@tokens);
+                = Solution::Document->parse({parent => $self}, \@tokens);
             return $self;
         }
 

@@ -1,27 +1,27 @@
-package Liquid::Tag::If;
+package Solution::Tag::If;
 {
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
-    use Liquid::Error;
-    use Liquid::Utility;
-    our @ISA = qw[Liquid::Tag];
-    Liquid->register_tag('if') if $Liquid::VERSION;
+    use Solution::Error;
+    use Solution::Utility;
+    our @ISA = qw[Solution::Tag];
+    Solution->register_tag('if') if $Solution::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Liquid::SyntaxError {
+        raise Solution::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
             if !defined $args->{'attrs'};
         if ($args->{'attrs'} !~ m[\S$]) {
-            raise Liquid::SyntaxError {
+            raise Solution::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -34,7 +34,7 @@ package Liquid::Tag::If;
                           end_tag  => 'end' . $args->{'tag_name'},
         }, $class;
         push @{$self->{'blocks'}},
-            Liquid::Block->new({tag_name => $args->{'tag_name'},
+            Solution::Block->new({tag_name => $args->{'tag_name'},
                                 attrs    => $args->{'attrs'},
                                 parent   => $args->{'parent'}
                                }
@@ -54,7 +54,7 @@ package Liquid::Tag::If;
             $self->{'nodelist'} = [];
         }
         push @{$self->{'blocks'}},
-            Liquid::Block->new({tag_name => $args->{'tag_name'},
+            Solution::Block->new({tag_name => $args->{'tag_name'},
                                 attrs    => $args->{'attrs'},
                                 parent   => $args->{'parent'}
                                },

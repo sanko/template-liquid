@@ -1,21 +1,21 @@
-package Liquid::Variable;
+package Solution::Variable;
 {
     use strict;
     use warnings;
     use lib '../../lib';
-    use Liquid::Error;
-    BEGIN { our @ISA = qw[Liquid::Document]; }
+    use Solution::Error;
+    BEGIN { our @ISA = qw[Solution::Document]; }
 
     #
     sub variable { return $_[0]->{'variable'} }
 
     sub new {
         my ($class, $args) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Liquid::SyntaxError {
+        raise Solution::SyntaxError {
                    message => 'Missing variable name in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -27,7 +27,7 @@ package Liquid::Variable;
         my ($self) = @_;
         my $value = $self->parent->parent->context->resolve($self->variable);
 
-        # XXX - Duplicated in Liquid::Tag::Assign
+        # XXX - Duplicated in Solution::Tag::Assign
     FILTER: for my $filter (@{$self->{'filters'}}) {
             my ($name, $args) = @$filter;
             map { $_ = m[^(['"])(.+)\1\s*$] ? $2 : $self->resolve($_) }
@@ -38,7 +38,7 @@ package Liquid::Variable;
                     next FILTER;
                 }
                 else {
-                    raise Liquid::FilterNotFound $name;
+                    raise Solution::FilterNotFound $name;
                 }
             }
         }

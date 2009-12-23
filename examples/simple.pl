@@ -1,13 +1,13 @@
 use lib '../lib';
-use Liquid;
+use Solution;
 #
 use strict;
 use warnings;
 $|++;
 
 
+my $template = Solution::Template->new();
 
-my $template = Liquid::Template->new();
 $template->parse(<<'END');
 
 {% if false %}
@@ -45,33 +45,33 @@ END
 warn $template->render({array => [qw[Just another Perl hacker]]}); __END__
 Module                            Purpose/Notes              Inheritance
 -----------------------------------------------------------------------------------------------------------------------------------------
-Liquid                          | [done]                    |
-    Liquid::Block               |                           |
-    Liquid::Condition           | [done]                    |
-    Liquid::Context             | [done]                    |
-    Liquid::Document            | [done]                    |
-    Liquid::Drop                |                           |
-    Liquid::Errors              | [done]                    |
-    Liquid::Extensions          |                           |
-    Liquid::FileSystem          |                           |
-    Liquid::HTMLTags            |                           |
-    Liquid::Module_Ex           |                           |
-    Liquid::StandardFilters     | [done]                    |
-    Liquid::Strainer            |                           |
-    Liquid::Tag                 |                           |
-        Liquid::Tag::Assign     | [done]                    | Liquid::Tag
-        Liquid::Tag::Capture    | [done] extended assign    | Liquid::Tag
-        Liquid::Tag::Case       |                           |
-        Liquid::Tag::Comment    | [done]                    | Liquid::Tag
-        Liquid::Tag::Cycle      |                           |
-        Liquid::Tag::For        | [done] for loop construct | Liquid::Tag
-        Liquid::Tag::If         | [done] if/elsif/else      | Liquid::Tag
-        Liquid::Tag::IfChanged  |                           |
-        Liquid::Tag::Include    |                           |
-        Liquid::Tag::Unless     | [done]                    | Liquid::Tag::If
-    Liquid::Template            |                           |
-    Liquid::Variable            | [done] echo statement     | Liquid::Document
-Liquid::Utility       *         | [temp] Non OO bin         |
+Solution                          | [done]                    |
+    Solution::Block               |                           |
+    Solution::Condition           | [done]                    |
+    Solution::Context             | [done]                    |
+    Solution::Document            | [done]                    |
+    Solution::Drop                |                           |
+    Solution::Errors              | [done]                    |
+    Solution::Extensions          |                           |
+    Solution::FileSystem          |                           |
+    Solution::HTMLTags            |                           |
+    Solution::Module_Ex           |                           |
+    Solution::StandardFilters     | [done]                    |
+    Solution::Strainer            |                           |
+    Solution::Tag                 |                           |
+        Solution::Tag::Assign     | [done]                    | Solution::Tag
+        Solution::Tag::Capture    | [done] extended assign    | Solution::Tag
+        Solution::Tag::Case       |                           |
+        Solution::Tag::Comment    | [done]                    | Solution::Tag
+        Solution::Tag::Cycle      |                           |
+        Solution::Tag::For        | [done] for loop construct | Solution::Tag
+        Solution::Tag::If         | [done] if/elsif/else      | Solution::Tag
+        Solution::Tag::IfChanged  |                           |
+        Solution::Tag::Include    |                           |
+        Solution::Tag::Unless     | [done]                    | Solution::Tag::If
+    Solution::Template            |                           |
+    Solution::Variable            | [done] echo statement     | Solution::Document
+Solution::Utility       *         | [temp] Non OO bin         |
 
 
 

@@ -1,27 +1,27 @@
-package Liquid::Tag::Capture;
+package Solution::Tag::Capture;
 {
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
-    use Liquid::Error;
-    use Liquid::Utility;
-    BEGIN { our @ISA = qw[Liquid::Tag]; }
-    Liquid->register_tag('capture', __PACKAGE__) if $Liquid::VERSION;
+    use Solution::Error;
+    use Solution::Utility;
+    BEGIN { our @ISA = qw[Solution::Tag]; }
+    Solution->register_tag('capture', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Liquid::SyntaxError {
+        raise Solution::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
             if !defined $args->{'attrs'};
         if ($args->{'attrs'} !~ qr[^(\S+)\s*?$]) {
-            raise Liquid::SyntaxError {
+            raise Solution::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -56,7 +56,7 @@ package Liquid::Tag::Capture;
 
 =head1 NAME
 
-Liquid::Tag::Capture - Extended variable assignment construct
+Solution::Tag::Capture - Extended variable assignment construct
 
 =head1 Synopsis
 
@@ -73,7 +73,7 @@ the given variable instead of rendering it to the screen.
 
 =head1 See Also
 
-The L<assign|Liquid::Tag::Assign> tag.
+The L<assign|Solution::Tag::Assign> tag.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 

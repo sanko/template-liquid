@@ -1,13 +1,13 @@
-package Liquid::Tag::Unless;
+package Solution::Tag::Unless;
 {
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
-    use Liquid::Error;
-    use Liquid::Utility;
-    our @ISA = qw[Liquid::Tag::If];
-    Liquid->register_tag('unless') if $Liquid::VERSION;
+    use Solution::Error;
+    use Solution::Utility;
+    our @ISA = qw[Solution::Tag::If];
+    Solution->register_tag('unless') if $Solution::VERSION;
 
     sub render {
         my ($self) = @_;

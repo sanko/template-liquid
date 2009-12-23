@@ -1,4 +1,4 @@
-package Liquid::Error;
+package Solution::Error;
 {
     use Carp qw[];
     use strict;
@@ -26,12 +26,12 @@ package Liquid::Error;
         warn $self->message;
     }
     sub render { return sprintf '[%s] %s', ref $_[0], $_[0]->message; }
-    { package Liquid::ArgumentError;   our @ISA = qw'Liquid::Error' }
-    { package Liquid::ContextError;    our @ISA = qw'Liquid::Error' }
-    { package Liquid::FilterNotFound;  our @ISA = qw'Liquid::Error' }
-    { package Liquid::FileSystemError; our @ISA = qw'Liquid::Error' }
-    { package Liquid::StandardError;   our @ISA = qw'Liquid::Error' }
-    { package Liquid::SyntaxError;     our @ISA = qw'Liquid::Error' }
-    { package Liquid::StackLevelError; our @ISA = qw'Liquid::Error' }
+    { package Solution::ArgumentError;   our @ISA = qw'Solution::Error' }
+    { package Solution::ContextError;    our @ISA = qw'Solution::Error' }
+    { package Solution::FilterNotFound;  our @ISA = qw'Solution::Error' }
+    { package Solution::FileSystemError; our @ISA = qw'Solution::Error' }
+    { package Solution::StandardError;   our @ISA = qw'Solution::Error' }
+    { package Solution::SyntaxError;     our @ISA = qw'Solution::Error' }
+    { package Solution::StackLevelError; our @ISA = qw'Solution::Error' }
 }
 1;

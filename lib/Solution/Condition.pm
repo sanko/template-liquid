@@ -1,20 +1,20 @@
-package Liquid::Condition;
+package Solution::Condition;
 {
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../lib';
-    use Liquid::Error;
+    use Solution::Error;
 
     #
-    our @ISA = qw[Liquid::Block];
+    our @ISA = qw[Solution::Block];
 
     # Makes life easy
     use overload 'bool' => \&is_true, fallback => 1;
 
     sub new {
         my ($class, $args) = @_;
-        raise Liquid::ContextError {message => 'Missing parent argument',
+        raise Solution::ContextError {message => 'Missing parent argument',
                                     fatal   => 1
             }
             if !defined $args->{'parent'};
@@ -43,7 +43,7 @@ package Liquid::Condition;
             }
         }
 
-        #return Liquid::ContextError->new('Bad conditional statement');
+        #return Solution::ContextError->new('Bad conditional statement');
     }
 
     sub eq {
@@ -93,7 +93,7 @@ package Liquid::Condition;
             return !!($self->context->resolve($self->{'lvalue'}) ? 1 : 0);
         }
         my $condition = $self->can($self->{'condition'});
-        raise Liquid::ContextError {
+        raise Solution::ContextError {
                            message => 'Bad condition ' . $self->{'condition'},
                            fatal   => 1
             }

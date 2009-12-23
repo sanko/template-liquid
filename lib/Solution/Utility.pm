@@ -1,4 +1,4 @@
-package Liquid::Utility;
+package Solution::Utility;
 {
     use strict;
     use warnings;
@@ -45,7 +45,7 @@ package Liquid::Utility;
         map { $_ ? $_ : () } split $TemplateParser, shift;
     }
 
-    sub merge {    # Deep merges data structures
+    sub merge {    # Deeply merges data structures
         my ($target, $source) = @_;
         for (keys %$source) {
             if ('ARRAY' eq ref $target->{$_}) {
