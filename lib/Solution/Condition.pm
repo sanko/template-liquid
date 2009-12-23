@@ -77,7 +77,8 @@ package Solution::Condition;
     sub contains {
         my ($self) = @_;
         my $l      = $self->resolve($self->{'lvalue'});
-        my $r      = $self->resolve($self->{'rvalue'});
+        my $r      = quotemeta $self->resolve($self->{'rvalue'});
+        return if defined $r && ! defined $l;
         return $l =~ m[$r] ? 1 : !1;
     }
 
