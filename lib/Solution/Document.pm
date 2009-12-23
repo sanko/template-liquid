@@ -6,6 +6,9 @@ package Solution::Document;
     our $VERSION = 0.001;
     use Solution::Variable;
     use Solution::Utility;
+    use overload
+        '""'     => 'render',
+        fallback => 1;
     sub parent  { return $_[0]->{'parent'} }
     sub root    { return $_[0]->parent->root; }
     sub context { return $_[0]->parent->context; }
@@ -21,7 +24,8 @@ package Solution::Document;
 
     #BEGIN { our @ISA = qw[Solution::Template]; }
     sub parse {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args, $tokens);
+        (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
         my $self;
         if (ref $class) { $self = $class; }
         else {
