@@ -16,8 +16,7 @@ package Solution::Document;
     }
     sub stack  { return $_[0]->context->stack($_[1]); }
     sub scopes { return $_[0]->context->scopes; }
-
-    #sub scope  { return $_[0]->context->scope; }
+    sub scope  { return $_[0]->context->scope; }
     sub merge { return $_[0]->context->merge($_[1]); }
 
     #BEGIN { our @ISA = qw[Solution::Template]; }
