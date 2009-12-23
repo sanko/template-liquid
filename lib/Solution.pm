@@ -214,21 +214,14 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
             return Solution::Utility::merge($self->scope, $args);
         }
 
-        sub resolve {
-            my ($self, $path, $val) = @_;
 
-            #warn '* Resolving '. $path;
-            return !1
-                if $path eq 'false' and (caller(0))[3] ne (caller(1))[3];
-            return !!1
-                if $path eq 'true' and (caller(0))[3] ne (caller(1))[3];
-            return undef
-                if $path eq 'null' and (caller(0))[3] ne (caller(1))[3];
-            return $2
-                if $path =~ m[^(['"])(.+)\1$]
-                    and (caller(0))[3] ne (caller(1))[3];
-            return $1
-                if $path =~ m[^(\d+)$] and (caller(0))[3] ne (caller(1))[3];
+        sub resolve {
+            my ($self, $path, $val) = @_; # warn '### Resolving ' . $path;
+            return !1    if $path eq 'false';
+            return !!1   if $path eq 'true';
+            return undef if $path eq 'null';
+            return $2 if $path =~ m[^(['"])(.+)\1$];
+            return $1 if $path =~ m[^(\d+)$];
             my $cursor = \$self->scope;
             my @path   = split $Solution::Utility::VariableAttributeSeparator,
                 $path;
