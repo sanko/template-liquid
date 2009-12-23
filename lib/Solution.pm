@@ -327,6 +327,13 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
              #return @{$self->{'filters'}}{keys %${name}:: } = values %${name}::;
             return push @{$self->{'filters'}}, $name;
         }
+
+        sub register_tag {
+            my ($self, $tag_name, $package)
+                = @_;                    # warn 'Registering filter ' . $name;
+            eval qq[require $package;];  # just in case
+            return $self->{'tags'}{$tag_name} = $package;
+        }
     }
 }
 1;
