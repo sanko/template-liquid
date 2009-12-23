@@ -4,7 +4,7 @@ package Solution::Variable;
     use warnings;
     use lib '../../lib';
     use Solution::Error;
-    BEGIN { our @ISA = qw[Solution::Document]; }
+    our @ISA = qw[Solution::Document];
 
     #
     sub variable { return $_[0]->{'variable'} }

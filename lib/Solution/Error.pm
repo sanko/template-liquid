@@ -15,7 +15,8 @@ package Solution::Error;
                 && !(ref $args && ref $args eq 'HASH');
         $args->{'fatal'} = defined $args->{'fatal'} ? $args->{'fatal'} : 0;
         Carp::longmess() =~ m[^.+?\n\t(.+)]s;
-        $args->{'message'} = $class . ': ' . $args->{'message'} . $1;
+        $args->{'message'} = sprintf '%s: %s %s', $class, $args->{'message'},
+            $1;
         return bless $args, $class;
     }
 
