@@ -8,14 +8,13 @@
     use Solution::Error;
     use Solution::Utility;
     BEGIN { our @ISA = qw[Solution::Tag]; }
-
     my $Help_String = 'TODO';
     Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
         my ($class, $args, $tokens) = @_;
         raise Solution::ContextError {message => 'Missing parent argument',
-                                    fatal   => 1
+                                      fatal   => 1
             }
             if !defined $args->{'parent'};
         raise Solution::SyntaxError {
@@ -32,8 +31,8 @@
         my ($var, $range, $attr) = ($1, $2, $3 || '');
         my $reversed = $attr =~ s[^reversed\s*?][] ? 1 : 0;
         my %attr = map {
-            my ($k, $v) = split $Solution::Utility::FilterArgumentSeparator, $_,
-                2;
+            my ($k, $v) = split $Solution::Utility::FilterArgumentSeparator,
+                $_, 2;
             { $k => $v };
         } split qr[\s+], $attr || '';
         my $self = bless {attributes      => \%attr,

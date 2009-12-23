@@ -25,7 +25,7 @@
              no_chdir => 1
             },
             File::Spec->rel2abs(
-                            File::Basename::dirname(__FILE__) . '/Solution/Tag/'
+                          File::Basename::dirname(__FILE__) . '/Solution/Tag/'
             ),
         );
         register_filter('Solution::Filters::Standard');

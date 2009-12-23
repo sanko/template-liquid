@@ -1,8 +1,8 @@
 package Solution::Error;
 {
-    use Carp qw[];
     use strict;
     use warnings;
+    use Carp qw[];
     sub message { return $_[0]->{'message'} }
     sub fatal   { return $_[0]->{'fatal'} }
 

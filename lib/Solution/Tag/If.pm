@@ -12,7 +12,7 @@ package Solution::Tag::If;
     sub new {
         my ($class, $args, $tokens) = @_;
         raise Solution::ContextError {message => 'Missing parent argument',
-                                    fatal   => 1
+                                      fatal   => 1
             }
             if !defined $args->{'parent'};
         raise Solution::SyntaxError {
@@ -35,9 +35,9 @@ package Solution::Tag::If;
         }, $class;
         push @{$self->{'blocks'}},
             Solution::Block->new({tag_name => $args->{'tag_name'},
-                                attrs    => $args->{'attrs'},
-                                parent   => $args->{'parent'}
-                               }
+                                  attrs    => $args->{'attrs'},
+                                  parent   => $args->{'parent'}
+                                 }
             );
         $self->parse({}, $tokens);
         {    # finish final block
@@ -55,10 +55,10 @@ package Solution::Tag::If;
         }
         push @{$self->{'blocks'}},
             Solution::Block->new({tag_name => $args->{'tag_name'},
-                                attrs    => $args->{'attrs'},
-                                parent   => $args->{'parent'}
-                               },
-                               $tokens
+                                  attrs    => $args->{'attrs'},
+                                  parent   => $args->{'parent'}
+                                 },
+                                 $tokens
             );
     }
 

@@ -88,7 +88,8 @@ is( $solution->parse(
     q[' B">'],
     q['{{ '<IMG SRC = "foo.gif" ALT = "A > B">'|strip_html }}' => ' B">']
 );
-is( $solution->parse(q['{{ '<!-- <A comment> -->' | strip_html }}'])->render(),
+is( $solution->parse(q['{{ '<!-- <A comment> -->' | strip_html }}'])
+        ->render(),
     q[' -->'],
     q['{{ '<!-- <A comment> -->'| strip_html }}' => ' -->']
 );
@@ -120,8 +121,9 @@ is( $solution->parse(q[{{'Replace that with this'|replace:this,'this'}}])
 is($solution->parse(q[{{'I have a listhp.'|replace:'th'}}])->render(),
     'I have a lisp.',
     q[{{'I have a listhp.'|replace:'th'}} => I have a lisp.]);
-is($solution->parse(q[{{ 'barbar' | replace_first:'bar','foo' }}])->render(),
-    'foobar', q[{{ 'barbar' | replace_first:'bar','foo' }} => foobar]);
+is( $solution->parse(q[{{ 'barbar' | replace_first:'bar','foo' }}])->render(),
+    'foobar', q[{{ 'barbar' | replace_first:'bar','foo' }} => foobar]
+);
 is($solution->parse(q[{{ 'foobarfoobar' | remove:'foo' }}])->render(),
     'barbar', q[{{ 'foobarfoobar' | remove:'foo' }} => barbar]);
 is($solution->parse(q[{{ 'barbar' | remove_first:'bar' }}])->render(),
@@ -193,7 +195,8 @@ is($solution->parse(q[{{ 'foo' | append:'bar' }}])->render(),
     'foobar', q[{{ 'foo' | append:'bar' }} => 'foobar']);
 
 # subtraction
-is($solution->parse(q[{{ 4|minus:2 }}])->render, '2', q[{{ 4|minus:2 }} => 2]);
+is($solution->parse(q[{{ 4|minus:2 }}])->render, '2',
+    q[{{ 4|minus:2 }} => 2]);
 is($solution->parse(q[{{ 'Test'|minus:2 }}])->render,
     '', q[{{ 'Test'|minus:2 }} => ]);
 

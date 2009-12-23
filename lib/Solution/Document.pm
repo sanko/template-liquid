@@ -20,7 +20,7 @@ package Solution::Document;
     sub stack  { return $_[0]->context->stack($_[1]); }
     sub scopes { return $_[0]->context->scopes; }
     sub scope  { return $_[0]->context->scope; }
-    sub merge { return $_[0]->context->merge($_[1]); }
+    sub merge  { return $_[0]->context->merge($_[1]); }
 
     #BEGIN { our @ISA = qw[Solution::Template]; }
     sub parse {
@@ -35,8 +35,8 @@ package Solution::Document;
         }
     NODE: while (my $token = shift @{$tokens}) {
             if ($token =~ qr[^${Solution::Utility::TagStart}  # {%
-                                (.+?)                           # etc
-                              ${Solution::Utility::TagEnd}        # %}
+                                (.+?)                         # etc
+                              ${Solution::Utility::TagEnd}    # %}
                              $]x
                 )
             {   my ($tag, $attrs) = (split ' ', $1, 2);
@@ -93,16 +93,17 @@ package Solution::Document;
                     my @args
                         = $args
                         ? split
-                        $Solution::Utility::VariableFilterArgumentParser, $args
+                        $Solution::Utility::VariableFilterArgumentParser,
+                        $args
                         : ();
                     push @filters, [$filter, \@args];
                 }
                 push @{$self->{'nodelist'}},
                     Solution::Variable->new({parent   => $self,
-                                           markup   => $token,
-                                           variable => $variable,
-                                           filters  => \@filters
-                                          }
+                                             markup   => $token,
+                                             variable => $variable,
+                                             filters  => \@filters
+                                            }
                     );
             }
             else {
