@@ -71,8 +71,10 @@ package Solution::Document;
                     );
                 }
                 else {
-                    push @{$self->{'nodelist'}},
-                        Solution::SyntaxError->new('Unknown tag: ' . $token);
+                    raise Solution::SyntaxError {
+                                          message => 'Unknown tag: ' . $token,
+                                          fatal   => 1
+                    };
                 }
             }
             elsif (
