@@ -9,6 +9,7 @@
     use Solution::Document;
     use Solution::Block;
     use Solution::Condition;
+    use Solution::Tag;
 
     sub import {
 
@@ -276,15 +277,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
     { package Solution::Module_Ex; }
     { package Solution::StandardFilters; }
     { package Solution::Strainer; }
-    {
-
-        package Solution::Tag;
-        use strict;
-        use warnings;
-        BEGIN { our @ISA = qw[Solution::Document]; }
-        sub tag { return $_[0]->{'tag_name'}; }
-        sub end_tag { return $_[0]->{'end_tag'} || ''; }
-    }
     { package Solution::Tag::Case; }
     { package Solution::Tag::Cycle; }
     { package Solution::Tag::IfChanged; }
