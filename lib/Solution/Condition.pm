@@ -74,17 +74,11 @@ package Solution::Condition;
     }
     sub lt { return !$_[0]->gt }
 
-    sub contains {    # XXX - Does this work? Not yet.
+    sub contains {
         my ($self) = @_;
-        my $l      = $self->resolve($$self{'lvalue'});
-        my $r      = $self->resolve($$self{'rvalue'});
-        warn $$self{'lvalue'};
-        warn sprintf '%s =~ %s', $l, $r;
-
-        #warn main::pp($self);
-        #use Data::Dump qw[pp];
-        #die pp($self->scopes);
-        return $l =~ m[$r];
+        my $l      = $self->resolve($self->{'lvalue'});
+        my $r      = $self->resolve($self->{'rvalue'});
+        return $l =~ m[$r] ? 1 : !1;
     }
 
     sub is_true {
