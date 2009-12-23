@@ -45,18 +45,5 @@ package Solution::Utility;
         map { $_ ? $_ : () } split $TemplateParser, shift;
     }
 
-    sub merge {    # Deeply merges data structures
-        my ($target, $source) = @_;
-        for (keys %$source) {
-            if ('ARRAY' eq ref $target->{$_}) {
-                CORE::push @{$target->{$_}}, @{$source->{$_}};
-            }
-            elsif ('HASH' eq ref $target->{$_}) {
-                merge($source->{$_}, $target->{$_});
-            }
-            else {
-                $target->{$_} = $source->{$_};
-            }
-        }
-    }
+
 }

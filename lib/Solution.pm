@@ -210,13 +210,33 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
         }
 
         sub merge {
-            my ($self, $args) = @_;
-            return Solution::Utility::merge($self->scope, $args);
+            my ($self, $new) = @_;
+            return _merge($new, $self->scope);
         }
 
+        sub _merge {    # Deeply merges data structures
+            my ($source, $target) = @_;
+            for (keys %$source) {
+                if ('ARRAY' eq ref $source->{$_}
+                    && ('ARRAY' eq ref $target->{$_}
+                        || !ref $target->{$_})
+                    )
+                {   CORE::push @{$target->{$_}}, @{$source->{$_}};
+                }
+                elsif ('HASH' eq ref $source->{$_}
+                       && ('HASH' eq ref $target->{$_}
+                           || !ref $target->{$_})
+                    )
+                {   _merge($source->{$_}, $target->{$_});
+                }
+                else {
+                    $target->{$_} = $source->{$_};
+                }
+            }
+        }
 
         sub resolve {
-            my ($self, $path, $val) = @_; # warn '### Resolving ' . $path;
+            my ($self, $path, $val) = @_;    # warn '### Resolving ' . $path;
             return !1    if $path eq 'false';
             return !!1   if $path eq 'true';
             return undef if $path eq 'null';
