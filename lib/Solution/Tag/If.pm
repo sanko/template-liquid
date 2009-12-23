@@ -33,7 +33,7 @@ package Solution::Tag::If;
                           parent   => $args->{'parent'},
                           markup   => $args->{'markup'},
                           end_tag  => 'end' . $args->{'tag_name'},
-                          conditional_tag => qr[^(?:else|else?if\s+.+)$]
+                          conditional_tag => qr[^(?:else|else?if)$]
         }, $class;
         push @{$self->{'blocks'}},
             Solution::Block->new({tag_name => $args->{'tag_name'},
