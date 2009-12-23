@@ -60,7 +60,7 @@ package Solution::Document;
                 elsif ($self->can('end_tag') && $tag eq $self->end_tag) {
                     last NODE;
                 }
-                elsif ($tag =~ m[^(?:else|elsif)$]) {
+                elsif ($self->can('conditional') && $tag =~ $self->conditional) {
                     $self->push_block({tag_name => $tag,
                                        attrs    => $attrs,
                                        markup   => $token,

@@ -6,7 +6,7 @@ package Solution::Tag;
     our $VERSION = 0.001;
     sub tag         { return $_[0]->{'tag_name'}; }
     sub end_tag     { return $_[0]->{'end_tag'} || undef; }
-    sub conditional { return $_[0]->{'conditional'} ? 1 : 0 }
+    sub conditional { return $_[0]->{'conditional'} || undef; }
 
     # Should be overridden by child classes
     sub new {
