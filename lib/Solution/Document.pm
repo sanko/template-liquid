@@ -57,7 +57,7 @@ package Solution::Document;
                                 $tokens
                         );
                 }
-                elsif ($self->can('end_tag') && $tag eq $self->end_tag) {
+                elsif ($self->can('end_tag') && $tag =~ $self->end_tag) {
                     last NODE;
                 }
                 elsif (   $self->can('conditional_tag')
