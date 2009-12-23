@@ -89,19 +89,16 @@
 
                 for my $index (@_range) {
                     $self->resolve($self->{'variable_name'}, $steps[$index]);
-                    $self->resolve('forloop.first',
-                                   ($index == 0 ? 'true' : 'false'));
+                    $self->resolve('forloop.first', ($index == 0 ? !!1 : !1));
                     $self->resolve('forloop.last',
-                                   ($index == ($attr->{'length'} - 1))
-                                   ? 'true'
-                                   : 'false'
-                    );
+                              ($index == ($attr->{'length'} - 1)) ? !!1 : !1);
                     $self->resolve('forloop.index',  $index + 1);
                     $self->resolve('forloop.index0', $index);
                     $self->resolve('forloop.rindex',
                                    $attr->{'length'} - $index);
                     $self->resolve('forloop.rindex0',
                                    $attr->{'length'} - $index - 1);
+
                     for my $node (@$nodes) {
                         my $rendering = ref $node ? $node->render() : $node;
                         $return .= defined $rendering ? $rendering : '';
