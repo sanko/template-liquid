@@ -48,7 +48,8 @@
         my ($self) = @_;
         my $val    = $self->{'value'};
         my $var    = $self->{'variable'};
-        $val = $2 if $val =~ m[^(['"])(.+)\1\s*$];
+        #$val = $2 if $val =~ m[^(['"])(.+)\1\s*$];
+        $val = $self->resolve($val);
         {    # XXX - Duplicated in Solution::Variable::render
         FILTER: for my $filter (@{$self->{'filters'}}) {
                 my ($name, $args) = @$filter;
