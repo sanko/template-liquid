@@ -17,7 +17,8 @@ use File::Find qw[find];
 my $automated_testing = $ENV{AUTOMATED_TESTING} || $ENV{PERL_MM_USE_DEFAULT};
 my $is_developer = ($ENV{RELEASE_TESTING} || -d '.git');
 my @tests;
-find \&find_cb, qw[t/0100_filters], ($is_developer ? 't/9000_author' : ());
+find \&find_cb, qw[t/0100_filters t/0200_tags],
+    ($is_developer ? 't/9000_author' : ());
 @tests = sort @tests;
 my $class = $is_developer ? 'MBX::Solution::Developer' : 'MBX::Solution';
 $class = 'Module::Build';    # XXX

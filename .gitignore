@@ -45,6 +45,7 @@ Solution-*
 examples/redux.pl
 examples/testing.pl
 examples/tinker.pl
+examples/lib/*
 
 # Avoid old versions of this module
 *.lib/
