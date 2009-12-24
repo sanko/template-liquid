@@ -71,42 +71,55 @@
         else {
             @range = @{$self->resolve($range)};
         }
-        $self->stack(
-            sub {
-                $self->merge($self->scopes->[-2]);
-                $self->resolve('forloop.name', $self->{'name'});
-                $attr->{'offset'} ||= 0;
-                $self->resolve('forloop.offset', $attr->{'offset'});
-                my @steps = splice @range, $attr->{'offset'};
-                $attr->{'length'} = scalar @steps;
-                $self->resolve('forloop.length', $attr->{'length'});
-                $attr->{'limit'} ||= $attr->{'length'};
-                $self->resolve('forloop.limit',  $attr->{'limit'});
-                $self->resolve('forloop.length', $#steps);
-                my $nodes  = $self->{'nodelist'};
-                my @_range = (0 .. $#steps);
-                @_range = reverse @_range if $self->{'reversed'};
-
-                for my $index (@_range) {
-                    $self->resolve($self->{'variable_name'}, $steps[$index]);
-                    $self->resolve('forloop.first', ($index == 0 ? !!1 : !1));
-                    $self->resolve('forloop.last',
-                              ($index == ($attr->{'length'} - 1)) ? !!1 : !1);
-                    $self->resolve('forloop.index',  $index + 1);
-                    $self->resolve('forloop.index0', $index);
-                    $self->resolve('forloop.rindex',
-                                   $attr->{'length'} - $index);
-                    $self->resolve('forloop.rindex0',
-                                   $attr->{'length'} - $index - 1);
-
-                    for my $node (@$nodes) {
-                        my $rendering = ref $node ? $node->render() : $node;
-                        $return .= defined $rendering ? $rendering : '';
-                    }
-                    last if $index == $attr->{'limit'};
+        { # Uhoh... here comes trouble.
+            no warnings 'redefine';
+            my %forloop = ('.name' => $self->{'name'});
+            my $real_resolve = \&Solution::Context::resolve;
+            *Solution::Context::resolve = sub {
+                my ($_self, $path, $value) = @_;
+                # local vars are read only
+                if ($path eq $self->{'variable_name'}
+                    && !defined $value # let assignments go up to the real thing
+                ) {
+                    return $forloop{'current_value'};
                 }
+                elsif ($path =~ m[^forloop(\..+)$] && exists $forloop{$1}) {
+                    return $forloop{$1};
+                }
+                else {
+                    return $real_resolve->($_self, $path, $value);
+                }
+            };
+            $attr->{'offset'} ||= 0;
+            $forloop{'.offset'} = $attr->{'offset'};
+            my @steps = splice @range, $attr->{'offset'};
+            $attr->{'length'} = scalar @steps;
+            $forloop{'.length'} = $attr->{'length'};
+            $attr->{'limit'} ||= $attr->{'length'};
+            $forloop{'.limit'}  = $attr->{'limit'};
+            $forloop{'.length'} = $#steps;
+            my $nodes  = $self->{'nodelist'};
+            my @_range = (0 .. $#steps);
+            @_range = reverse @_range if $self->{'reversed'};
+
+            for my $index (@_range) {
+                $forloop{'current_value'} = $steps[$index];
+                $forloop{'.first'}        = $steps[$index];
+                $forloop{'.first'}        = ($index == 0 ? !!1 : !1);
+                $forloop{'.last'}
+                    = ($index == ($attr->{'length'} - 1) ? !!1 : !1);
+                $forloop{'.index'}   = $index + 1;
+                $forloop{'.index0'}  = $index;
+                $forloop{'.rindex'}  = $attr->{'length'} - $index;
+                $forloop{'.rindex0'} = $attr->{'length'} - $index - 1;
+                for my $node (@$nodes) {
+                    my $rendering = ref $node ? $node->render() : $node;
+                    $return .= defined $rendering ? $rendering : '';
+                }
+                last if $index == $attr->{'limit'};
             }
-        );
+            *Solution::Context::resolve = $real_resolve; # reverse our mess
+        }
         return $return;
     }
 }
