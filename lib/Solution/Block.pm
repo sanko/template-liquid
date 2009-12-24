@@ -17,7 +17,7 @@ package Solution::Block;
              message => 'else tags are non-conditional: ' . $args->{'markup'},
              fatal   => 1
             }
-            if $args->{'tag_name'} eq 'else' && $args->{'args'};
+            if $args->{'tag_name'} eq 'else' && $args->{'attrs'};
         return
             bless {tag_name  => $args->{'tag_name'},
                    condition => ($args->{'tag_name'} eq 'else'
