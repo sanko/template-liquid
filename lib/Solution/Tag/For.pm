@@ -43,9 +43,10 @@
                           tag_name        => $args->{'tag_name'},
                           variable_name   => $var,
                           end_tag         => 'end' . $args->{'tag_name'},
-                          parent          => $args->{'parent'}
+                          parent          => $args->{'parent'},
+                          markup          => $args->{'markup'}
         }, $class;
-        $self->parse({}, $tokens);
+        $self->parse($tokens);
         return $self;
     }
 
