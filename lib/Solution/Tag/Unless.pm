@@ -13,7 +13,8 @@ package Solution::Tag::Unless;
         my ($self) = @_;
         for my $block (@{$self->{'blocks'}}) {
             return $block->render()
-                if !$block->{'condition'} || ($block->{'tag_name'} eq 'else');
+                if !(grep { $_->is_true ? 1 : 0 } @{$block->{'conditions'}})
+                    || ($block->{'tag_name'} eq 'else');
         }
     }
 }
