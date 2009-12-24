@@ -67,7 +67,8 @@ package Solution::Tag::If;
     sub render {
         my ($self) = @_;
         for my $block (@{$self->{'blocks'}}) {
-            return $block->render() if $block->{'condition'};
+            return $block->render()
+                if grep { $_->is_true ? 1 : 0 } @{$block->{'conditions'}};
         }
     }
 }

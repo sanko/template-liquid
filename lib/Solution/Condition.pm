@@ -80,8 +80,22 @@ package Solution::Condition;
         my ($self) = @_;
         my $l      = $self->resolve($self->{'lvalue'});
         my $r      = quotemeta $self->resolve($self->{'rvalue'});
-        return if defined $r && ! defined $l;
+        return if defined $r && !defined $l;
         return $l =~ m[$r] ? 1 : !1;
+    }
+
+    sub and {
+        my ($self) = @_;
+        my $l      = $self->{'lvalue'};
+        my $r      = $self->{'rvalue'};
+        return (($l && $r) ? 1 : 0);
+    }
+
+    sub or {
+        my ($self) = @_;
+        my $l      = $self->{'lvalue'};
+        my $r      = $self->{'rvalue'};
+        return (($l || $r) ? 1 : 0);
     }
 
     sub is_true {
