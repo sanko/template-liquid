@@ -4,6 +4,7 @@ examples/simple.pl
 lib/Solution.pm
 lib/Solution/Block.pm
 lib/Solution/Condition.pm
+lib/Solution/Context.pm
 lib/Solution/Document.pm
 lib/Solution/Error.pm
 lib/Solution/Filters/Standard.pm
