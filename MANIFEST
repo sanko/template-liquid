@@ -15,6 +15,7 @@ lib/Solution/Tag/Comment.pm
 lib/Solution/Tag/For.pm
 lib/Solution/Tag/If.pm
 lib/Solution/Tag/Unless.pm
+lib/Solution/Template.pm
 lib/Solution/Utility.pm
 lib/Solution/Variable.pm
 MANIFEST			This list of files
