@@ -15,11 +15,11 @@ package Solution::Condition;
     sub new {
         my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing parent argument',
-                                    fatal   => 1
+                                      fatal   => 1
             }
             if !defined $args->{'parent'};
-        my ($lval, $condition, $rval) = split qr[\s+],
-            $args->{'attrs'} || '', 3;
+        my ($lval, $condition, $rval)
+            = (($args->{'attrs'} || '') =~ m[("[^"]+"|'[^']+'|(?:[\S]+))]g);
         if (defined $lval) {
             if (!defined $rval && !defined $condition) {
                 return
@@ -42,8 +42,10 @@ package Solution::Condition;
                     }, $class;
             }
         }
-
-        #return Solution::ContextError->new('Bad conditional statement');
+        raise Solution::ContextError {
+                  message => 'Bad conditional statement: ' . $args->{'attrs'},
+                  fatal   => 1
+        };
     }
 
     sub eq {
