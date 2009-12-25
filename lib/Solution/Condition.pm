@@ -71,7 +71,7 @@ package Solution::Condition;
     sub gt {
         my ($self) = @_;
         my ($l, $r)
-            = map { $self->resolve($_) || $_ }
+            = map { $self->template->context->resolve($_) || $_ }
             ($$self{'lvalue'}, $$self{'rvalue'});
         return
               !!(grep {defined} $l, $r)
@@ -84,10 +84,10 @@ package Solution::Condition;
 
     sub contains {
         my ($self) = @_;
-        my $l      = $self->resolve($self->{'lvalue'});
-        my $r      = quotemeta $self->resolve($self->{'rvalue'});
+        my $l      = $self->template->context->resolve($self->{'lvalue'});
+        my $r      = quotemeta $self->template->context->resolve($self->{'rvalue'});
         return if defined $r && !defined $l;
-        return $l =~ m[$r] ? 1 : !1;
+        return $l =~ qr[${r}] ? 1 : !1;
     }
 
     sub and {

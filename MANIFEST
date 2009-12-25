@@ -29,3 +29,4 @@ t/0200_tags/02002_case.t
 t/0200_tags/02003_cycle.t
 t/0200_tags/02004_capture.t
 t/0200_tags/02005_comment.t
+t/0200_tags/02006_if.t
