@@ -63,6 +63,8 @@ package Solution::Context;
 
     sub resolve {
         my ($self, $path, $val) = @_;    # warn '### Resolving ' . $path;
+        raise Solution::ArgumentError 'Cannot resolve empty/undefined path'
+            if !defined $path;
         return !1    if $path eq 'false';
         return !!1   if $path eq 'true';
         return undef if $path eq 'null';
