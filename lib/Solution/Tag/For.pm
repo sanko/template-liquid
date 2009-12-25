@@ -7,7 +7,7 @@
     use lib '../../../lib';
     use Solution::Error;
     use Solution::Utility;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
+    our @ISA = qw[Solution::Tag];
     my $Help_String = 'TODO';
     Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
 
@@ -29,7 +29,7 @@
             };
         }
         my ($var, $range, $attr) = ($1, $2, $3 || '');
-        my $reversed = $attr =~ s[^reversed\s*?][] ? 1 : 0;
+        my $reversed = $attr =~ s[^reversed\s+?][] ? 1 : 0;
         my %attr = map {
             my ($k, $v) = split $Solution::Utility::FilterArgumentSeparator,
                 $_, 2;
@@ -51,11 +51,21 @@
     }
 
     sub render {
-        my ($self) = @_;
-        my @range;
-        my $range  = $self->{'collection_name'};
-        my $attr   = $self->{'attributes'};
-        my $return = '';
+        my ($self)   = @_;
+        my $range    = $self->{'collection_name'};
+        my $attr     = $self->{'attributes'};
+        my $return   = '';
+        my $reversed = $self->{'reversed'};
+        my @list;
+        my $offset
+            = defined $attr->{'offset'}
+            ? $self->resolve($attr->{'offset'})
+            : undef;
+        my $limit
+            = defined $attr->{'limit'}
+            ? $self->resolve($attr->{'limit'})
+            : undef;
+
         if ($range =~ m[\(\s*(\S+)\.\.(\S+)\s*\)]) {
             my ($x, $y) = ($1, $2);
             if (defined $self->resolve($x)) {
@@ -66,22 +76,40 @@
             }
             ($x, $y) = (int $x, int $y)
                 if $x =~ m[^\d+$] || $y =~ m[^\d+$];
-            @range = ($x .. $y);
+            @list = ($x .. $y);
         }
         else {
-            @range = @{$self->resolve($range)};
+            @list = @{$self->resolve($range)};
         }
-        { # Uhoh... here comes trouble.
+        {    # Break it down to only the items we plan on using
+            my $min = (defined $offset ? $offset : 0);
+            my $max = (defined $limit
+                       ? $limit + (defined $offset ? $offset : 0) - 1
+                       : $#list
+            );
+            $max    = $#list if $max > $#list;
+            @list   = @list[$min .. $max];
+            @list   = reverse @list if $reversed;
+            $limit  = defined $limit ? $limit : scalar @list;
+            $offset = defined $offset ? $offset : 0;
+        }
+        {    # Uhoh... here comes trouble.
             no warnings 'redefine';
-            my %forloop = ('.name' => $self->{'name'});
+            my %forloop = ('.name'   => $self->{'name'},
+                           '.offset' => $offset,
+                           '.limit'  => $limit,
+                           '.length' => scalar @list,
+            );
             my $real_resolve = \&Solution::Context::resolve;
             *Solution::Context::resolve = sub {
                 my ($_self, $path, $value) = @_;
+
                 # local vars are read only
                 if ($path eq $self->{'variable_name'}
-                    && !defined $value # let assignments go up to the real thing
-                ) {
-                    return $forloop{'current_value'};
+                    && !
+                    defined $value   # let assignments go up to the real thing
+                    )
+                {   return $forloop{'current_value'};
                 }
                 elsif ($path =~ m[^forloop(\..+)$] && exists $forloop{$1}) {
                     return $forloop{$1};
@@ -90,35 +118,22 @@
                     return $real_resolve->($_self, $path, $value);
                 }
             };
-            $attr->{'offset'} ||= 0;
-            $forloop{'.offset'} = $attr->{'offset'};
-            my @steps = splice @range, $attr->{'offset'};
-            $attr->{'length'} = scalar @steps;
-            $forloop{'.length'} = $attr->{'length'};
-            $attr->{'limit'} ||= $attr->{'length'};
-            $forloop{'.limit'}  = $attr->{'limit'};
-            $forloop{'.length'} = $#steps;
-            my $nodes  = $self->{'nodelist'};
-            my @_range = (0 .. $#steps);
-            @_range = reverse @_range if $self->{'reversed'};
-
-            for my $index (@_range) {
-                $forloop{'current_value'} = $steps[$index];
-                $forloop{'.first'}        = $steps[$index];
+            my $nodes = $self->{'nodelist'};
+            my $steps = $#list;
+            for my $index (0 .. $#list) {
+                $forloop{'current_value'} = $list[$index];
                 $forloop{'.first'}        = ($index == 0 ? !!1 : !1);
-                $forloop{'.last'}
-                    = ($index == ($attr->{'length'} - 1) ? !!1 : !1);
-                $forloop{'.index'}   = $index + 1;
-                $forloop{'.index0'}  = $index;
-                $forloop{'.rindex'}  = $attr->{'length'} - $index;
-                $forloop{'.rindex0'} = $attr->{'length'} - $index - 1;
+                $forloop{'.last'}         = ($index == $steps ? !!1 : !1);
+                $forloop{'.index'}        = $index + 1;
+                $forloop{'.index0'}       = $index;
+                $forloop{'.rindex'}       = $forloop{'.length'} - $index;
+                $forloop{'.rindex0'}      = $forloop{'.length'} - $index - 1;
                 for my $node (@$nodes) {
                     my $rendering = ref $node ? $node->render() : $node;
                     $return .= defined $rendering ? $rendering : '';
                 }
-                last if $index == $attr->{'limit'};
             }
-            *Solution::Context::resolve = $real_resolve; # reverse our mess
+            *Solution::Context::resolve = $real_resolve;    # reverse our mess
         }
         return $return;
     }
