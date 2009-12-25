@@ -43,6 +43,7 @@ Solution-*
 
 # Avoid files used in testing
 examples/redux.pl
+examples/redux.2.pl
 examples/testing.pl
 examples/tinker.pl
 examples/lib/*
