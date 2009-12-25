@@ -29,7 +29,7 @@ package Solution::Block;
                     my @equality;
                     while (my $x = shift @conditions) {
                         push @equality,
-                            ($x =~ m[(?:and|or)]
+                            ($x =~ m[\b(?:and|or)\b]
                              ? bless({parent    => $args->{'parent'},
                                       condition => $x,
                                       lvalue    => pop @equality,
