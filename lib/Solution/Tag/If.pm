@@ -11,6 +11,10 @@ package Solution::Tag::If;
 
     sub new {
         my ($class, $args, $tokens) = @_;
+        raise Solution::ContextError {message => 'Missing root argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'root'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -19,18 +23,12 @@ package Solution::Tag::If;
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
-            if !defined $args->{'attrs'};
-        if ($args->{'attrs'} !~ m[\S$]) {
-            raise Solution::SyntaxError {
-                       message => 'Bad argument list in ' . $args->{'markup'},
-                       fatal   => 1
-            };
-        }
+            if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$];
         my $condition = $args->{'attrs'};
         my $self = bless {name     => $args->{'tag_name'} . '-' . $condition,
                           blocks   => [],
                           tag_name => $args->{'tag_name'},
-                          parent   => $args->{'parent'},
+                          root     => $args->{'root'},
                           markup   => $args->{'markup'},
                           end_tag  => 'end' . $args->{'tag_name'},
                           conditional_tag => qr[^(?:else|else?if)$]
@@ -38,7 +36,8 @@ package Solution::Tag::If;
         push @{$self->{'blocks'}},
             Solution::Block->new({tag_name => $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
-                                  parent   => $args->{'parent'}
+                                  root     => $args->{'root'},
+                                  parent => $self
                                  }
             );
         $self->parse($tokens);
@@ -58,7 +57,8 @@ package Solution::Tag::If;
         push @{$self->{'blocks'}},
             Solution::Block->new({tag_name => $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
-                                  parent   => $args->{'parent'}
+                                  root     => $args->{'root'},
+                                  parent => $self
                                  },
                                  $tokens
             );
@@ -68,7 +68,7 @@ package Solution::Tag::If;
         my ($self) = @_;
         for my $block (@{$self->{'blocks'}}) {
             return $block->render()
-                if grep { $_->is_true ? 1 : 0 } @{$block->{'conditions'}};
+                if grep { $_ || 0 } @{$block->{'conditions'}};
         }
     }
 }

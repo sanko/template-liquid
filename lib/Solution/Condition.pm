@@ -14,6 +14,10 @@ package Solution::Condition;
 
     sub new {
         my ($class, $args) = @_;
+        raise Solution::ContextError {message => 'Missing root argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'root'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -26,6 +30,7 @@ package Solution::Condition;
                     bless {lvalue    => $lval,
                            condition => undef,
                            rvalue    => undef,
+                           root      => $args->{'root'},
                            parent    => $args->{'parent'}
                     }, $class;
             }
@@ -38,6 +43,7 @@ package Solution::Condition;
                     bless {lvalue    => $lval,
                            condition => $condition,
                            rvalue    => $rval,
+                           root      => $args->{'root'},
                            parent    => $args->{'parent'}
                     }, $class;
             }

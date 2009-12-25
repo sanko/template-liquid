@@ -9,10 +9,10 @@ package Solution::Document;
     use overload
         '""'     => 'render',
         fallback => 1;
-    sub parent  { return $_[0]->{'parent'} }
-    sub root    { return $_[0]->parent->root; }
-    sub context { return $_[0]->parent->context; }
-    sub filters { return $_[0]->parent->filters; }
+    sub root    { return $_[0]->{'root'} }
+    sub parent  { return $_[0]->{'parent'}; }
+    sub context { return $_[0]->root->context; }
+    sub filters { return $_[0]->root->filters; }
 
     sub resolve {
         return $_[0]->context->resolve($_[1], defined $_[2] ? $_[2] : ());
@@ -44,12 +44,13 @@ package Solution::Document;
                 #warn $tag;
                 #use Data::Dump qw[pp];
                 #warn pp $self;
-                my ($package, $call) = $self->parent->tags->{$tag};
+                my ($package, $call) = $self->root->tags->{$tag};
                 if ($package
-                    && ($call = $self->parent->tags->{$tag}->can('new')))
+                    && ($call = $self->root->tags->{$tag}->can('new')))
                 {   push @{$self->{'nodelist'}},
                         $call->($package,
-                                {parent   => $self->parent,
+                                {root     => $self->root,
+                                 parent   => $self,
                                  tag_name => $tag,
                                  markup   => $token,
                                  attrs    => $attrs
@@ -65,7 +66,8 @@ package Solution::Document;
                 {   $self->push_block({tag_name => $tag,
                                        attrs    => $attrs,
                                        markup   => $token,
-                                       parent   => $self->parent,
+                                       root     => $self->root,
+                                       parent   => $self
                                       },
                                       $tokens
                     );
@@ -102,7 +104,8 @@ package Solution::Document;
                     push @filters, [$filter, \@args];
                 }
                 push @{$self->{'nodelist'}},
-                    Solution::Variable->new({parent   => $self,
+                    Solution::Variable->new({root     => $self,
+                                             parent   => $self,
                                              markup   => $token,
                                              variable => $variable,
                                              filters  => \@filters

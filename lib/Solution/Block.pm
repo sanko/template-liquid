@@ -9,6 +9,10 @@ package Solution::Block;
 
     sub new {
         my ($class, $args) = @_;
+        raise Solution::ContextError {message => 'Missing root argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'root'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -18,9 +22,17 @@ package Solution::Block;
              fatal   => 1
             }
             if $args->{'tag_name'} eq 'else' && $args->{'attrs'};
-        return bless {
+
+            my $self = bless {
             tag_name   => $args->{'tag_name'},
-            conditions => (
+            conditions => undef,
+            nodelist => [],
+            root     => $args->{'root'},
+            parent => $args->{'parent'},
+        }, $class;
+
+
+        $self->{'conditions'} = (
                 $args->{'tag_name'} eq 'else'
                 ? [1]
                 : sub {    # Oh, what a mess...
@@ -30,30 +42,35 @@ package Solution::Block;
                     while (my $x = shift @conditions) {
                         push @equality,
                             ($x =~ m[\b(?:and|or)\b]
-                             ? bless({parent    => $args->{'parent'},
+                             ? bless({root      => $args->{'root'},
+                                      parent    => $self,
                                       condition => $x,
                                       lvalue    => pop @equality,
                                       rvalue =>
                                           Solution::Condition->new(
-                                              {parent => $args->{'parent'},
-                                               attrs  => shift @conditions
-                                              }
+                                                {root   => $args->{'root'},
+                                                 parent => $self,
+                                                 attrs  => shift @conditions
+                                                }
                                           )
                                      },
                                      'Solution::Condition'
                                  )
                              : Solution::Condition->new(
-                                    {attrs => $x, parent => $args->{'parent'}}
+                                                  {attrs  => $x,
+                                                   root   => $args->{'root'},
+                                                   parent => $self,
+                                                  }
                              )
                             );
                     }
                     \@equality;
                     }
                     ->()
-            ),
-            nodelist => [],
-            parent   => $args->{'parent'}
-        }, $class;
+            );
+
+
+        return $self;
     }
 }
 1;

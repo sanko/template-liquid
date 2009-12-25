@@ -9,13 +9,14 @@ package Solution::Template;
     sub filters { return $_[0]->{'filters'} }
     sub tags    { return $_[0]->{'tags'} }
     sub root    { return $_[0]->{'root'} }
+    sub parent  { return $_[0]->{'parent'} }
 
     sub new {
         my ($class) = @_;
         my $self = bless {tags    => Solution->tags(),
                           filters => Solution->filters()
         }, $class;
-        $self->{'context'} = Solution::Context->new({parent => $self});
+        $self->{'context'} = Solution::Context->new({root => $self});
         return $self;
     }
 
@@ -24,7 +25,7 @@ package Solution::Template;
         my $self = ref $class ? $class : $class->new();
         my @tokens = Solution::Utility::tokenize($source);
         $self->{'root'}    # XXX - Unless a root is preexisting?
-            = Solution::Document->parse({parent => $self}, \@tokens);
+            = Solution::Document->parse({root => $self}, \@tokens);
         return $self;
     }
 

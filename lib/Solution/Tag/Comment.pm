@@ -11,8 +11,12 @@
 
     sub new {
         my ($class, $args, $tokens) = @_;
+        raise Solution::ContextError {message => 'Missing root argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'root'};
         raise Solution::ContextError {message => 'Missing parent argument',
-                                    fatal   => 1
+                                      fatal   => 1
             }
             if !defined $args->{'parent'};
         if ($args->{'attrs'}) {
@@ -25,7 +29,7 @@
                           nodelist => [],
                           tag_name => $args->{'tag_name'},
                           end_tag  => 'end' . $args->{'tag_name'},
-                          parent   => $args->{'parent'},
+                          root     => $args->{'root'},
                           markup   => $args->{'markup'}
         }, $class;
         $self->parse({}, $tokens);

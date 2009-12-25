@@ -179,6 +179,7 @@ L<Solution::Template|Solution::Template/"register_tag">.
                           tag_name => $args->{'tag_name'},
                           max      => $args->{'attrs'},
                           parent   => $args->{'parent'},
+                          root     => $args->{'root'},
                           markup   => $args->{'markup'},
         }, $class;
         return $self;
@@ -215,10 +216,11 @@ L<Liquid::Template|Liquid::Template/"register_tag">.
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        my $self = bless {name     => 'rand-' . $args->{'attrs'},
+        my $self = bless {name     => 'LHC-' . $args->{'attrs'},
                           tag_name => $args->{'tag_name'},
                           odds     => $args->{'attrs'},
                           parent   => $args->{'parent'},
+                          root     => $args->{'root'},
                           markup   => $args->{'markup'},
                           end_tag  => 'end' . $args->{'tag_name'}
         }, $class;

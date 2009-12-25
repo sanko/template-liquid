@@ -12,8 +12,12 @@
 
     sub new {
         my ($class, $args) = @_;
+        raise Solution::ContextError {message => 'Missing root argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'root'};
         raise Solution::ContextError {message => 'Missing parent argument',
-                                    fatal   => 1
+                                      fatal   => 1
             }
             if !defined $args->{'parent'};
         raise Solution::SyntaxError {
@@ -27,7 +31,9 @@
         $args->{'name'}    = 'a-' . $args->{'attrs'};
         $args->{'filters'} = [];
         if ($filters) {
-            for my $filter (split $Solution::Utility::FilterSeparator, $filters)
+
+            for my $filter (split $Solution::Utility::FilterSeparator,
+                            $filters)
             {   my ($filter, $f_args)
                     = split $Solution::Utility::FilterArgumentSeparator,
                     $filter, 2;

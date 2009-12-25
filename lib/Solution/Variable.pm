@@ -11,8 +11,12 @@ package Solution::Variable;
 
     sub new {
         my ($class, $args) = @_;
+        raise Solution::ContextError {message => 'Missing root argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'root'};
         raise Solution::ContextError {message => 'Missing parent argument',
-                                    fatal   => 1
+                                      fatal   => 1
             }
             if !defined $args->{'parent'};
         raise Solution::SyntaxError {
@@ -25,7 +29,7 @@ package Solution::Variable;
 
     sub render {
         my ($self) = @_;
-        my $value = $self->parent->parent->context->resolve($self->variable);
+        my $value = $self->root->context->resolve($self->variable);
 
         # XXX - Duplicated in Solution::Tag::Assign
     FILTER: for my $filter (@{$self->{'filters'}}) {
