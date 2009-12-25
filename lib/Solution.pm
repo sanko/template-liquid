@@ -315,7 +315,6 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
     { package Solution::Module_Ex; }
     { package Solution::StandardFilters; }
     { package Solution::Strainer; }
-    { package Solution::Tag::Case; }
     { package Solution::Tag::Cycle; }
     { package Solution::Tag::IfChanged; }
     { package Solution::Tag::Include; }

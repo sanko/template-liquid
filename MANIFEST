@@ -11,6 +11,7 @@ lib/Solution/Filters/Standard.pm
 lib/Solution/Tag.pm
 lib/Solution/Tag/Assign.pm
 lib/Solution/Tag/Capture.pm
+lib/Solution/Tag/Case.pm
 lib/Solution/Tag/Comment.pm
 lib/Solution/Tag/For.pm
 lib/Solution/Tag/If.pm
