@@ -14,10 +14,10 @@ package Solution::Condition;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -30,7 +30,7 @@ package Solution::Condition;
                     bless {lvalue    => $lval,
                            condition => undef,
                            rvalue    => undef,
-                           root      => $args->{'root'},
+                           template  => $args->{'template'},
                            parent    => $args->{'parent'}
                     }, $class;
             }
@@ -43,7 +43,7 @@ package Solution::Condition;
                     bless {lvalue    => $lval,
                            condition => $condition,
                            rvalue    => $rval,
-                           root      => $args->{'root'},
+                           template  => $args->{'template'},
                            parent    => $args->{'parent'}
                     }, $class;
             }
@@ -57,7 +57,7 @@ package Solution::Condition;
     sub eq {
         my ($self) = @_;
         my ($l, $r)
-            = map { $self->resolve($_) || $_ }
+            = map { $self->template->context->resolve($_) || $_ }
             ($$self{'lvalue'}, $$self{'rvalue'});
         return
               !!(grep {defined} $l, $r)
@@ -107,7 +107,8 @@ package Solution::Condition;
     sub is_true {
         my ($self) = @_;
         if (!defined $self->{'condition'} && !defined $self->{'rvalue'}) {
-            return !!($self->context->resolve($self->{'lvalue'}) ? 1 : 0);
+            return !!(
+                $self->template->context->resolve($self->{'lvalue'}) ? 1 : 0);
         }
         my $condition = $self->can($self->{'condition'});
         raise Solution::ContextError {

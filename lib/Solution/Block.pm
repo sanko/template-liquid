@@ -9,10 +9,10 @@ package Solution::Block;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -22,54 +22,48 @@ package Solution::Block;
              fatal   => 1
             }
             if $args->{'tag_name'} eq 'else' && $args->{'attrs'};
-
-            my $self = bless {
-            tag_name   => $args->{'tag_name'},
-            conditions => undef,
-            nodelist => [],
-            root     => $args->{'root'},
-            parent => $args->{'parent'},
+        my $self = bless {tag_name   => $args->{'tag_name'},
+                          conditions => undef,
+                          nodelist   => [],
+                          template   => $args->{'template'},
+                          parent     => $args->{'parent'},
         }, $class;
-
-
         $self->{'conditions'} = (
-                $args->{'tag_name'} eq 'else'
-                ? [1]
-                : sub {    # Oh, what a mess...
-                    my @conditions = split m[\s+\b(and|or)\b\s+],
-                        $args->{'attrs'};
-                    my @equality;
-                    while (my $x = shift @conditions) {
-                        push @equality,
-                            ($x =~ m[\b(?:and|or)\b]
-                             ? bless({root      => $args->{'root'},
-                                      parent    => $self,
-                                      condition => $x,
-                                      lvalue    => pop @equality,
-                                      rvalue =>
-                                          Solution::Condition->new(
-                                                {root   => $args->{'root'},
-                                                 parent => $self,
-                                                 attrs  => shift @conditions
-                                                }
-                                          )
-                                     },
-                                     'Solution::Condition'
-                                 )
-                             : Solution::Condition->new(
-                                                  {attrs  => $x,
-                                                   root   => $args->{'root'},
-                                                   parent => $self,
-                                                  }
+            $args->{'tag_name'} eq 'else'
+            ? [1]
+            : sub {    # Oh, what a mess...
+                my @conditions = split m[\s+\b(and|or)\b\s+],
+                    $args->{'attrs'};
+                my @equality;
+                while (my $x = shift @conditions) {
+                    push @equality,
+                        ($x =~ m[\b(?:and|or)\b]
+                         ? bless({template  => $args->{'template'},
+                                  parent    => $self,
+                                  condition => $x,
+                                  lvalue    => pop @equality,
+                                  rvalue =>
+                                      Solution::Condition->new(
+                                          {template => $args->{'template'},
+                                           parent   => $self,
+                                           attrs    => shift @conditions
+                                          }
+                                      )
+                                 },
+                                 'Solution::Condition'
                              )
-                            );
-                    }
-                    \@equality;
-                    }
-                    ->()
-            );
-
-
+                         : Solution::Condition->new(
+                                          {attrs    => $x,
+                                           template => $args->{'template'},
+                                           parent   => $self,
+                                          }
+                         )
+                        );
+                }
+                \@equality;
+                }
+                ->()
+        );
         return $self;
     }
 }

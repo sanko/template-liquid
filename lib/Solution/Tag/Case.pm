@@ -11,10 +11,10 @@ package Solution::Tag::Case;
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -34,7 +34,7 @@ package Solution::Tag::Case;
                          name => $args->{'tag_name'} . '-' . $args->{'attrs'},
                          blocks          => [],
                          tag_name        => $args->{'tag_name'},
-                         root            => $args->{'root'},
+                         template        => $args->{'template'},
                          parent          => $args->{'parent'},
                          markup          => $args->{'markup'},
                          value           => $args->{'attrs'},
@@ -51,10 +51,10 @@ package Solution::Tag::Case;
 
     sub push_block {
         my ($self, $args, $tokens) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -84,7 +84,7 @@ package Solution::Tag::Case;
             Solution::Block->new({tag_name => $args->{'tag_name'},
                                   end_tag  => 'end' . $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
-                                  root     => $args->{'root'},
+                                  template => $args->{'template'},
                                   parent   => $self
                                  },
                                  $tokens

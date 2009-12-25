@@ -11,10 +11,10 @@ package Solution::Tag::Capture;
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -35,7 +35,8 @@ package Solution::Tag::Capture;
                           tag_name      => $args->{'tag_name'},
                           variable_name => $1,
                           end_tag       => 'end' . $args->{'tag_name'},
-                          root          => $args->{'root'},
+                          template      => $args->{'template'},
+                          parent        => $args->{'parent'},
                           markup        => $args->{'markup'},
         }, $class;
         $self->parse({}, $tokens);

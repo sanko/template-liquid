@@ -13,10 +13,10 @@
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -47,7 +47,8 @@
                           tag_name        => $args->{'tag_name'},
                           variable_name   => $var,
                           end_tag         => 'end' . $args->{'tag_name'},
-                          root            => $args->{'root'},
+                          template        => $args->{'template'},
+                          parent          => $args->{'parent'},
                           markup          => $args->{'markup'}
         }, $class;
         $self->parse($tokens);
@@ -63,27 +64,27 @@
         my @list;
         my $offset
             = defined $attr->{'offset'}
-            ? $self->resolve($attr->{'offset'})
+            ? $self->template->context->resolve($attr->{'offset'})
             : undef;
         my $limit
             = defined $attr->{'limit'}
-            ? $self->resolve($attr->{'limit'})
+            ? $self->template->context->resolve($attr->{'limit'})
             : undef;
 
         if ($range =~ m[\(\s*(\S+)\.\.(\S+)\s*\)]) {
             my ($x, $y) = ($1, $2);
-            if (defined $self->resolve($x)) {
-                $x = $self->resolve($x);
+            if (defined $self->template->context->resolve($x)) {
+                $x = $self->template->context->resolve($x);
             }
-            if (defined $self->resolve($y)) {
-                $y = $self->resolve($y);
+            if (defined $self->template->context->resolve($y)) {
+                $y = $self->template->context->resolve($y);
             }
             ($x, $y) = (int $x, int $y)
                 if $x =~ m[^\d+$] || $y =~ m[^\d+$];
             @list = ($x .. $y);
         }
         else {
-            @list = @{$self->resolve($range)};
+            @list = @{$self->template->context->resolve($range) || []};
         }
         {    # Break it down to only the items we plan on using
             my $min = (defined $offset ? $offset : 0);

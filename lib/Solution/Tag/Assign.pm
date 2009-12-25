@@ -12,10 +12,10 @@
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -54,14 +54,15 @@
         my ($self) = @_;
         my $val    = $self->{'value'};
         my $var    = $self->{'variable'};
+
         #$val = $2 if $val =~ m[^(['"])(.+)\1\s*$];
-        $val = $self->resolve($val);
+        $val = $self->template->context->resolve($val);
         {    # XXX - Duplicated in Solution::Variable::render
         FILTER: for my $filter (@{$self->{'filters'}}) {
                 my ($name, $args) = @$filter;
                 map { $_ = m[^(['"])(.+)\1\s*$] ? $2 : $self->resolve($_) }
                     @$args;
-            PACKAGE: for my $package (@{$self->root->filters}) {
+            PACKAGE: for my $package (@{$self->template->filters}) {
                     if (my $call = $package->can($name)) {
                         $val = $call->($val, @$args);
                         next FILTER;
@@ -72,7 +73,7 @@
                 }
             }
         }
-        $self->resolve($var, $val);
+        $self->template->context->resolve($var, $val);
         return '';
     }
 }

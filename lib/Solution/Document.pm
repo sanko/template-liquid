@@ -9,26 +9,41 @@ package Solution::Document;
     use overload
         '""'     => 'render',
         fallback => 1;
-    sub root    { return $_[0]->{'root'} }
-    sub parent  { return $_[0]->{'parent'}; }
-    sub context { return $_[0]->root->context; }
-    sub filters { return $_[0]->root->filters; }
 
-    sub resolve {
-        return $_[0]->context->resolve($_[1], defined $_[2] ? $_[2] : ());
-    }
-    sub stack  { return $_[0]->context->stack($_[1]); }
-    sub scopes { return $_[0]->context->scopes; }
-    sub scope  { return $_[0]->context->scope; }
-    sub merge  { return $_[0]->context->merge($_[1]); }
+    sub template { return $_[0]->{'template'} }
 
+    #sub template    { return $_[0]->{'template'} }
+    #sub parent  { return $_[0]->{'parent'}; }
+    #sub context { return $_[0]->{'context'}; }
+    #sub filters { return $_[0]->{'filters'}; }
+    #sub resolve {
+    #    return $_[0]->context->resolve($_[1], defined $_[2] ? $_[2] : ());
+    #}
+    #sub stack  { return $_[0]->context->stack($_[1]); }
+    #sub scopes { return $_[0]->context->scopes; }
+    #sub scope  { return $_[0]->context->scope; }
+    #sub merge  { return $_[0]->context->merge($_[1]); }
     #BEGIN { our @ISA = qw[Solution::Template]; }
+    sub new {
+        my ($class, $args) = @_;
+        raise Solution::ContextError {message => 'Missing template argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'template'};
+        return bless $args, $class;
+    }
+
     sub parse {
         my ($class, $args, $tokens);
         (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
         my $self;
         if (ref $class) { $self = $class; }
         else {
+            raise Solution::ContextError {
+                                       message => 'Missing template argument',
+                                       fatal   => 1
+                }
+                if !defined $args->{'template'};
             $args->{'nodelist'}
                 ||= [];    # XXX - In the future, this may be preloaded?
             $self = bless $args, $class;
@@ -44,12 +59,12 @@ package Solution::Document;
                 #warn $tag;
                 #use Data::Dump qw[pp];
                 #warn pp $self;
-                my ($package, $call) = $self->root->tags->{$tag};
+                my ($package, $call) = $self->template->tags->{$tag};
                 if ($package
-                    && ($call = $self->root->tags->{$tag}->can('new')))
+                    && ($call = $self->template->tags->{$tag}->can('new')))
                 {   push @{$self->{'nodelist'}},
                         $call->($package,
-                                {root     => $self->root,
+                                {template => $self->template,
                                  parent   => $self,
                                  tag_name => $tag,
                                  markup   => $token,
@@ -62,11 +77,12 @@ package Solution::Document;
                     last NODE;
                 }
                 elsif (   $self->can('conditional_tag')
+                       && defined $self->conditional_tag
                        && $tag =~ $self->conditional_tag)
                 {   $self->push_block({tag_name => $tag,
                                        attrs    => $attrs,
                                        markup   => $token,
-                                       root     => $self->root,
+                                       template => $self->template,
                                        parent   => $self
                                       },
                                       $tokens
@@ -104,7 +120,7 @@ package Solution::Document;
                     push @filters, [$filter, \@args];
                 }
                 push @{$self->{'nodelist'}},
-                    Solution::Variable->new({root     => $self,
+                    Solution::Variable->new({template => $self->template,
                                              parent   => $self,
                                              markup   => $token,
                                              variable => $variable,

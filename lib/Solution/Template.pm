@@ -5,18 +5,18 @@ package Solution::Template;
     use lib '..';
     our $VERSION = 0.001;
     use Solution::Utility;
-    sub context { return $_[0]->{'context'} }
-    sub filters { return $_[0]->{'filters'} }
-    sub tags    { return $_[0]->{'tags'} }
-    sub root    { return $_[0]->{'root'} }
-    sub parent  { return $_[0]->{'parent'} }
+    sub context  { return $_[0]->{'context'} }
+    sub filters  { return $_[0]->{'filters'} }
+    sub tags     { return $_[0]->{'tags'} }
+    sub document { return $_[0]->{'document'} }
+    sub parent   { return $_[0]->{'parent'} }
 
     sub new {
         my ($class) = @_;
         my $self = bless {tags    => Solution->tags(),
                           filters => Solution->filters()
         }, $class;
-        $self->{'context'} = Solution::Context->new({root => $self});
+        $self->{'context'} = Solution::Context->new({template => $self});
         return $self;
     }
 
@@ -24,8 +24,9 @@ package Solution::Template;
         my ($class, $source) = @_;
         my $self = ref $class ? $class : $class->new();
         my @tokens = Solution::Utility::tokenize($source);
-        $self->{'root'}    # XXX - Unless a root is preexisting?
-            = Solution::Document->parse({root => $self}, \@tokens);
+        $self->{'document'}    # XXX - Unless a document is preexisting?
+            = Solution::Document->new({template => $self});
+        $self->{'document'}->parse(\@tokens);
         return $self;
     }
 
@@ -34,7 +35,7 @@ package Solution::Template;
         return $self->context->stack(
             sub {
                 $self->context->merge($args);
-                return $self->root->render();
+                return $self->document->render();
             }
         );
     }
