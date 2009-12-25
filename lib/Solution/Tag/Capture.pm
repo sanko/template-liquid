@@ -51,7 +51,7 @@ package Solution::Tag::Capture;
             my $rendering = ref $node ? $node->render() : $node;
             $val .= defined $rendering ? $rendering : '';
         }
-        $self->resolve($var, $val);
+        $self->template->context->resolve($var, $val);
         return '';
     }
 }
