@@ -9,6 +9,7 @@ lib/Solution/Document.pm
 lib/Solution/Error.pm
 lib/Solution/Filters/Standard.pm
 lib/Solution/Tag.pm
+lib/Solution/Tag.pod
 lib/Solution/Tag/Assign.pm
 lib/Solution/Tag/Capture.pm
 lib/Solution/Tag/Case.pm
