@@ -22,7 +22,7 @@ package Solution::Block;
              fatal   => 1
             }
             if $args->{'tag_name'} eq 'else' && $args->{'attrs'};
-        my $self = bless {tag_name   => $args->{'tag_name'},
+        my $self = bless {tag_name   => 'b-' . $args->{'tag_name'},
                           conditions => undef,
                           nodelist   => [],
                           template   => $args->{'template'},
@@ -37,7 +37,7 @@ package Solution::Block;
                 my @equality;
                 while (my $x = shift @conditions) {
                     push @equality,
-                        ($x =~ m[\b(?:and|or)\b]
+                        ($x =~ m[\b(?:and|or)\b] # XXX - ARG
                          ? bless({template  => $args->{'template'},
                                   parent    => $self,
                                   condition => $x,
@@ -68,3 +68,60 @@ package Solution::Block;
     }
 }
 1;
+
+=pod
+
+=head1 NAME
+
+Solution::Block - Simple Node Type
+
+=head Description
+
+There's not really a lot to say about basic blocks. The real action is in the
+classes which make use of them or subclass it. See L<if|Solution::Tag::If>,
+L<unless|Solution::Tag::Unless>, or L<case|Solution::Tag::Case>.
+
+=head1 Bugs
+
+Liquid's (and by extension L<Solution|Solution>'s) treatment of
+compound inequalities is broken. For example...
+
+    {% if 'This and that' contains 'that' and 1 == 3 %}
+
+...would be parsed as if it were...
+
+    if ( "'This" && ( "that'" =~ m[and] ) ) { ...
+
+...but it should look like...
+
+    if ( ( 'This and that' =~ m[that]) && ( 1 == 3 ) ) { ...
+
+It's just... not pretty but I'll work on it.
+
+=head1 See Also
+
+See L<Solution::Condition|Solution::Condition> for a list of supported
+inequalities.
+
+=head1 Author
+
+Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
+
+The original Liquid template system was developed by jadedPixel
+(http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
+
+=head1 License and Legal
+
+Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
+this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
+clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
+
+When separated from the distribution, all original POD documentation is
+covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
+http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
+clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+
+=cut
