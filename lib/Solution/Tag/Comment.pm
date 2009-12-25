@@ -11,10 +11,10 @@
 
     sub new {
         my ($class, $args, $tokens) = @_;
-        raise Solution::ContextError {message => 'Missing root argument',
+        raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
-            if !defined $args->{'root'};
+            if !defined $args->{'template'};
         raise Solution::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
@@ -29,7 +29,8 @@
                           nodelist => [],
                           tag_name => $args->{'tag_name'},
                           end_tag  => 'end' . $args->{'tag_name'},
-                          root     => $args->{'root'},
+                          template => $args->{'template'},
+                          parent   => $args->{'parent'},
                           markup   => $args->{'markup'}
         }, $class;
         $self->parse({}, $tokens);
@@ -47,6 +48,13 @@ Solution::Tag::Comment - General Purpose Content Eater
 
 =head1 Synopsis
 
+    I love you{% comment %} and your sister {% endcomment %}.
+
+=head1 Description
+
+C<comment> is the simplest tag. Child nodes are not rendered so it effectivly
+swallows content.
+
     {% for article in articles %}
         <div class='post' id='{{ article.id }}'>
             <p class='title'>{{ article.title | capitalize }}</p>
@@ -57,13 +65,6 @@ Solution::Tag::Comment - General Purpose Content Eater
             ...
         </div>
     {% endfor %}
-
-=head1 Description
-
-C<comment> is the simplest tag. Child nodes are not rendered so it effectivly
-swallows content.
-
-    I love you{% comment %} and your sister {% endcomment %}.
 
 Code inside a C<comment> tag is not executed during rendering. So, this...
 
