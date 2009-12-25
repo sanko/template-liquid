@@ -61,17 +61,17 @@ Liquid - Simple, Stateless Template System
     );
     print $template->render( { some => { text => 'Contact!' } } );
 
-=head1 Desciption
+=head1 Description
 
 Liquid is a template engine which was crafted for very specific requirements:
 
 =over 4
 
 =item * It has to have simple markup and beautiful results. Template engines
-which don’t produce good looking results are no fun to use.
+which don't produce good looking results are no fun to use.
 
 =item * It needs to be non-evaling and secure. Liquid templates are made so
-that users can edit them. You don’t want to run code on your server which your
+that users can edit them. You don't want to run code on your server which your
 users wrote.
 
 =item * It has to be stateless. The compile and render steps have to be
@@ -85,7 +85,7 @@ objects.
 
 =head2 Getting Started
 
-It’s very simple to get started with L<Solution|Solution>. Just as in Liquid,
+It's very simple to get started with L<Solution|Solution>. Just as in Liquid,
 templates are built and used in two steps: Parse and Render.
 
 For an overview of the Liquid/Solution syntax, please read
@@ -111,7 +111,7 @@ not know about your local, instance, and global variables.
 =over 4
 
 =item * You want to allow your users to edit the appearance of your
-application, but don’t want them to run insecure code on your server.
+application, but don't want them to run insecure code on your server.
 
 =item * You want to render templates directly from the database.
 
@@ -119,11 +119,11 @@ application, but don’t want them to run insecure code on your server.
 
 =item * You need a template engine which does HTML just as well as emails.
 
-=item * You don’t like the markup language of your current template engine.
+=item * You don't like the markup language of your current template engine.
 
-=item * You wasted three entire weekends patching this together when you could
-have been doing something productive like voulenteering or catching up on
-past seasons of I<Dr. Who>.
+=item * You wasted three days patching this together when you could have been
+doing something productive like volunteering or catching up on past seasons of
+I<Dr. Who>.
 
 =back
 
@@ -132,9 +132,9 @@ past seasons of I<Dr. Who>.
 =over 4
 
 =item * You've found or written your own template engine which fills your
-needs better than Liquid ever could.
+needs better than Liquid or Solution ever could.
 
-If you haven't found it yet, check the
+Psst! Hey, if you haven't found it yet, check the
 L<See Also|Solution/"Other Template Engines"> section.
 
 =item * You eat paste.
@@ -146,9 +146,12 @@ L<See Also|Solution/"Other Template Engines"> section.
 I really don't have a good reason but I promise to send myself to bed without
 dinner as punishment.
 
-Eh... The name L<Solution|Solution> is a reference to the classical states of
-matter not an absolute answer. The engine is based on the Liquid Template
-Engine in Ruby but with a few extra things tossed it.
+As I understand it, the original Ruby project's name, Liquid, is a reference
+to the classical states of matter. The engine is stateless. ...okay, so maybe
+there's a little reaching. Anyway, I settled on L<Solution|Solution> because
+it's the Liquid Template Engine but with... stuff floating in it. Yeah,
+pretend you majored in chemistry instead of mathematics. This solution is the
+answer to all your various problems. ...or any of them, actually.
 
 =head1 Extending Solution
 
@@ -159,8 +162,8 @@ TODO
 =head2 Create Your Own Tags
 
 To create a new tag, simply inherit from L<Solution::Tag|Solution::Tag> and
-register your block L<globally|Liquid/"register_tag"> or locally with
-L<Liquid::Template|Liquid::Template/"register_tag">.
+register your block L<globally|Solution/"register_tag"> or locally with
+L<Solution::Template|Solution::Template/"register_tag">.
 
     package SolutionX::Tag::Random;
     use strict;
@@ -246,14 +249,13 @@ constructor.
 The extra C<end_tag> attribute in the object's reference lets the parser know
 that this is a block that will slurp until the end tag is found. In our
 example, we use C<'end' . $args->{'tag_name'}> because you may eventually
-subclass this tag (as SolutionX::Tag::Vehicle::Ford, for example) and let it
-inherit this constructor. Now that we're sure the parser knows what to look
-for, we go ahead and continue L<parsing|Liquid::Template/"parse"> the list of
-tokens. The parser will shove child nodes (L<tags|Solution::Tag>,
-L<variables|Solution::Variable>, and simple strings) onto your stack until the
-C<end_tag> is found.
+subclass this tag and let it inherit this constructor. Now that we're sure the
+parser knows what to look for, we go ahead and continue
+L<parsing|Liquid::Template/"parse"> the list of tokens. The parser will shove
+child nodes (L<tags|Solution::Tag>, L<variables|Solution::Variable>, and
+simple strings) onto your stack until the C<end_tag> is found.
 
-In the render step, we must return the strigification of all child nodes
+In the render step, we must return the stringification of all child nodes
 pushed onto the stack by the parser.
 
 =head2 Creating Your Own Tag Blocks
