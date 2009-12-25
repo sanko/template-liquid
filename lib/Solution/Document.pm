@@ -6,10 +6,8 @@ package Solution::Document;
     our $VERSION = 0.001;
     use Solution::Variable;
     use Solution::Utility;
-    use overload
-        '""'     => 'render',
-        fallback => 1;
 
+    #
     sub template { return $_[0]->{'template'} }
 
     #sub template    { return $_[0]->{'template'} }
