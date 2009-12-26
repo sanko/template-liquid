@@ -54,19 +54,45 @@ package Solution::Condition;
         };
     }
 
-    sub eq {
+    sub eq {    # XXX - rewrite for deep structures (see S::Context::_merge)
         my ($self) = @_;
-        my ($l, $r)
-            = map { $self->template->context->resolve($_) || $_ }
-            ($$self{'lvalue'}, $$self{'rvalue'});
-        return
-              !!(grep {defined} $l, $r)
-            ? (grep {m[\D]} $l, $r)
-                ? $l eq $r
-                : $l == $r
-            : 0;
+        my $l = $self->template->context->resolve($self->{'lvalue'})
+            || $self->{'lvalue'};
+        my $r = $self->template->context->resolve($self->{'rvalue'})
+            || $self->{'rvalue'};
+        my $ref_l = ref $l;
+        return 0 if $ref_l ne ref $r;    # They aren't the same type anyway...
+        if (!$ref_l) {
+            return
+                  !!(grep {defined} $l, $r)
+                ? (grep {m[\D]} $l, $r)
+                    ? $l eq $r
+                    : $l == $r
+                : 0;
+        }
+        elsif ($ref_l eq 'ARRAY') {
+            return 0 unless scalar @$l == scalar @$r;
+            for my $index (0 .. $#{$l}) {
+                return 0 if $l->[$index] ne $r->[$index];
+            }
+            return 1;
+        }
+        elsif ($ref_l eq 'HASH') {
+            my %temp = %$r;
+            for my $key (keys %$l) {
+                return 0
+                    unless exists $temp{$key}
+                        and defined($l->{$key}) eq defined($temp{$key})
+                        and (defined $temp{$key}
+                             ? $temp{$key} eq $l->{$key}
+                             : 1
+                        );
+                delete $temp{$key};
+            }
+            return !keys(%temp);
+        }
     }
-    sub ne { return !$_[0]->eq }
+    sub ne { return !$_[0]->eq }    # hashes
 
     sub gt {
         my ($self) = @_;
@@ -92,19 +118,21 @@ package Solution::Condition;
         return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
         return $l =~ qr[${r}] ? 1 : !1;
     }
+    {    # Compound inequalities support
 
-    sub and {
-        my ($self) = @_;
-        my $l      = $self->{'lvalue'};
-        my $r      = $self->{'rvalue'};
-        return (($l && $r) ? 1 : 0);
-    }
+        sub and {
+            my ($self) = @_;
+            my $l      = $self->{'lvalue'};
+            my $r      = $self->{'rvalue'};
+            return (($l && $r) ? 1 : 0);
+        }
 
-    sub or {
-        my ($self) = @_;
-        my $l      = $self->{'lvalue'};
-        my $r      = $self->{'rvalue'};
-        return (($l || $r) ? 1 : 0);
+        sub or {
+            my ($self) = @_;
+            my $l      = $self->{'lvalue'};
+            my $r      = $self->{'rvalue'};
+            return (($l || $r) ? 1 : 0);
+        }
     }
 
     sub is_true {

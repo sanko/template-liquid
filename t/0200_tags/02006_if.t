@@ -74,6 +74,48 @@ INPUT
 
 EXPECTED
 is( Solution::Template->parse(
+        <<'INPUT')->render({list_one => [qw[a b c d]], list_two => [qw[a b c d]]}), <<'EXPECTED', q[list_one == list_two [A]]);
+{% if list_one == list_two %}Yep.{% endif %}
+INPUT
+Yep.
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({list_one => [qw[a b c d]], list_two => [qw[a b c d e]]}), <<'EXPECTED', q[list_one == list_two [B]]);
+{% if list_one == list_two %}Yep.{% endif %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({list_one => [qw[a b c d]], list_two => [qw[a b c e]]}), <<'EXPECTED', q[list_one == list_two [C]]);
+{% if list_one == list_two %}Yep.{% endif %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({hash_one => {key => 'value'}, hash_two => {key => 'value'}}), <<'EXPECTED', q[hash_one == hash_two [A]]);
+{% if hash_one == hash_two %}Yep.{% endif %}
+INPUT
+Yep.
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({hash_one => {key => 'value'}, hash_two => {key => 'wrong value'}}), <<'EXPECTED', q[hash_one == hash_two [B]]);
+{% if hash_one == hash_two %}Yep.{% endif %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({hash_one => {key => 'value'}, hash_two => {other_key => 'value'}}), <<'EXPECTED', q[hash_one == hash_two [C]]);
+{% if hash_one == hash_two %}Yep.{% endif %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({hash => {key => 'value'}, list => [qw[key value]]}), <<'EXPECTED', q[hash == list]);
+{% if hash == list %}Yep.{% endif %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
         <<'INPUT')->render({hash => {key => 'value'}}), <<'EXPECTED', q[hash contains 'key']);
 {% if hash contains 'key' %}Yep.{% endif %}
 INPUT
