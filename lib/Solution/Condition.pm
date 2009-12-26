@@ -54,45 +54,55 @@ package Solution::Condition;
         };
     }
 
-    sub eq {    # XXX - rewrite for deep structures (see S::Context::_merge)
+    sub ne { return !$_[0]->eq }    # hashes
+    sub eq {
         my ($self) = @_;
         my $l = $self->template->context->resolve($self->{'lvalue'})
             || $self->{'lvalue'};
         my $r = $self->template->context->resolve($self->{'rvalue'})
             || $self->{'rvalue'};
-        my $ref_l = ref $l;
-        return 0 if $ref_l ne ref $r;    # They aren't the same type anyway...
-        if (!$ref_l) {
-            return
-                  !!(grep {defined} $l, $r)
-                ? (grep {m[\D]} $l, $r)
-                    ? $l eq $r
-                    : $l == $r
-                : 0;
-        }
-        elsif ($ref_l eq 'ARRAY') {
-            return 0 unless scalar @$l == scalar @$r;
-            for my $index (0 .. $#{$l}) {
-                return 0 if $l->[$index] ne $r->[$index];
-            }
-            return 1;
-        }
-        elsif ($ref_l eq 'HASH') {
-            my %temp = %$r;
-            for my $key (keys %$l) {
-                return 0
-                    unless exists $temp{$key}
-                        and defined($l->{$key}) eq defined($temp{$key})
-                        and (defined $temp{$key}
-                             ? $temp{$key} eq $l->{$key}
-                             : 1
-                        );
-                delete $temp{$key};
-            }
-            return !keys(%temp);
-        }
+        return _equal($l, $r);
     }
-    sub ne { return !$_[0]->eq }    # hashes
+
+    sub _equal { # XXX - Pray we don't have a recursive data structure...
+    my ($l, $r) = @_;
+    my $ref_l = ref $l;
+    return !1 if $ref_l ne ref $r;
+    if (!$ref_l) {
+        return
+              !!(grep {defined} $l, $r)
+            ?
+            (grep {m[\D]} $l, $r)
+                ? $l eq $r
+                : $l == $r
+            : !1
+    }
+    elsif ($ref_l eq 'ARRAY') {
+        return !1 unless scalar @$l == scalar @$r;
+        for my $index (0 .. $#{$l}) {
+            return !1 if ! _equal($l->[$index], $r->[$index]);
+        }
+        return !!1;
+    }
+    elsif ($ref_l eq 'HASH') {
+        my %temp = %$r;
+        for my $key (keys %$l) {
+            return 0
+                unless exists $temp{$key}
+                    and defined($l->{$key}) eq defined($temp{$key})
+                    and (defined $temp{$key}
+                         ? _equal($temp{$key}, $l->{$key})
+                         : !!1
+                    );
+            delete $temp{$key};
+        }
+        return !keys(%temp);
+    }
+}
+
+
+
+
 
     sub gt {
         my ($self) = @_;
