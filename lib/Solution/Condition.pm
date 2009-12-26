@@ -84,9 +84,12 @@ package Solution::Condition;
 
     sub contains {
         my ($self) = @_;
-        my $l      = $self->template->context->resolve($self->{'lvalue'});
-        my $r      = quotemeta $self->template->context->resolve($self->{'rvalue'});
+        my $l = $self->template->context->resolve($self->{'lvalue'});
+        my $r
+            = quotemeta $self->template->context->resolve($self->{'rvalue'});
         return if defined $r && !defined $l;
+        return defined($l->{$r}) ? 1 : !1 if ref $l eq 'HASH';
+        return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
         return $l =~ qr[${r}] ? 1 : !1;
     }
 

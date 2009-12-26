@@ -62,6 +62,30 @@ INPUT
 Yep.
 EXPECTED
 is( Solution::Template->parse(
+        <<'INPUT')->render({list => [qw[some other value]]}), <<'EXPECTED', q[list contains 'other']);
+{% unless list contains 'other' %}Yep.{% endunless %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({list => [qw[some other value]]}), <<'EXPECTED', q[list contains 'missing element']);
+{% unless list contains 'missing element' %}Yep.{% endunless %}
+INPUT
+Yep.
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({hash => {key => 'value'}}), <<'EXPECTED', q[hash contains 'key']);
+{% unless hash contains 'key' %}Yep.{% endunless %}
+INPUT
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'INPUT')->render({hash => {key => 'value'}}), <<'EXPECTED', q[hash contains 'missing key']);
+{% unless hash contains 'missing key' %}Yep.{% endunless %}
+INPUT
+Yep.
+EXPECTED
+is( Solution::Template->parse(
                          <<'INPUT')->render(), <<'EXPECTED', 'else fallback');
 {% unless 1 != 1 %}One does not equal one{% else %}else{% endunless %}
 INPUT
