@@ -10,7 +10,7 @@ package Solution::Tag::Cycle;
     Solution->register_tag('cycle') if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }

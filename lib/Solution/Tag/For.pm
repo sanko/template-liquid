@@ -12,7 +12,7 @@
     Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
@@ -51,7 +51,6 @@
                           parent          => $args->{'parent'},
                           markup          => $args->{'markup'}
         }, $class;
-        $self->parse($tokens);
         return $self;
     }
 

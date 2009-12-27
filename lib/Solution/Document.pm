@@ -60,16 +60,35 @@ package Solution::Document;
                 my ($package, $call) = $self->template->tags->{$tag};
                 if ($package
                     && ($call = $self->template->tags->{$tag}->can('new')))
-                {   push @{$self->{'nodelist'}},
+                {   my $_tag =
                         $call->($package,
                                 {template => $self->template,
                                  parent   => $self,
                                  tag_name => $tag,
                                  markup   => $token,
                                  attrs    => $attrs
-                                },
-                                $tokens
+                                }
                         );
+                    push @{$self->{'nodelist'}}, $_tag;
+                    if ($_tag->conditional_tag) {
+                        push @{$_tag->{'blocks'}},
+                            Solution::Block->new(
+                                              {tag_name => $tag,
+                                               attrs    => $attrs,
+                                               template => $_tag->template,
+                                               parent   => $_tag
+                                              }
+                            );
+                        $_tag->parse($tokens);
+                        {    # finish previous block
+                            ${$_tag->{'blocks'}[-1]}{'nodelist'}
+                                = $_tag->{'nodelist'};
+                            $_tag->{'nodelist'} = [];
+                        }
+                    }
+                    elsif ($_tag->end_tag) {
+                        $_tag->parse($tokens);
+                    }
                 }
                 elsif ($self->can('end_tag') && $tag =~ $self->end_tag) {
                     last NODE;
@@ -87,10 +106,7 @@ package Solution::Document;
                     );
                 }
                 else {
-                    raise Solution::SyntaxError {
-                                          message => 'Unknown tag: ' . $token,
-                                          fatal   => 1
-                    };
+                    raise Solution::SyntaxError 'Unknown tag: ' . $token;
                 }
             }
             elsif (

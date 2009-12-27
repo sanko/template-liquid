@@ -10,7 +10,7 @@ package Solution::Tag::If;
     Solution->register_tag('if') if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
@@ -34,35 +34,24 @@ package Solution::Tag::If;
                           end_tag  => 'end' . $args->{'tag_name'},
                           conditional_tag => qr[^(?:else|else?if)$]
         }, $class;
-        push @{$self->{'blocks'}},
+        return $self;
+    }
+
+    sub push_block {
+        my ($self, $args) = @_;
+        my $block =
             Solution::Block->new({tag_name => $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
                                   template => $args->{'template'},
                                   parent   => $self
                                  }
             );
-        $self->parse($tokens);
-        {    # finish final block
-            ${$self->{'blocks'}[-1]}{'nodelist'} = $self->{'nodelist'};
-            $self->{'nodelist'} = [];
-        }
-        return $self;
-    }
-
-    sub push_block {
-        my ($self, $args, $tokens) = @_;
         {    # finish previous block
             ${$self->{'blocks'}[-1]}{'nodelist'} = $self->{'nodelist'};
             $self->{'nodelist'} = [];
         }
-        push @{$self->{'blocks'}},
-            Solution::Block->new({tag_name => $args->{'tag_name'},
-                                  attrs    => $args->{'attrs'},
-                                  template => $args->{'template'},
-                                  parent   => $self
-                                 },
-                                 $tokens
-            );
+        push @{$self->{'blocks'}}, $block;
+        return $block;
     }
 
     sub render {

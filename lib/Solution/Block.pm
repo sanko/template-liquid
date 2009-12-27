@@ -33,32 +33,32 @@ package Solution::Block;
             ? [1]
             : sub {    # Oh, what a mess...
                 my @conditions = split m[\s+\b(and|or)\b\s+],
-                    $args->{'attrs'};
+                    (defined $args->{'attrs'} ? $args->{'attrs'} : '');
                 my @equality;
                 while (my $x = shift @conditions) {
-                    push @equality,
-                        ($x =~ m[\b(?:and|or)\b] # XXX - ARG
-                         ? bless({template  => $args->{'template'},
-                                  parent    => $self,
-                                  condition => $x,
-                                  lvalue    => pop @equality,
-                                  rvalue =>
-                                      Solution::Condition->new(
+                    push @equality, (
+                        $x =~ m[\b(?:and|or)\b]    # XXX - ARG
+                        ? bless({template  => $args->{'template'},
+                                 parent    => $self,
+                                 condition => $x,
+                                 lvalue    => pop @equality,
+                                 rvalue =>
+                                     Solution::Condition->new(
                                           {template => $args->{'template'},
                                            parent   => $self,
                                            attrs    => shift @conditions
                                           }
-                                      )
-                                 },
-                                 'Solution::Condition'
-                             )
-                         : Solution::Condition->new(
+                                     )
+                                },
+                                'Solution::Condition'
+                            )
+                        : Solution::Condition->new(
                                           {attrs    => $x,
                                            template => $args->{'template'},
                                            parent   => $self,
                                           }
-                         )
-                        );
+                        )
+                    );
                 }
                 \@equality;
                 }

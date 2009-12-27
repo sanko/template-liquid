@@ -72,7 +72,7 @@ For more, see L<Solution::Tag::Unless|Solution::Tag::Unless>.
 =head2 C<capture>
 
 
-=head1 Extending Solution Custom Tags
+=head1 Extending Solution with Custom Tags
 
 To create a new tag, simply inherit from L<Solution::Tag|Solution::Tag> and
 register your block L<globally|Solution/"register_tag"> or locally with
@@ -118,11 +118,6 @@ A quick link back to the top level template object.
 
 =back
 
-=item C<$tokens>
-
-This is a reference to the entire list of remaining tokens in the
-L<template|Solution::Template> that's currently being parsed.
-
 =back
 
 Your object should at least contain the C<parent> and C<template> values
@@ -135,19 +130,19 @@ Enough jibba jabba... here's some functioning code...
     package SolutionX::Tag::Random;
     use strict;
     use warnings;
-    use Carp qw[confess];
     our @ISA = qw[Solution::Tag];
     Solution->register_tag('random') if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         $args->{'attrs'} ||= 50;
-        my $self = bless {name     => 'rand-' . $args->{'attrs'},
+        my $self = bless {
+                          max      => $args->{'attrs'},
+                          name     => 'rand-' . $args->{'attrs'},
                           tag_name => $args->{'tag_name'},
                           parent   => $args->{'parent'},
                           template => $args->{'template'},
-                          markup   => $args->{'markup'},
-                          max      => $args->{'attrs'},
+                          markup   => $args->{'markup'}
         }, $class;
         return $self;
     }
@@ -175,15 +170,7 @@ L<Solution::Tag|Solution::Tag> and register your block
 L<globally|Liquid/"register_tag"> or locally with
 L<Liquid::Template|Liquid::Template/"register_tag">.
 
-The only difference is...
-
-=over 4
-
-=item * You defined an C<end_tag> in your object. This is what the parser
-looks for when you do the next step...
-
-=item * You call the inherited L<parse|Solution::Template/"parse"> method
-which collects the child nodes inside of this block.
+The only difference is you define an C<end_tag> in your object.
 
 =back
 
@@ -192,21 +179,20 @@ Here's an example...
     package SolutionX::Tag::Large::Hadron::Collider;
     use strict;
     use warnings;
-    use Carp qw[confess];
     our @ISA = qw[Solution::Tag];
     Solution->register_tag('lhc') if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
-        my $self = bless {name     => 'LHC-' . $args->{'attrs'},
+        my ($class, $args) = @_;
+        my $self = bless {
+                          odds     => $args->{'attrs'},
+                          name     => 'LHC-' . $args->{'attrs'},
                           tag_name => $args->{'tag_name'},
                           parent   => $args->{'parent'},
                           template => $args->{'template'},
                           markup   => $args->{'markup'},
-                          end_tag  => 'end' . $args->{'tag_name'},
-                          odds     => $args->{'attrs'}
+                          end_tag  => 'end' . $args->{'tag_name'}
         }, $class;
-        $self->parse($tokens);
         return $self;
     }
 

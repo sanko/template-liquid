@@ -38,6 +38,6 @@ package Solution::Utility;
         = qr[\s*,\s*(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))];
 
     sub tokenize {
-        map { $_ ? $_ : () } split $TemplateParser, shift;
+        map { $_ ? $_ : () } split $TemplateParser, shift || '';
     }
 }

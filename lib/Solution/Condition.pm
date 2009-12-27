@@ -5,8 +5,6 @@ package Solution::Condition;
     our $VERSION = 0.001;
     use lib '../../lib';
     use Solution::Error;
-
-    #
     our @ISA = qw[Solution::Block];
 
     # Makes life easy
@@ -23,7 +21,8 @@ package Solution::Condition;
             }
             if !defined $args->{'parent'};
         my ($lval, $condition, $rval)
-            = (($args->{'attrs'} || '') =~ m[("[^"]+"|'[^']+'|(?:[\S]+))]g);
+            = ((defined $args->{'attrs'} ? $args->{'attrs'} : '')
+               =~ m[("[^"]+"|'[^']+'|(?:[\S]+))]g);
         if (defined $lval) {
             if (!defined $rval && !defined $condition) {
                 return
@@ -47,14 +46,13 @@ package Solution::Condition;
                            parent    => $args->{'parent'}
                     }, $class;
             }
+            raise Solution::ContextError 'Unknown operator ' . $condition;
         }
-        raise Solution::ContextError {
-                  message => 'Bad conditional statement: ' . $args->{'attrs'},
-                  fatal   => 1
-        };
+        return Solution::ContextError->new(
+                            'Bad conditional statement: ' . $args->{'attrs'});
     }
-
     sub ne { return !$_[0]->eq }    # hashes
+
     sub eq {
         my ($self) = @_;
         my $l = $self->template->context->resolve($self->{'lvalue'})
@@ -64,45 +62,40 @@ package Solution::Condition;
         return _equal($l, $r);
     }
 
-    sub _equal { # XXX - Pray we don't have a recursive data structure...
-    my ($l, $r) = @_;
-    my $ref_l = ref $l;
-    return !1 if $ref_l ne ref $r;
-    if (!$ref_l) {
-        return
-              !!(grep {defined} $l, $r)
-            ?
-            (grep {m[\D]} $l, $r)
-                ? $l eq $r
-                : $l == $r
-            : !1
-    }
-    elsif ($ref_l eq 'ARRAY') {
-        return !1 unless scalar @$l == scalar @$r;
-        for my $index (0 .. $#{$l}) {
-            return !1 if ! _equal($l->[$index], $r->[$index]);
+    sub _equal {    # XXX - Pray we don't have a recursive data structure...
+        my ($l, $r) = @_;
+        my $ref_l = ref $l;
+        return !1 if $ref_l ne ref $r;
+        if (!$ref_l) {
+            return
+                  !!(grep {defined} $l, $r)
+                ? (grep {m[\D]} $l, $r)
+                    ? $l eq $r
+                    : $l == $r
+                : !1;
         }
-        return !!1;
-    }
-    elsif ($ref_l eq 'HASH') {
-        my %temp = %$r;
-        for my $key (keys %$l) {
-            return 0
-                unless exists $temp{$key}
-                    and defined($l->{$key}) eq defined($temp{$key})
-                    and (defined $temp{$key}
-                         ? _equal($temp{$key}, $l->{$key})
-                         : !!1
-                    );
-            delete $temp{$key};
+        elsif ($ref_l eq 'ARRAY') {
+            return !1 unless scalar @$l == scalar @$r;
+            for my $index (0 .. $#{$l}) {
+                return !1 if !_equal($l->[$index], $r->[$index]);
+            }
+            return !!1;
         }
-        return !keys(%temp);
+        elsif ($ref_l eq 'HASH') {
+            my %temp = %$r;
+            for my $key (keys %$l) {
+                return 0
+                    unless exists $temp{$key}
+                        and defined($l->{$key}) eq defined($temp{$key})
+                        and (defined $temp{$key}
+                             ? _equal($temp{$key}, $l->{$key})
+                             : !!1
+                        );
+                delete $temp{$key};
+            }
+            return !keys(%temp);
+        }
     }
-}
-
-
-
-
 
     sub gt {
         my ($self) = @_;

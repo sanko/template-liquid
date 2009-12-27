@@ -4,13 +4,13 @@ package Solution::Tag::Case;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
+    our @ISA = qw[Solution::Tag::If];
     use Solution::Error;
     use Solution::Utility;
-    our @ISA = qw[Solution::Tag::If];
     Solution->register_tag('case') if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
@@ -38,19 +38,15 @@ package Solution::Tag::Case;
                          parent          => $args->{'parent'},
                          markup          => $args->{'markup'},
                          value           => $args->{'attrs'},
+                         first_block     => 0,
                          end_tag         => 'end' . $args->{'tag_name'},
                          conditional_tag => qr[^(?:else|when)$]
         }, $class;
-        $self->parse($tokens);
-        {    # finish final block
-            ${$self->{'blocks'}[-1]}{'nodelist'} = $self->{'nodelist'};
-            $self->{'nodelist'} = [];
-        }
         return $self;
     }
 
     sub push_block {
-        my ($self, $args, $tokens) = @_;
+        my ($self, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
@@ -64,12 +60,6 @@ package Solution::Tag::Case;
                    fatal   => 1
             }
             if !defined $args->{'attrs'} && $args->{'tag_name'} eq 'when';
-        if (scalar @{$self->{'blocks'}}) {    # finish previous block
-            ${$self->{'blocks'}[-1]}{'nodelist'} = $self->{'nodelist'};
-        }
-        $self->{'nodelist'} = [];    # Unline {%if%}, we *always* empty the
-             # nodelist. This way, we ignore nodes that come before the first
-             # when/else block just like Liquid
         if ($args->{'tag_name'} eq 'when') {
             $args->{'attrs'}
                 = join ' or ',
@@ -80,15 +70,25 @@ package Solution::Tag::Case;
                            (${Solution::Utility::Expression}.*)
                         )?]x;
         }
-        push @{$self->{'blocks'}},
+        my $block =
             Solution::Block->new({tag_name => $args->{'tag_name'},
                                   end_tag  => 'end' . $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
                                   template => $args->{'template'},
                                   parent   => $self
-                                 },
-                                 $tokens
+                                 }
             );
+
+        # finish previous block if it exists
+        ${$self->{'blocks'}[-1]}{'nodelist'} = $self->{'nodelist'}
+            if scalar @{$self->{'blocks'}};
+        $self->{'nodelist'} = [];    # Unline {%if%}, we *always* empty the
+             # nodelist. This way, we ignore nodes that come before the first
+             # when/else block just like Liquid
+        push @{$self->{'blocks'}}, $block;
+        shift @{$self->{'blocks'}}   # S::D->parse() pushes a dead first block
+            if $self->{'first_block'}++ == 0;
+        return $block;
     }
 }
 1;

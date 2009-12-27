@@ -1,16 +1,15 @@
+package Solution::Tag::Comment;
 {
-
-    package Solution::Tag::Comment;
     use strict;
     use warnings;
     our $VERSION = 0.001;
     use lib '../../../lib';
     use Solution::Error;
     BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('comment', __PACKAGE__) if $Solution::VERSION;
+    Solution->register_tag('comment') if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
@@ -33,7 +32,6 @@
                           parent   => $args->{'parent'},
                           markup   => $args->{'markup'}
         }, $class;
-        $self->parse({}, $tokens);
         return $self;
     }
     sub render { }

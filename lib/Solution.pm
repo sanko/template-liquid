@@ -1,6 +1,5 @@
+package Solution;
 {
-
-    package Solution;
     use strict;
     use warnings;
     our $VERSION = '0.001';
@@ -196,16 +195,12 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 =cut
 
 {
-
     { package Solution::Drop; }
     { package Solution::Extensions; }
     { package Solution::HTMLTags; }
     { package Solution::Module_Ex; }
-    { package Solution::StandardFilters; }
     { package Solution::Strainer; }
-    { package Solution::Tag::Cycle; }
     { package Solution::Tag::IfChanged; }
     { package Solution::Tag::Include; }
-
 }
 1;

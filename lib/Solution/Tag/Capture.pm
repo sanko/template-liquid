@@ -10,7 +10,7 @@ package Solution::Tag::Capture;
     Solution->register_tag('capture', __PACKAGE__) if $Solution::VERSION;
 
     sub new {
-        my ($class, $args, $tokens) = @_;
+        my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
@@ -39,7 +39,6 @@ package Solution::Tag::Capture;
                           parent        => $args->{'parent'},
                           markup        => $args->{'markup'},
         }, $class;
-        $self->parse({}, $tokens);
         return $self;
     }
 
