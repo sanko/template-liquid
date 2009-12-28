@@ -11,35 +11,28 @@ package Solution;
     use Solution::Context;
     use Solution::Tag;
     use Solution::Template;
-    {    # Load all the tags and filters from the standard library
+    {    # Load all the tags from the standard library
         require File::Find;
         require File::Spec;
         require File::Basename;
         use lib '../';
-        File::Find::find(
-            {wanted => sub {
-                 require $_ if m[(.+)\.pm$];
-             },
-             no_chdir => 1
-            },
-            File::Spec->rel2abs(
-                          File::Basename::dirname(__FILE__) . '/Solution/Tag/'
-            ),
-        );
-        register_filter('Solution::Filters::Standard');
+        for my $type (qw[Tag Filter]) {
+            File::Find::find(
+                {wanted => sub {
+                     require $_ if m[(.+)\.pm$];
+                 },
+                 no_chdir => 1
+                },
+                File::Spec->rel2abs(
+                      File::Basename::dirname(__FILE__) . '/Solution/' . $type
+                )
+            );
+        }
     }
     my (%tags, @filters);
-
-    sub register_tag {
-        $tags{$_[1]} = $_[2] || (caller());
-    }
+    sub register_tag { $tags{$_[1]} = $_[2] || (caller()) }
     sub tags { return \%tags }
-
-    sub register_filter {
-        my ($name) = @_;            # warn 'Registering filter ' . $name;
-        eval qq[require $name;];    # just in case
-        push @filters, $name;
-    }
+    sub register_filter { push @filters, ($_[1] ? $_[1] : (caller())) }
     sub filters { return \@filters }
 }
 1;

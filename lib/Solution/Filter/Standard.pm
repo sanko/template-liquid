@@ -1,10 +1,11 @@
-package Solution::Filters::Standard;
+package Solution::Filter::Standard;
 {
     use strict;
     use warnings;
+    Solution->register_filter() if $Solution::VERSION;
 
     sub date {
-        $_[1] = defined $_[1]?$_[1]: '%c';
+        $_[1] = defined $_[1] ? $_[1] : '%c';
         return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
         return if $_[0] !~ m[^\d+$];
         require POSIX;
@@ -104,7 +105,7 @@ package Solution::Filters::Standard;
 
 =head1 NAME
 
-Solution::Filters::Standard - Default Filters Based on Liquid's Standard Set
+Solution::Filter::Standard - Default Filters Based on Liquid's Standard Set
 
 =head1 Standard Filters
 
