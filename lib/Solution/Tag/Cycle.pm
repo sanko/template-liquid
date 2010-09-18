@@ -67,14 +67,14 @@ package Solution::Tag::Cycle;
 
     sub render {
         my ($self) = @_;
-        my $name = $self->template->context->resolve($self->{'name'})
+        my $name = $self->resolve($self->{'name'})
             || $self->{'name'};
         $self = $self->template->document->{'_CYCLES'}{$name} || $self;
         my $node = $self->{'list'}[$self->{'position'}++];
         my $return
             = ref $node
             ? $node->render()
-            : $self->template->context->resolve($node);
+            : $self->resolve($node);
         $self->{'position'} = 0
             if $self->{'position'} >= scalar @{$self->{'list'}};
         return $return;

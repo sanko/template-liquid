@@ -6,9 +6,6 @@ package Solution::Variable;
     use Solution::Error;
     our @ISA = qw[Solution::Document];
 
-    #
-    sub variable { return $_[0]->{'variable'} }
-
     sub new {
         my ($class, $args) = @_;
         raise Solution::ContextError {message => 'Missing template argument',
@@ -30,30 +27,23 @@ package Solution::Variable;
 
     sub render {
         my ($self) = @_;
-        my $value = $self->template->context->resolve($self->variable);
-
-        # XXX - Duplicated in Solution::Tag::Assign
+        my $val = $self->resolve($self->{'variable'});
     FILTER: for my $filter (@{$self->{'filters'}}) {
             my ($name, $args) = @$filter;
-            map {
-                $_
-                    = m[^(['"])(.+)\1\s*$]
-                    ? $2
-                    : $self->template->context->resolve($_)
-            } @$args;
+            #use Data::Dump;
+            #ddx $val, $filter; #, $self->template->context->scope;
+            map { $_ = $self->resolve($_)||$_ } @$args;
         PACKAGE: for my $package (@{$self->template->filters}) {
                 if (my $call = $package->can($name)) {
-                    $value = $call->($value, @$args);
+                    $val = $call->($val, @$args);
                     next FILTER;
                 }
-                else {
-                    raise Solution::FilterNotFound $name;
-                }
             }
+            raise Solution::FilterNotFound $name;
         }
-        return join '', @$value      if ref $value eq 'ARRAY';
-        return join '', keys %$value if ref $value eq 'HASH';
-        return $value;
+        return join '', @$val      if ref $val eq 'ARRAY';
+        return join '', keys %$val if ref $val eq 'HASH';
+        return $val;
     }
 }
 1;

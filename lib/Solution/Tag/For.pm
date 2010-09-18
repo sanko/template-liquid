@@ -58,88 +58,58 @@
         my ($self)   = @_;
         my $range    = $self->{'collection_name'};
         my $attr     = $self->{'attributes'};
-        my $return   = '';
         my $reversed = $self->{'reversed'};
-        my @list;
         my $offset
             = defined $attr->{'offset'}
-            ? $self->template->context->resolve($attr->{'offset'})
-            : undef;
+            ? $self->resolve($attr->{'offset'})
+            : ();
         my $limit
             = defined $attr->{'limit'}
-            ? $self->template->context->resolve($attr->{'limit'})
-            : undef;
-
-        if ($range =~ m[\(\s*(\S+)\.\.(\S+)\s*\)]) {
-            my ($x, $y) = ($1, $2);
-            if (defined $self->template->context->resolve($x)) {
-                $x = $self->template->context->resolve($x);
-            }
-            if (defined $self->template->context->resolve($y)) {
-                $y = $self->template->context->resolve($y);
-            }
-            ($x, $y) = (int $x, int $y)
-                if $x =~ m[^\d+$] || $y =~ m[^\d+$];
-            @list = ($x .. $y);
-        }
-        else {
-            @list = @{$self->template->context->resolve($range) || []};
-        }
+            ? $self->resolve($attr->{'limit'})
+            : ();
+        my $list = $self->resolve($range) || [];
         {    # Break it down to only the items we plan on using
             my $min = (defined $offset ? $offset : 0);
             my $max = (defined $limit
                        ? $limit + (defined $offset ? $offset : 0) - 1
-                       : $#list
+                       : $#$list
             );
-            $max    = $#list if $max > $#list;
-            @list   = @list[$min .. $max];
-            @list   = reverse @list if $reversed;
-            $limit  = defined $limit ? $limit : scalar @list;
+            $max    = $#$list if $max > $#$list;
+            @$list  = @{$list}[$min .. $max];
+            @$list  = reverse @$list if $reversed;
+            $limit  = defined $limit ? $limit : scalar @$list;
             $offset = defined $offset ? $offset : 0;
         }
-        {    # Uhoh... here comes trouble.
-            no warnings 'redefine';
-            my %forloop = ('.name'   => $self->{'name'},
-                           '.offset' => $offset,
-                           '.limit'  => $limit,
-                           '.length' => scalar @list,
-            );
-            my $real_resolve = \&Solution::Context::resolve;
-            *Solution::Context::resolve = sub {
-                my ($_self, $path, $value) = @_;
 
-                # local vars are read only
-                if ($path eq $self->{'variable_name'}
-                    && !
-                    defined $value   # let assignments go up to the real thing
-                    )
-                {   return $forloop{'current_value'};
+
+        return $self->template->context->stack(
+            sub {
+                my $return = '';
+                my $nodes  = $self->{'nodelist'};
+                my $steps  = $#$list;
+                for my $index (0 .. $steps) {
+                    $self->template->context->scope
+                        ->{$self->{'variable_name'}} = $list->[$index];
+                    $self->template->context->scope->{'forloop'} = {
+                                        length => $steps + 1,
+                                        limit  => $limit,
+                                        offset => $offset,
+                                        name   => $self->{'name'},
+                                        first  => ($index == 0 ? !!1 : !1),
+                                        last    => ($index == $steps ? !!1 : !1),
+                                        index   => $index + 1,
+                                        index0  => $index,
+                                        rindex  => $steps - $index + 1,
+                                        rindex0 => $steps - $index,
+                    };
+                    for my $node (@$nodes) {
+                        my $rendering = ref $node ? $node->render() : $node;
+                        $return .= defined $rendering ? $rendering : '';
+                    }
                 }
-                elsif ($path =~ m[^forloop(\..+)$] && exists $forloop{$1}) {
-                    return $forloop{$1};
-                }
-                else {
-                    return $real_resolve->($_self, $path, $value);
-                }
-            };
-            my $nodes = $self->{'nodelist'};
-            my $steps = $#list;
-            for my $index (0 .. $#list) {
-                $forloop{'current_value'} = $list[$index];
-                $forloop{'.first'}        = ($index == 0 ? !!1 : !1);
-                $forloop{'.last'}         = ($index == $steps ? !!1 : !1);
-                $forloop{'.index'}        = $index + 1;
-                $forloop{'.index0'}       = $index;
-                $forloop{'.rindex'}       = $forloop{'.length'} - $index;
-                $forloop{'.rindex0'}      = $forloop{'.length'} - $index - 1;
-                for my $node (@$nodes) {
-                    my $rendering = ref $node ? $node->render() : $node;
-                    $return .= defined $rendering ? $rendering : '';
-                }
+                return $return;
             }
-            *Solution::Context::resolve = $real_resolve;    # reverse our mess
-        }
-        return $return;
+        );
     }
 }
 1;

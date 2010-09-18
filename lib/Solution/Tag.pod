@@ -172,8 +172,6 @@ L<Liquid::Template|Liquid::Template/"register_tag">.
 
 The only difference is you define an C<end_tag> in your object.
 
-=back
-
 Here's an example...
 
     package SolutionX::Tag::Large::Hadron::Collider;

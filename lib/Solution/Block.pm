@@ -75,7 +75,7 @@ package Solution::Block;
 
 Solution::Block - Simple Node Type
 
-=head Description
+=head1 Description
 
 There's not really a lot to say about basic blocks. The real action is in the
 classes which make use of them or subclass it. See L<if|Solution::Tag::If>,

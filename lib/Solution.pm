@@ -30,9 +30,9 @@ package Solution;
         }
     }
     my (%tags, @filters);
-    sub register_tag { $tags{$_[1]} = $_[2] || (caller()) }
+    sub register_tag { $tags{$_[1]} = $_[2] ? $_[2] : scalar caller }
     sub tags { return \%tags }
-    sub register_filter { push @filters, ($_[1] ? $_[1] : (caller())) }
+    sub register_filter { push @filters, $_[1] ? $_[1] : scalar caller }
     sub filters { return \@filters }
 }
 1;
@@ -41,7 +41,7 @@ package Solution;
 
 =head1 NAME
 
-Liquid - Simple, Stateless Template System
+Solution - Simple, Stateless Template System
 
 =head1 Synopsis
 
@@ -55,7 +55,8 @@ Liquid - Simple, Stateless Template System
 
 =head1 Description
 
-Liquid is a template engine which was crafted for very specific requirements:
+Solution is a template engine which was crafted for very specific
+requirements:
 
 =over 4
 
@@ -186,7 +187,6 @@ http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
 =cut
-
 {
     { package Solution::Drop; }
     { package Solution::Extensions; }

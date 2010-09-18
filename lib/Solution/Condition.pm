@@ -33,11 +33,13 @@ package Solution::Condition;
                            parent    => $args->{'parent'}
                     }, $class;
             }
-            elsif ($condition =~ m[^(?:==|!=|<|>|contains)$]) {
+            elsif ($condition =~ m[^(?:==|!=|<|>|contains|&&|\|\|)$]) {
                 $condition = 'eq' if $condition eq '==';
                 $condition = 'ne' if $condition eq '!=';
                 $condition = 'gt' if $condition eq '>';
                 $condition = 'lt' if $condition eq '<';
+                $condition = '_and' if $condition eq '&&';
+                $condition = '_or' if $condition eq '||';
                 return
                     bless {lvalue    => $lval,
                            condition => $condition,
@@ -55,9 +57,9 @@ package Solution::Condition;
 
     sub eq {
         my ($self) = @_;
-        my $l = $self->template->context->resolve($self->{'lvalue'})
+        my $l = $self->resolve($self->{'lvalue'})
             || $self->{'lvalue'};
-        my $r = $self->template->context->resolve($self->{'rvalue'})
+        my $r = $self->resolve($self->{'rvalue'})
             || $self->{'rvalue'};
         return _equal($l, $r);
     }
@@ -100,7 +102,7 @@ package Solution::Condition;
     sub gt {
         my ($self) = @_;
         my ($l, $r)
-            = map { $self->template->context->resolve($_) || $_ }
+            = map { $self->resolve($_) || $_ }
             ($$self{'lvalue'}, $$self{'rvalue'});
         return
               !!(grep {defined} $l, $r)
@@ -113,27 +115,52 @@ package Solution::Condition;
 
     sub contains {
         my ($self) = @_;
-        my $l = $self->template->context->resolve($self->{'lvalue'});
+        my $l = $self->resolve($self->{'lvalue'});
         my $r
-            = quotemeta $self->template->context->resolve($self->{'rvalue'});
+            = quotemeta $self->resolve($self->{'rvalue'});
         return if defined $r && !defined $l;
         return defined($l->{$r}) ? 1 : !1 if ref $l eq 'HASH';
         return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
         return $l =~ qr[${r}] ? 1 : !1;
     }
+
+
+     sub _and {
+            my ($self) = @_;
+            my $l = $self->resolve($self->{'lvalue'})
+            || $self->{'lvalue'};
+        my $r = $self->resolve($self->{'rvalue'})
+            || $self->{'rvalue'};
+            return (($l && $r) ? 1 : 0);
+        }
+
+        sub _or {
+            my ($self) = @_;
+        my $l = $self->resolve($self->{'lvalue'})
+            || $self->{'lvalue'};
+        my $r = $self->resolve($self->{'rvalue'})
+            || $self->{'rvalue'};
+            return (($l || $r) ? 1 : 0);
+        }
+
+
+
     {    # Compound inequalities support
+
+
+
 
         sub and {
             my ($self) = @_;
-            my $l      = $self->{'lvalue'};
-            my $r      = $self->{'rvalue'};
+            my $l =$self->{'lvalue'};
+        my $r =$self->{'rvalue'};
             return (($l && $r) ? 1 : 0);
         }
 
         sub or {
             my ($self) = @_;
-            my $l      = $self->{'lvalue'};
-            my $r      = $self->{'rvalue'};
+        my $l = $self->{'lvalue'};
+        my $r = $self->{'rvalue'};
             return (($l || $r) ? 1 : 0);
         }
     }
@@ -142,7 +169,7 @@ package Solution::Condition;
         my ($self) = @_;
         if (!defined $self->{'condition'} && !defined $self->{'rvalue'}) {
             return !!(
-                $self->template->context->resolve($self->{'lvalue'}) ? 1 : 0);
+                $self->resolve($self->{'lvalue'}) ? 1 : 0);
         }
         my $condition = $self->can($self->{'condition'});
         raise Solution::ContextError {
@@ -156,3 +183,38 @@ package Solution::Condition;
     }
 }
 1;
+
+=pod
+
+
+=head1 Supported Inequalities
+
+=head2 C<==> / C<eq>
+
+=head2 C<!=> / C<ne>
+
+=head2 C<< > >> / C<< < >>
+
+=head2 C<contains>
+
+=head3 Strings
+
+matches qr[${string}] # case matters
+
+=head3 Lists
+
+grep list
+
+=head3 Hashes
+
+if key exists
+
+
+
+=head1 Known Bugs
+
+
+
+
+
+=cut

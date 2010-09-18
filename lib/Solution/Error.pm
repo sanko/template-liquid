@@ -2,6 +2,7 @@ package Solution::Error;
 {
     use strict;
     use warnings;
+    our $VERSION = '0.001';
     use Carp qw[];
     sub message { return $_[0]->{'message'} }
     sub fatal   { return $_[0]->{'fatal'} }

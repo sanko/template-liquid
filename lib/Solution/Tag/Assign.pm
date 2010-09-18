@@ -52,11 +52,8 @@
 
     sub render {
         my ($self) = @_;
-        my $val    = $self->{'value'};
         my $var    = $self->{'variable'};
-
-        #$val = $2 if $val =~ m[^(['"])(.+)\1\s*$];
-        $val = $self->template->context->resolve($val);
+        my $val = $self->resolve($self->{'value'});
         {    # XXX - Duplicated in Solution::Variable::render
         FILTER: for my $filter (@{$self->{'filters'}}) {
                 my ($name, $args) = @$filter;
@@ -73,7 +70,7 @@
                 }
             }
         }
-        $self->template->context->resolve($var, $val);
+        $self->resolve($var, $val);
         return '';
     }
 }

@@ -5,18 +5,21 @@ package Solution::Template;
     use lib '..';
     our $VERSION = 0.001;
     use Solution::Utility;
-    sub context  { return $_[0]->{'context'} }
-    sub filters  { return $_[0]->{'filters'} }
-    sub tags     { return $_[0]->{'tags'} }
-    sub document { return $_[0]->{'document'} }
-    sub parent   { return $_[0]->{'parent'} }
 
+    #
+    sub context  { $_[0]->{'context'} }
+    sub filters  { $_[0]->{'filters'} }
+    sub tags     { $_[0]->{'tags'} }
+    sub document { $_[0]->{'document'} }
+    sub parent   { $_[0]->{'parent'} }
+    sub resolve  { $_[0]->{'context'}->resolve($_[1], $_[2]) }
+
+    #
     sub new {
         my ($class) = @_;
-        my $self = bless {tags    => Solution->tags(),
-                          filters => Solution->filters()
+        my $self = bless {tags    => Solution->tags(),      # Global list
+                          filters => Solution->filters()    # Global list
         }, $class;
-        $self->{'context'} = Solution::Context->new({template => $self});
         return $self;
     }
 
@@ -24,33 +27,28 @@ package Solution::Template;
         my ($class, $source) = @_;
         my $self = ref $class ? $class : $class->new();
         my @tokens = Solution::Utility::tokenize($source);
-        $self->{'document'}    # XXX - Unless a document is preexisting?
-            = Solution::Document->new({template => $self});
+        $self->{'document'} ||= Solution::Document->new({template => $self});
         $self->{'document'}->parse(\@tokens);
         return $self;
     }
 
     sub render {
-        my ($self, $args) = @_;
-        return $self->context->stack(
-            sub {
-                $self->context->merge($args);
-                return $self->document->render();
-            }
-        );
+        my ($self, $assigns, $info) = @_;
+        $info ||= {};
+        $info->{'template'} = $self;
+        $self->{'context'} = Solution::Context->new($assigns, $info);
+        return $self->document->render();
     }
 
     sub register_filter {
-        my ($self, $name) = @_;     # warn 'Registering filter ' . $name;
-        eval qq[require $name;];    # just in case
-          #return @{$self->{'filters'}}{keys %${name}:: } = values %${name}::;
+        my ($self, $name) = @_;
+        eval qq[require $name;];
         return push @{$self->{'filters'}}, $name;
     }
 
     sub register_tag {
-        my ($self, $tag_name, $package)
-            = @_;                      # warn 'Registering filter ' . $name;
-        eval qq[require $package;];    # just in case
+        my ($self, $tag_name, $package) = @_;
+        eval qq[require $package;];
         return $self->{'tags'}{$tag_name} = $package;
     }
 }

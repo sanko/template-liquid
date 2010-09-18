@@ -8,10 +8,10 @@ package Solution::Document;
     use Solution::Utility;
 
     #
-    sub template { return $_[0]->{'template'} }
+    sub resolve  { $_[0]->template->context->resolve($_[1], $_[2]); }
+    sub template { $_[0]->{'template'} }
+    sub parent   { $_[0]->{'parent'} }
 
-    #sub template    { return $_[0]->{'template'} }
-    #sub parent  { return $_[0]->{'parent'}; }
     #sub context { return $_[0]->{'context'}; }
     #sub filters { return $_[0]->{'filters'}; }
     #sub resolve {
@@ -28,24 +28,16 @@ package Solution::Document;
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        return bless $args, $class;
+        return
+            bless {template => $args->{'template'},
+                   parent   => $args->{'template'}
+            }, $class;
     }
 
     sub parse {
         my ($class, $args, $tokens);
         (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
-        my $self;
-        if (ref $class) { $self = $class; }
-        else {
-            raise Solution::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
-                }
-                if !defined $args->{'template'};
-            $args->{'nodelist'}
-                ||= [];    # XXX - In the future, this may be preloaded?
-            $self = bless $args, $class;
-        }
+        my $self = ref $class ? $class : $class->new($args);
     NODE: while (my $token = shift @{$tokens}) {
             if ($token =~ qr[^${Solution::Utility::TagStart}  # {%
                                 (.+?)                         # etc
@@ -53,10 +45,6 @@ package Solution::Document;
                              $]x
                 )
             {   my ($tag, $attrs) = (split ' ', $1, 2);
-
-                #warn $tag;
-                #use Data::Dump qw[pp];
-                #warn pp $self;
                 my ($package, $call) = $self->template->tags->{$tag};
                 if ($package
                     && ($call = $self->template->tags->{$tag}->can('new')))
@@ -110,11 +98,11 @@ package Solution::Document;
                 }
             }
             elsif (
-                $token =~ qr
-                    [^${Solution::Utility::VariableStart}
-                        (.+?)
-                        ${Solution::Utility::VariableEnd}
-                    $]x
+                $token =~ qr[^
+                    ${Solution::Utility::VariableStart} # {{
+                        (.+?)                           #  stuff + filters?
+                    ${Solution::Utility::VariableEnd}   # }}
+                $]x
                 )
             {   my ($variable, $filters) = split qr[\s*\|\s*], $1, 2;
                 my @filters;
