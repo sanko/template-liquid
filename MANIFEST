@@ -7,7 +7,7 @@ lib/Solution/Condition.pm
 lib/Solution/Context.pm
 lib/Solution/Document.pm
 lib/Solution/Error.pm
-lib/Solution/Filters/Standard.pm
+lib/Solution/Filter/Standard.pm
 lib/Solution/Tag.pm
 lib/Solution/Tag.pod
 lib/Solution/Tag/Assign.pm
