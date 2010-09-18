@@ -149,4 +149,4 @@ package Solution::Document;
 }
 1;
 
-# $ID: Document.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+# $ID: Document.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $

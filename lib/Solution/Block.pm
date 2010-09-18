@@ -124,6 +124,6 @@ covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
-=for git $ID: Block.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+=for git $ID: Block.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
 
 =cut

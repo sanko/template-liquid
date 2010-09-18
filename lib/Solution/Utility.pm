@@ -81,6 +81,6 @@ covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
-=for git $ID: Utility.pm 296f72e 2009-12-27 20:55:06Z sanko@cpan.org $
+=for git $ID: Utility.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
 
 =cut

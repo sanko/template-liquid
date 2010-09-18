@@ -50,4 +50,4 @@ EXPECTED
 # I'm finished
 done_testing();
 
-# $ID: 02004_capture.t c0e20c8 2009-12-25 21:13:19Z sanko@cpan.org $
+# $ID: 02004_capture.t d76923d 2010-09-18 20:19:47Z sanko@cpan.org $

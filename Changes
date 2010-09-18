@@ -1,4 +1,4 @@
-Version 0.XXXXX | In the not too distant future | 7ecfa01
+Version 0.XXXXX | In the not too distant future | ddd1e9e
 
     API Changes/Compatibility Information:
      * ...see below
@@ -19,6 +19,6 @@ _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/solution/commits/
 
-$Ver: 0.000000_001 $ from git $Rev: c6864a4 $
-$Date: 2009-12-22 19:19:34Z (Tue, 22 Dec 2009) $
+$Ver: 0.000000_001 $ from git $Rev: d76923d $
+$Date: 2010-09-18 20:19:47Z (Sat, 18 Sep 2010) $
 $Url: http://github.com/sanko/solution/tree/raw/master/Changes $

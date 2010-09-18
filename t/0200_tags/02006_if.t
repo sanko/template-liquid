@@ -214,4 +214,4 @@ EXPECTED
 # I'm finished
 done_testing();
 
-# $ID: 02006_if.t b93255c 2009-12-26 01:01:15Z sanko@cpan.org $
+# $ID: 02006_if.t d76923d 2010-09-18 20:19:47Z sanko@cpan.org $

@@ -18,14 +18,13 @@ if (!eval "require $class") {
     exit 0;
 }
 my $mb = $class->new(
-    module_name       => 'Solution',
-    license           => 'artistic_2',
-    dist_author       => 'Sanko Robinson <sanko@cpan.org>',
-    dist_version      => $VERSION,
-    dist_abstract     => 'Simple, Stateless Template System',
-    requires          => {perl => 5.006001},
-    build_requires    => {
-                       'File::Find'    => 0,
+    module_name    => 'Solution',
+    license        => 'artistic_2',
+    dist_author    => 'Sanko Robinson <sanko@cpan.org>',
+    dist_version   => $VERSION,
+    dist_abstract  => 'Simple, Stateless Template System',
+    requires       => {perl => 5.006001},
+    build_requires => {'File::Find'    => 0,
                        'Module::Build' => '0.36',
                        perl            => 5.006001,
                        'Test::More'    => '0.94',
@@ -43,15 +42,8 @@ my $mb = $class->new(
     test_files       => \@tests,
     test_file_exts   => ['.t'],
     use_tap_harness  => 1,
-    tap_harness_args => {
-                    jobs  => 9,
-                    rules => {
-                        par => [
-                            {seq => '/t/10000_by_class/Net/BitTorrent[\._]'},
-                            {seq => '/t/10000_by_class/Net/BitTorrent/DHT/*'},
-                            '*'
-                        ]
-                    }
+    tap_harness_args => {jobs  => 9,
+                         rules => {par => ['*']}
     },
     meta_merge => {
         keywords  => [qw[Liquid Template Engine Solution]],
@@ -86,4 +78,4 @@ sub find_cb {
     return push @tests, $File::Find::name;
 }
 
-# $ID: Build.PL b3b81ea 2009-12-24 00:20:40Z sanko@cpan.org $
+# $ID: Build.PL d76923d 2010-09-18 20:19:47Z sanko@cpan.org $

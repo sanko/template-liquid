@@ -161,6 +161,6 @@ package Solution::Context;
 
 =pod
 
-=for git $ID: Context.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+=for git $ID: Context.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
 
 =cut

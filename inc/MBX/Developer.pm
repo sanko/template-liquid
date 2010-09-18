@@ -305,6 +305,6 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for git $Id: Developer.pm d65f697 2010-07-08 05:17:18Z sanko@cpan.org $
+=for git $Id: Developer.pm ddd1e9e 2010-09-18 20:21:51Z sanko@cpan.org $
 
 =cut

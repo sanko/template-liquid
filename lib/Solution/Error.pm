@@ -38,4 +38,4 @@ package Solution::Error;
 }
 1;
 
-# $ID: Error.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+# $ID: Error.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
