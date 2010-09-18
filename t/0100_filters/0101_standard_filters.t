@@ -190,4 +190,4 @@ is(X(q[{{ 10 | divided_by:2 }}]), '5', q[{{ 10 | divided_by:2 }} => 5]);
 # I'm finished
 done_testing();
 
-# $ID: 0101_standard_filters.t d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
+# $Id$

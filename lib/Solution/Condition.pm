@@ -206,6 +206,6 @@ if key exists
 
 
 
-=for git $ID: Condition.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
+=for git $Id$
 
 =cut

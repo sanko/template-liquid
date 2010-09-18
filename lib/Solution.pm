@@ -186,7 +186,7 @@ covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
-=for git $ID: Solution.pm d76923d 2010-09-18 20:19:47Z sanko@cpan.org $
+=for git $Id$
 
 =cut
 
