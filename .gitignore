@@ -50,3 +50,10 @@ examples/lib/*
 
 # Avoid old versions of this module
 *.lib/
+
+# NYTProf
+nytprof/
+nytprof.out
+
+# Delete
+SciTE.session
