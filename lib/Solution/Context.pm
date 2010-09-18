@@ -3,7 +3,7 @@ package Solution::Context;
     use strict;
     use warnings;
     use lib '../';
-    our $VERSION = 0.001;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use Solution::Utility;
     use Solution::Error;
     sub scopes    { return $_[0]->{'scopes'} }
@@ -26,7 +26,7 @@ package Solution::Context;
         my ($self, $context) = @_;
         return raise Solution::ContextError 'Cannot push new scope!'
             if scalar @{$self->{'scopes'}} == 100;
-        return push @{$self->{'scopes'}}, (defined $context? $context : {});
+        return push @{$self->{'scopes'}}, (defined $context ? $context : {});
     }
 
     sub pop {
@@ -65,13 +65,12 @@ package Solution::Context;
                    && ('HASH' eq ref $source->{$_}
                        || !ref $source->{$_})
                 )
-            {  $return->{$_} =_merge($source->{$_}, $target->{$_});
+            {   $return->{$_} = _merge($source->{$_}, $target->{$_});
             }
             else { $return->{$_} = $source->{$_}; }
         }
         return $return;
     }
-
     my $merge_precedent;
 
     sub __merge {    # unless right is more interesting, this is a left-
@@ -93,11 +92,12 @@ package Solution::Context;
                      HASH   => sub { _merge($_[0], $_[1], $_[2]) },
             }
         };
-        for my $key (keys%{$_[0]}) {
+        for my $key (keys %{$_[0]}) {
             my ($left_ref, $right_ref)
                 = map { ref($_->{$key}) =~ m[^(HASH|ARRAY)$] ? $1 : 'SCALAR' }
                 ($_[0], $_[1]);
-                            #warn sprintf '%-12s [%6s|%-6s]', $key, $left_ref, $right_ref;
+
+            #warn sprintf '%-12s [%6s|%-6s]', $key, $left_ref, $right_ref;
             $return->{$key} = $merge_precedent->{$left_ref}{$right_ref}
                 ->($_[0]->{$key}, $_[1]->{$key});
         }
@@ -105,7 +105,7 @@ package Solution::Context;
     }
 
     sub resolve {
-        my ($self, $path, $val) = @_;     #warn '### Resolving ' . $path;
+        my ($self, $path, $val) = @_;    #warn '### Resolving ' . $path;
         return if !defined $path;
         return if $path eq '';
         return if $path eq 'null';
@@ -149,7 +149,7 @@ package Solution::Context;
                     ? $$cursor->{$_}
                     : $type eq 'ARRAY' ? $$cursor->[$_]
                 : $$cursor->can($_) ? $$cursor->$_()
-                : do {warn 'Cannot call '. $_; ()}
+                : do { warn 'Cannot call ' . $_; () }
                 : defined $$cursor
                 ? $$cursor    # die $path . ' is not a hash/array reference'
                 : '';
@@ -158,3 +158,9 @@ package Solution::Context;
     }
 }
 1;
+
+=pod
+
+=for git $ID: Context.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+
+=cut

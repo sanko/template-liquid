@@ -3,6 +3,7 @@ package Solution::Variable;
     use strict;
     use warnings;
     use lib '../../lib';
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use Solution::Error;
     our @ISA = qw[Solution::Document];
 
@@ -30,9 +31,10 @@ package Solution::Variable;
         my $val = $self->resolve($self->{'variable'});
     FILTER: for my $filter (@{$self->{'filters'}}) {
             my ($name, $args) = @$filter;
+
             #use Data::Dump;
             #ddx $val, $filter; #, $self->template->context->scope;
-            map { $_ = $self->resolve($_)||$_ } @$args;
+            map { $_ = $self->resolve($_) || $_ } @$args;
         PACKAGE: for my $package (@{$self->template->filters}) {
                 if (my $call = $package->can($name)) {
                     $val = $call->($val, @$args);
@@ -47,3 +49,45 @@ package Solution::Variable;
     }
 }
 1;
+
+=pod
+
+=head1 NAME
+
+Solution::Variable - Generic container
+
+=head1 Description
+
+This class can hold just about anything. ...and does. Internally, it's the
+basic container for everything. ...for all definitions of 'everything.'
+
+=head1 See Also
+
+Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
+
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
+
+=head1 Author
+
+Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
+
+The original Liquid template system was developed by jadedPixel
+(http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
+
+=head1 License and Legal
+
+Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
+this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
+clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
+
+When separated from the distribution, all original POD documentation is
+covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
+http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
+clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+
+=for git $ID: Variable.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+
+=cut

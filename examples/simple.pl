@@ -1,27 +1,23 @@
 use lib '../lib';
 use lib 'lib';
-
 use Solution;
 
 #
 use strict;
 use warnings;
 $|++;
+use Data::Dumper;
 
-use Data::Dump;
 #die pp (Liquid->tags);
-
 Solution->register_tag('dump', 'Solution::Tag::Custom::Dump');
-
-
 my $template = Solution::Template->parse(<<'END');
 {%for i in array%}
     Test. {{i}}
 {%endfor%}
 END
 warn $template->render({condition => 1, array => [qw[one two three four]]});
-#ddx$template->context->scope;
 
+#ddx$template->context->scope;
 __END__
 warn Solution::Template->parse(<<'INPUT')->render({hash => {key => 'value'}, list => [qw[key value]]});
 

@@ -129,3 +129,5 @@ EXPECTED
 
 # I'm finished
 done_testing();
+
+# $ID: 02002_case.t fb937b1 2009-12-27 22:25:26Z sanko@cpan.org $

@@ -2,7 +2,7 @@ package Solution::Condition;
 {
     use strict;
     use warnings;
-    our $VERSION = 0.001;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../lib';
     use Solution::Error;
     our @ISA = qw[Solution::Block];
@@ -34,12 +34,12 @@ package Solution::Condition;
                     }, $class;
             }
             elsif ($condition =~ m[^(?:==|!=|<|>|contains|&&|\|\|)$]) {
-                $condition = 'eq' if $condition eq '==';
-                $condition = 'ne' if $condition eq '!=';
-                $condition = 'gt' if $condition eq '>';
-                $condition = 'lt' if $condition eq '<';
+                $condition = 'eq'   if $condition eq '==';
+                $condition = 'ne'   if $condition eq '!=';
+                $condition = 'gt'   if $condition eq '>';
+                $condition = 'lt'   if $condition eq '<';
                 $condition = '_and' if $condition eq '&&';
-                $condition = '_or' if $condition eq '||';
+                $condition = '_or'  if $condition eq '||';
                 return
                     bless {lvalue    => $lval,
                            condition => $condition,
@@ -115,52 +115,44 @@ package Solution::Condition;
 
     sub contains {
         my ($self) = @_;
-        my $l = $self->resolve($self->{'lvalue'});
-        my $r
-            = quotemeta $self->resolve($self->{'rvalue'});
+        my $l      = $self->resolve($self->{'lvalue'});
+        my $r      = quotemeta $self->resolve($self->{'rvalue'});
         return if defined $r && !defined $l;
         return defined($l->{$r}) ? 1 : !1 if ref $l eq 'HASH';
         return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
         return $l =~ qr[${r}] ? 1 : !1;
     }
 
-
-     sub _and {
-            my ($self) = @_;
-            my $l = $self->resolve($self->{'lvalue'})
-            || $self->{'lvalue'};
-        my $r = $self->resolve($self->{'rvalue'})
-            || $self->{'rvalue'};
-            return (($l && $r) ? 1 : 0);
-        }
-
-        sub _or {
-            my ($self) = @_;
+    sub _and {
+        my ($self) = @_;
         my $l = $self->resolve($self->{'lvalue'})
             || $self->{'lvalue'};
         my $r = $self->resolve($self->{'rvalue'})
             || $self->{'rvalue'};
-            return (($l || $r) ? 1 : 0);
-        }
+        return (($l && $r) ? 1 : 0);
+    }
 
-
-
+    sub _or {
+        my ($self) = @_;
+        my $l = $self->resolve($self->{'lvalue'})
+            || $self->{'lvalue'};
+        my $r = $self->resolve($self->{'rvalue'})
+            || $self->{'rvalue'};
+        return (($l || $r) ? 1 : 0);
+    }
     {    # Compound inequalities support
-
-
-
 
         sub and {
             my ($self) = @_;
-            my $l =$self->{'lvalue'};
-        my $r =$self->{'rvalue'};
+            my $l      = $self->{'lvalue'};
+            my $r      = $self->{'rvalue'};
             return (($l && $r) ? 1 : 0);
         }
 
         sub or {
             my ($self) = @_;
-        my $l = $self->{'lvalue'};
-        my $r = $self->{'rvalue'};
+            my $l      = $self->{'lvalue'};
+            my $r      = $self->{'rvalue'};
             return (($l || $r) ? 1 : 0);
         }
     }
@@ -168,8 +160,7 @@ package Solution::Condition;
     sub is_true {
         my ($self) = @_;
         if (!defined $self->{'condition'} && !defined $self->{'rvalue'}) {
-            return !!(
-                $self->resolve($self->{'lvalue'}) ? 1 : 0);
+            return !!($self->resolve($self->{'lvalue'}) ? 1 : 0);
         }
         my $condition = $self->can($self->{'condition'});
         raise Solution::ContextError {
@@ -215,6 +206,6 @@ if key exists
 
 
 
-
+=for git $ID: Condition.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
 
 =cut

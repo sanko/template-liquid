@@ -157,3 +157,5 @@ EXPECTED
 # make sure the local variable overrides the higher scope
 # I'm finished
 done_testing();
+
+# $ID: 02001_for.t 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $

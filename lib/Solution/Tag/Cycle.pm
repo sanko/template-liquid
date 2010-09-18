@@ -2,7 +2,7 @@ package Solution::Tag::Cycle;
 {
     use strict;
     use warnings;
-    our $VERSION = 0.001;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
     use Solution::Error;
     use Solution::Utility;
@@ -126,4 +126,33 @@ specify the name of the group. This can even be a variable.
     one
     two
 
+=head1 See Also
 
+Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
+
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
+
+=head1 Author
+
+Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
+
+The original Liquid template system was developed by jadedPixel
+(http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
+
+=head1 License and Legal
+
+Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
+this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
+clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
+
+When separated from the distribution, all original POD documentation is
+covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
+http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
+clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+
+=for git $ID: Cycle.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
+
+=cut

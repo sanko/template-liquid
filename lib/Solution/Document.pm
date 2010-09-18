@@ -3,12 +3,12 @@ package Solution::Document;
     use strict;
     use warnings;
     use lib '../';
-    our $VERSION = 0.001;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use Solution::Variable;
     use Solution::Utility;
 
     #
-    sub resolve  { $_[0]->template->context->resolve($_[1], $_[2]); }
+    sub resolve { $_[0]->template->context->resolve($_[1], $_[2]); }
     sub template { $_[0]->{'template'} }
     sub parent   { $_[0]->{'parent'} }
 
@@ -148,3 +148,5 @@ package Solution::Document;
     }
 }
 1;
+
+# $ID: Document.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $

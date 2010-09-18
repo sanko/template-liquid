@@ -1,9 +1,8 @@
+package Solution::Tag::Assign;
 {
-
-    package Solution::Tag::Assign;
     use strict;
     use warnings;
-    our $VERSION = 0.001;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
     use Solution::Error;
     use Solution::Utility;
@@ -53,7 +52,7 @@
     sub render {
         my ($self) = @_;
         my $var    = $self->{'variable'};
-        my $val = $self->resolve($self->{'value'});
+        my $val    = $self->resolve($self->{'value'});
         {    # XXX - Duplicated in Solution::Variable::render
         FILTER: for my $filter (@{$self->{'filters'}}) {
                 my ($name, $args) = @$filter;
@@ -126,5 +125,7 @@ When separated from the distribution, all original POD documentation is
 covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+
+=for git $ID: Assign.pm 4285b34 2010-09-18 04:05:27Z sanko@cpan.org $
 
 =cut

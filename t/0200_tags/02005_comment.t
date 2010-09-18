@@ -67,3 +67,5 @@ EXPECTED
 
 # I'm finished
 done_testing();
+
+# $ID: 02005_comment.t bc5e161 2009-12-25 21:35:41Z sanko@cpan.org $

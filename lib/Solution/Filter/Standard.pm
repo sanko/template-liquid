@@ -2,6 +2,7 @@ package Solution::Filter::Standard;
 {
     use strict;
     use warnings;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     Solution->register_filter() if $Solution::VERSION;
 
     sub date {
@@ -344,5 +345,7 @@ When separated from the distribution, all original POD documentation is
 covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+
+=for git $ID: Standard.pm b45aa5e 2009-12-28 18:33:19Z sanko@cpan.org $
 
 =cut

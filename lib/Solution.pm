@@ -2,7 +2,7 @@ package Solution;
 {
     use strict;
     use warnings;
-    our $VERSION = '0.001';
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
 
     #
     use Solution::Document;
@@ -45,7 +45,7 @@ Solution - Simple, Stateless Template System
 
 =head1 Synopsis
 
-    use Liquid;
+    use Solution;
 
     my $template = Solution::Template->new( );
     $template->parse(
@@ -186,7 +186,10 @@ covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
+=for git $ID$
+
 =cut
+
 {
     { package Solution::Drop; }
     { package Solution::Extensions; }

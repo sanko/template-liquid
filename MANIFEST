@@ -9,7 +9,6 @@ lib/Solution/Document.pm
 lib/Solution/Error.pm
 lib/Solution/Filter/Standard.pm
 lib/Solution/Tag.pm
-lib/Solution/Tag.pod
 lib/Solution/Tag/Assign.pm
 lib/Solution/Tag/Capture.pm
 lib/Solution/Tag/Case.pm
@@ -22,7 +21,7 @@ lib/Solution/Template.pm
 lib/Solution/Utility.pm
 lib/Solution/Variable.pm
 MANIFEST			This list of files
-META.yml
+META.json
 README
 t/0100_filters/0101_standard_filters.t
 t/0200_tags/02001_for.t

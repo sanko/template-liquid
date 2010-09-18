@@ -213,3 +213,5 @@ EXPECTED
 
 # I'm finished
 done_testing();
+
+# $ID: 02006_if.t b93255c 2009-12-26 01:01:15Z sanko@cpan.org $

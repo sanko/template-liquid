@@ -1,27 +1,17 @@
-
-=pod
-
-=for license Artistic License 2.0 | Copyright (C) 2009 by Sanko Robinson
-
-=for author Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
-
-=for abstract Module::Build based install
-
-=cut
-
 use strict;
 use warnings;
 use Module::Build;
 use lib 'inc';
 use File::Find qw[find];
-my $automated_testing = $ENV{AUTOMATED_TESTING} || $ENV{PERL_MM_USE_DEFAULT};
-my $is_developer = ($ENV{RELEASE_TESTING} || -d '.git');
+our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+$|++;
+my $automated_testing = $ENV{'AUTOMATED_TESTING'}
+    || $ENV{'PERL_MM_USE_DEFAULT'};
+my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{'RELEASE_TESTING'} ? 1 : 0);
 my @tests;
 find \&find_cb, qw[t/0100_filters t/0200_tags],
     ($is_developer ? 't/9000_author' : ());
-@tests = sort @tests;
-my $class = $is_developer ? 'MBX::Solution::Developer' : 'MBX::Solution';
-$class = 'Module::Build';    # XXX
+my $class = $is_developer ? 'inc::MBX::Developer' : 'Module::Build';
 
 if (!eval "require $class") {
     printf 'Failed to load %s: %s This ain\'t good, so... bye!', $class, $@;
@@ -31,36 +21,53 @@ my $mb = $class->new(
     module_name       => 'Solution',
     license           => 'artistic_2',
     dist_author       => 'Sanko Robinson <sanko@cpan.org>',
-    dist_version_from => 'lib/Solution.pm',
+    dist_version      => $VERSION,
     dist_abstract     => 'Simple, Stateless Template System',
-    requires          => {
-                 'File::Find'    => 0,
-                 'Module::Build' => '0.36',
-                 perl            => 5.006001,
-                 'Test::More'    => '0.94'
-    },
-    build_requires => {'File::Find'    => 0,
+    requires          => {perl => 5.006001},
+    build_requires    => {
+                       'File::Find'    => 0,
                        'Module::Build' => '0.36',
                        perl            => 5.006001,
-                       'Test::More'    => '0.94'
+                       'Test::More'    => '0.94',
+                       ($is_developer
+                        ? ('CPAN::Meta::Converter' => 0,
+                           'CPAN::Meta::Validator' => 0,
+                           JSON                    => 0,
+                           'Perl::Tidy'            => 0
+                            )
+                        : ()
+                       )
     },
-    add_to_cleanup => [qw[Liquid-*]],
-    no_index       => {directory => [qw[examples inc t]]},
-    test_files     => \@tests,
-    meta_merge     => {
-        generated_by => 'Conversion, software version 7.0',
-        keywords     => [qw[Liquid Template Engine]],
-        resources    => {
+    add_to_cleanup   => [qw[Liquid-*]],
+    no_index         => {directory => [qw[examples inc t]]},
+    test_files       => \@tests,
+    test_file_exts   => ['.t'],
+    use_tap_harness  => 1,
+    tap_harness_args => {
+                    jobs  => 9,
+                    rules => {
+                        par => [
+                            {seq => '/t/10000_by_class/Net/BitTorrent[\._]'},
+                            {seq => '/t/10000_by_class/Net/BitTorrent/DHT/*'},
+                            '*'
+                        ]
+                    }
+    },
+    meta_merge => {
+        keywords  => [qw[Liquid Template Engine Solution]],
+        resources => {
+            bugtracker => {web => 'http://github.com/sanko/solution/issues',
+                           mailto => 'sanko@cpan.org'
+            },
+            repository => {url  => 'git://github.com/sanko/solution.git',
+                           web  => 'http://github.com/sanko/solution/tree',
+                           type => 'git'
+            },
+            ChangeLog => 'http://github.com/sanko/solution/commits/',
 
-            #bugtracker => 'http://github.com/sanko/fltk-perl/issues',
-            #ChangeLog => 'http://github.com/sanko/fltk-perl/commits/master',
-            #homepage  => 'http://sanko.github.com/fltk-perl/',
-            #license => 'http://www.perlfoundation.org/artistic_license_2_0',
-            #repository => 'http://github.com/sanko/fltk-perl'
+            #homepage => 'http://sankorobinson.com/solution/',
+            license => ['http://www.perlfoundation.org/artistic_license_2_0']
         }
-    },
-    get_options => {'interactive!' => {},
-                    'messy!'       => {}
     }
 );
 $mb->notes(automated_testing => $automated_testing       ? 1 : 0);
@@ -78,3 +85,5 @@ sub find_cb {
     return unless $_ =~ m[.+\.t$];
     return push @tests, $File::Find::name;
 }
+
+# $ID: Build.PL b3b81ea 2009-12-24 00:20:40Z sanko@cpan.org $
