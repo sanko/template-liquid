@@ -15,6 +15,7 @@ build.com
 *.tmp
 *.#
 *.rej
+*.tidy
 
 # Avoid Devel::Cover and Devel::CoverX::Covered files.
 cover_db
@@ -57,3 +58,13 @@ nytprof.out
 
 # Delete
 SciTE.session
+
+# Random stuff
+META.json
+examples/_config.yml
+examples/_site/
+examples/bruce/
+examples/example_site/
+examples/site_generator.pl
+~compile.pl
+~dist.pl
