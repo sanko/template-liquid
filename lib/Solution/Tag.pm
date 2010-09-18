@@ -42,7 +42,7 @@ set:
 =head2 C<comment>
 
 Comment tags are simple blocks that do nothing during the
-L<render|Liquid::Template/"render"> stage. Use these to temporarily disable
+L<render|Solution::Template/"render"> stage. Use these to temporarily disable
 blocks of code or do insert documentation into your source code.
 
     This is a {% comment %} secret {% endcomment %}line of text.
@@ -192,7 +192,7 @@ Block-like tags are very similar to
 L<simple|Solution::Tag/"Create Your Own Tags">. Inherit from
 L<Solution::Tag|Solution::Tag> and register your block
 L<globally|Liquid/"register_tag"> or locally with
-L<Liquid::Template|Liquid::Template/"register_tag">.
+L<Solution::Template|Solution::Template/"register_tag">.
 
 The only difference is you define an C<end_tag> in your object.
 
@@ -243,7 +243,7 @@ that this is a block that will slurp until the end tag is found. In our
 example, we use C<'end' . $args->{'tag_name'}> because you may eventually
 subclass this tag and let it inherit this constructor. Now that we're sure the
 parser knows what to look for, we go ahead and continue
-L<parsing|Liquid::Template/"parse"> the list of tokens. The parser will shove
+L<parsing|Solution::Template/"parse"> the list of tokens. The parser will shove
 child nodes (L<tags|Solution::Tag>, L<variables|Solution::Variable>, and
 simple strings) onto your stack until the C<end_tag> is found.
 
