@@ -46,18 +46,17 @@ Solution - A Simple, Stateless Template System
 =head1 Synopsis
 
     use Solution;
-
-    my $template = Solution::Template->new( );
-    $template->parse( # See Solution::Tag for more
-        '{%for x in (1..3) reversed %}{{x}}, {%endfor%}{{some.text}}'
+    my $template = Solution::Template->new();
+    $template->parse(    # See Solution::Tag for more examples
+          '{% for x in (1..3) reversed %}{{ x }}, {% endfor %}{{ some.text }}'
     );
-    print $template->render( { some => { text => 'Contact!' } } );
+    print $template->render({some => {text => 'Contact!'}}); # 3, 2, 1 Contact!
 
 =head1 Description
 
-L<Solution|/"Ugh! Why a new Top Level Namespace?"> is a template engine based
-on Liquid. The Liquid template engine was crafted for very specific
-requirements:
+L<Solution|/"'Solution to what?' or 'Ugh! Why a new Top Level Namespace?'"> is
+a template engine based on Liquid. The Liquid template engine was crafted for
+very specific requirements:
 
 =over 4
 
@@ -90,7 +89,10 @@ section below).
     my $template = Solution::Template->parse('Hi, {{name}}!');
 
     # Renders the output => "Hi, Sanko!"
-    $template->render({ name => 'Sanko' });
+    $template->render({name => 'Sanko'});
+
+    # Do it all in one linked statement...
+    Solution::Template->parse('Hi, {{name}}!')->render({name => 'Sanko'});
 
 The C<parse> step creates a fully compiled template which can be re-used as
 often as you like. You can store it in memory or in a cache for faster
@@ -100,7 +102,8 @@ All parameters you want L<Solution> to work with have to be passed as
 parameters to the render method. L<Solution> is a closed ecosystem; it does
 not know about your local, instance, and global variables.
 
-For more, see L<Solution::Tag>.
+For more examples and a rundown of all the current standard tags, see
+L<Solution::Tag>.
 
 =head1 Why should I use Solution?
 
@@ -138,10 +141,10 @@ yourself. Everyone knows computers cannot be trusted.
 
 =back
 
-=head1 Ugh! Why a new Top Level Namespace?
+=head1 'Solution to what?' or 'Ugh! Why a new Top Level Namespace?'
 
-I really don't have a good reason but I promise to send myself to bed without
-dinner as punishment.
+I really don't have a good reason for claiming a new top level namespace and I
+promise to put myself in timeout as punishment.
 
 As I understand it, the original project's name, Liquid, is a reference to the
 classical states of matter (the engine itself being stateless). I settled on
