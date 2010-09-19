@@ -38,14 +38,15 @@ package Solution::Tag::Include;
     sub render {
         my ($self) = @_;
         my $file = $self->resolve($self->{'file'});
-        return 'Error: Missing template argument' if !defined $file;
+        raise Solution::ArgumentError
+            'Error: Missing or undefined argument passed to include' && return
+            if !defined $file;
         if (   $file !~ m[^[\w\\/\.-_]+$]i
             || $file =~ m[\.[\\/]]
             || $file =~ m[[//\\]\.])
-        {   return
-                sprintf
+        {   raise Solution::ArgumentError sprintf
                 q[Error: Include file '%s' contains invalid characters or sequiences],
-                $file;
+                $file && return;
         }
         $file = File::Spec->catdir(
 
@@ -53,16 +54,18 @@ package Solution::Tag::Include;
             '_includes',
             $file
         );
-        return sprintf 'Error: Included file %s not found', $file
+        raise Solution::FileSystemError sprintf
+            'Error: Included file %s not found', $file
+            && return
             if !-f $file;
         open(my ($FH), '<', $file)
-            || return sprintf 'Error: Cannot include file %s: %s',
-            $file, $!;
+            || raise Solution::FileSystemError sprintf
+            'Error: Cannot include file %s: %s',
+            $file, $! && return;
         sysread($FH, my ($DATA), -s $FH) == -s $FH
-            || return
-            sprintf
+            || raise Solution::FileSystemError sprintf
             'Error: Cannot include file %s (Failed to read %d bytes): %s',
-            $file, -s $FH, $!;
+            $file, -s $FH, $! && return;
         my $partial = Solution::Template->parse($DATA);
         $partial->{'context'} = $self->template->context;
         my $return = $partial->context->stack(sub { $partial->render(); });
@@ -117,7 +120,7 @@ The original Liquid template system was developed by jadedPixel
 
 =head1 License and Legal
 
-Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009,2010 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
