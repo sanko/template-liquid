@@ -151,6 +151,8 @@ is( Solution::Template->parse(
 TEMPLATE
  102 103
 EXPECTED
+
+#
 is( Solution::Template->parse(
         <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable for x in array');
 {% for x in array %} {{ x }}{% endfor %}
@@ -287,7 +289,49 @@ TEMPLATE
  102 103
 EXPECTED
 
+# Test hashes
+like(Solution::Template->parse(
+           '{ {% for x in var %} {{ x.key }} => {{ x.value }},{% endfor %} }')
+         ->render({var => {A => 1, B => 2, C => 3}}),
+     qr[^{ (?: [ABC] => [123],){3} }$],
+     'hash'
+);
+like(
+    Solution::Template->parse(
+        '{ {% for x in var reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }'
+        )->render({var => {A => 1, B => 2, C => 3}}),
+    qr[^{ (?: [ABC] => [123],){3} }$],
+    'hash reversed'
+);
+like(
+    Solution::Template->parse(
+        '{ {% for x in var offset:1 %} {{ x.key }} => {{ x.value }},{% endfor %} }'
+        )->render({var => {A => 1, B => 2, C => 3}}),
+    qr[^{ (?: [ABC] => [123],){2} }$],
+    'hash offset:1'
+);
+like(
+    Solution::Template->parse(
+        '{ {% for x in var limit:1 %} {{ x.key }} => {{ x.value }},{% endfor %} }'
+        )->render({var => {A => 1, B => 2, C => 3}}),
+    qr[^{ (?: [ABC] => [123],) }$],
+    'hash limit:1'
+);
+
 # check all the forloop vars
+is( Solution::Template->parse(
+                           '{% for x in var %}{{ forloop.type }}{% endfor %}')
+        ->render({var => [1]}),
+    'ARRAY',
+    'forloop.type eq "ARRAY"'
+);
+is( Solution::Template->parse(
+                           '{% for x in var %}{{ forloop.type }}{% endfor %}')
+        ->render({var => {A => 1}}),
+    'HASH',
+    'forloop.type eq "HASH"'
+);
+
 # make sure the local variable overrides the higher scope
 # I'm finished
 done_testing();

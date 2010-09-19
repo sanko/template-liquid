@@ -1,97 +1,100 @@
-    package Solution::Tag::For;
-    {
-        use strict;
-        use warnings;
-        our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
-        use lib '../../../lib';
-        use Solution::Error;
-        use Solution::Utility;
-        our @ISA = qw[Solution::Tag];
-        my $Help_String = 'TODO';
-        Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
+package Solution::Tag::For;
+{
+    use strict;
+    use warnings;
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    use lib '../../../lib';
+    use Solution::Error;
+    use Solution::Utility;
+    our @ISA = qw[Solution::Tag];
+    my $Help_String = 'TODO';
+    Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
 
-        sub new {
-            my ($class, $args) = @_;
-            raise Solution::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
-                }
-                if !defined $args->{'template'};
-            raise Solution::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
-                }
-                if !defined $args->{'parent'};
-            raise Solution::SyntaxError {
+    sub new {
+        my ($class, $args) = @_;
+        raise Solution::ContextError {message => 'Missing template argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'template'};
+        raise Solution::ContextError {message => 'Missing parent argument',
+                                      fatal   => 1
+            }
+            if !defined $args->{'parent'};
+        raise Solution::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
-                }
-                if !defined $args->{'attrs'};
-            if ($args->{'attrs'}
-                !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$])
-            {   raise Solution::SyntaxError {
+            }
+            if !defined $args->{'attrs'};
+        if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$])
+        {   raise Solution::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
-                };
-            }
-            my ($var, $range, $attr) = ($1, $2, $3 || '');
-            my $reversed = $attr =~ s[^reversed\s*?$][] ? 1 : 0;
-            my %attr = map {
-                my ($k, $v)
-                    = split $Solution::Utility::FilterArgumentSeparator,
-                    $_, 2;
-                { $k => $v };
-            } split qr[\s+], $attr || '';
-            my $self = bless {attributes      => \%attr,
-                              collection_name => $range,
-                              name            => $var . '-' . $range,
-                              nodelist        => [],
-                              reversed        => $reversed,
-                              tag_name        => $args->{'tag_name'},
-                              variable_name   => $var,
-                              end_tag         => 'end' . $args->{'tag_name'},
-                              template        => $args->{'template'},
-                              parent          => $args->{'parent'},
-                              markup          => $args->{'markup'}
-            }, $class;
-            return $self;
+            };
         }
+        my ($var, $range, $attr) = ($1, $2, $3 || '');
+        my $reversed = $attr =~ s[^reversed\s*?$][] ? 1 : 0;
+        my %attr = map {
+            my ($k, $v) = split $Solution::Utility::FilterArgumentSeparator,
+                $_, 2;
+            { $k => $v };
+        } split qr[\s+], $attr || '';
+        my $self = bless {attributes      => \%attr,
+                          collection_name => $range,
+                          name            => $var . '-' . $range,
+                          nodelist        => [],
+                          reversed        => $reversed,
+                          tag_name        => $args->{'tag_name'},
+                          variable_name   => $var,
+                          end_tag         => 'end' . $args->{'tag_name'},
+                          template        => $args->{'template'},
+                          parent          => $args->{'parent'},
+                          markup          => $args->{'markup'}
+        }, $class;
+        return $self;
+    }
 
-        sub render {
-            my ($self)   = @_;
-            my $range    = $self->{'collection_name'};
-            my $attr     = $self->{'attributes'};
-            my $reversed = $self->{'reversed'};
-            my $offset
-                = defined $attr->{'offset'}
-                ? $self->resolve($attr->{'offset'})
-                : ();
-            my $limit
-                = defined $attr->{'limit'}
-                ? $self->resolve($attr->{'limit'})
-                : ();
-            my $list = $self->resolve($range) || [];
-            {    # Break it down to only the items we plan on using
-                my $min = (defined $offset ? $offset : 0);
-                my $max = (defined $limit
-                           ? $limit + (defined $offset ? $offset : 0) - 1
-                           : $#$list
-                );
-                $max    = $#$list if $max > $#$list;
-                @$list  = @{$list}[$min .. $max];
-                @$list  = reverse @$list if $reversed;
-                $limit  = defined $limit ? $limit : scalar @$list;
-                $offset = defined $offset ? $offset : 0;
-            }
-            return $self->template->context->stack(
-                sub {
-                    my $return = '';
-                    my $nodes  = $self->{'nodelist'};
-                    my $steps  = $#$list;
-                    for my $index (0 .. $steps) {
-                        $self->template->context->scope
-                            ->{$self->{'variable_name'}} = $list->[$index];
-                        $self->template->context->scope->{'forloop'} = {
+    sub render {
+        my ($self)   = @_;
+        my $range    = $self->{'collection_name'};
+        my $attr     = $self->{'attributes'};
+        my $reversed = $self->{'reversed'};
+        my $offset
+            = defined $attr->{'offset'}
+            ? $self->resolve($attr->{'offset'})
+            : ();
+        my $limit
+            = defined $attr->{'limit'}
+            ? $self->resolve($attr->{'limit'})
+            : ();
+        my $list = $self->resolve($range) || [];
+        my $type = 'ARRAY';
+
+        #
+        if (ref $list eq 'HASH') {
+            $list = [map { {key => $_, value => $list->{$_}} } keys %$list];
+            $type = 'HASH';
+        }
+        {    # Break it down to only the items we plan on using
+            my $min = (defined $offset ? $offset : 0);
+            my $max = (defined $limit
+                       ? $limit + (defined $offset ? $offset : 0) - 1
+                       : $#$list
+            );
+            $max    = $#$list if $max > $#$list;
+            @$list  = @{$list}[$min .. $max];
+            @$list  = reverse @$list if $reversed;
+            $limit  = defined $limit ? $limit : scalar @$list;
+            $offset = defined $offset ? $offset : 0;
+        }
+        return $self->template->context->stack(
+            sub {
+                my $return = '';
+                my $nodes  = $self->{'nodelist'};
+                my $steps  = $#$list;
+                for my $index (0 .. $steps) {
+                    $self->template->context->scope
+                        ->{$self->{'variable_name'}} = $list->[$index];
+                    $self->template->context->scope->{'forloop'} = {
                                         length => $steps + 1,
                                         limit  => $limit,
                                         offset => $offset,
@@ -102,19 +105,19 @@
                                         index0  => $index,
                                         rindex  => $steps - $index + 1,
                                         rindex0 => $steps - $index,
-                        };
-                        for my $node (@$nodes) {
-                            my $rendering
-                                = ref $node ? $node->render() : $node;
-                            $return .= defined $rendering ? $rendering : '';
-                        }
+                                        type    => $type
+                    };
+                    for my $node (@$nodes) {
+                        my $rendering = ref $node ? $node->render() : $node;
+                        $return .= defined $rendering ? $rendering : '';
                     }
-                    return $return;
                 }
-            );
-        }
+                return $return;
+            }
+        );
     }
-    1;
+}
+1;
 
 =pod
 
@@ -167,6 +170,10 @@ is this the first iteration?
 
 is this the last iternation?
 
+=item * C<forloop.type>
+
+are we looping through an C<ARRAY> or a C<HASH>?
+
 =back
 
 =head2 Attributes
@@ -211,6 +218,22 @@ numbers:
         {{ i }}
     {% endfor %}
     # results in 1,2,3,4
+
+=head2 Hashes
+
+To deal with the possibility of looping through hash references, Solution
+extends the Liquid Engine's functionality. When looping through a hash, each
+item is made a single key/value pair. The item's actual key and value are in
+the C<item.key> and C<item.value>. ...here's an example:
+
+    # where var = {A => 1, B => 2, C => 3}
+    { {% for x in var %}
+        {{ x.key }} => {{ x.value }},
+    {% endfor %} }
+    # results in {  A => 1, C => 3, B => 2, }
+
+The C<forloop.type> variable will contain C<HASH> if the looped variable is a
+hashref. Also note that the keys/value pairs are left unsorted.
 
 =head1 TODO
 
