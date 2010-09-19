@@ -3,7 +3,7 @@ package Solution::Tag;
     use strict;
     use warnings;
     our @ISA = qw[Solution::Document];
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -2; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     sub tag             { return $_[0]->{'tag_name'}; }
     sub end_tag         { return $_[0]->{'end_tag'} || undef; }
     sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
@@ -195,7 +195,7 @@ find an example C<{^% dump var %}> tag named C<SolutionX::Tag::Dump>.
 Block-like tags are very similar to
 L<simple|Solution::Tag/"Create Your Own Tags">. Inherit from
 L<Solution::Tag|Solution::Tag> and register your block
-L<globally|Liquid/"register_tag"> or locally with
+L<globally|Solution/"register_tag"> or locally with
 L<Solution::Template|Solution::Template/"register_tag">.
 
 The only difference is you define an C<end_tag> in your object.

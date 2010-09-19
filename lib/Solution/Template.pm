@@ -68,7 +68,7 @@ This is used internally.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
+L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 
