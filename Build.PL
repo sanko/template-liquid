@@ -3,7 +3,7 @@ use warnings;
 use Module::Build;
 use lib 'inc';
 use File::Find qw[find];
-our $MAJOR = 0.0; our $MINOR = 0; our $DEV = 1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
 $|++;
 my $automated_testing = $ENV{'AUTOMATED_TESTING'}
     || $ENV{'PERL_MM_USE_DEFAULT'};
@@ -22,7 +22,7 @@ my $mb = $class->new(
     license        => 'artistic_2',
     dist_author    => 'Sanko Robinson <sanko@cpan.org>',
     dist_version   => $VERSION,
-    dist_abstract  => 'Simple, Stateless Template System',
+    dist_abstract  => 'A Simple, Stateless Template System',
     requires       => {perl => 5.006001},
     build_requires => {'File::Find'    => 0,
                        'Module::Build' => '0.36',
@@ -45,7 +45,7 @@ my $mb = $class->new(
     tap_harness_args => {jobs  => 9,
                          rules => {par => ['*']}
     },
-    meta_merge => {
+    meta_merge     => {
         keywords  => [qw[Liquid Template Engine Solution]],
         resources => {
             bugtracker => {web => 'http://github.com/sanko/solution/issues',

@@ -41,21 +41,22 @@ package Solution;
 
 =head1 NAME
 
-Solution - Simple, Stateless Template System
+Solution - A Simple, Stateless Template System
 
 =head1 Synopsis
 
     use Solution;
 
     my $template = Solution::Template->new( );
-    $template->parse(
+    $template->parse( # See Solution::Tag for more
         '{%for x in (1..3) reversed %}{{x}}, {%endfor%}{{some.text}}'
     );
     print $template->render( { some => { text => 'Contact!' } } );
 
 =head1 Description
 
-Solution is a template engine which was crafted for very specific
+L<Solution|/"Ugh! Why a new Top Level Namespace?"> is a template engine based
+on Liquid. The Liquid template engine was crafted for very specific
 requirements:
 
 =over 4
@@ -76,7 +77,7 @@ objects.
 
 =back
 
-=head2 Getting Started
+=head1 Getting Started
 
 It's very simple to get started with L<Solution|Solution>. Just as in Liquid,
 templates are built and used in two steps: Parse and Render.
@@ -99,7 +100,9 @@ All parameters you want L<Solution> to work with have to be passed as
 parameters to the render method. L<Solution> is a closed ecosystem; it does
 not know about your local, instance, and global variables.
 
-=head2 Why should I use Solution?
+For more, see L<Solution::Tag>.
+
+=head1 Why should I use Solution?
 
 =over 4
 
@@ -114,13 +117,13 @@ application, but don't want them to run insecure code on your server.
 
 =item * You don't like the markup language of your current template engine.
 
-=item * You wasted three days patching this together when you could have been
+=item * You wasted three days reinventing this wheel when you could have been
 doing something productive like volunteering or catching up on past seasons of
-I<Dr. Who>.
+I<Doctor Who>.
 
 =back
 
-=head2 Why shouldn't I use Solution?
+=head1 Why shouldn't I use Solution?
 
 =over 4
 
@@ -130,27 +133,32 @@ needs better than Liquid or Solution ever could.
 Psst! Hey, if you haven't found it yet, check the
 L<See Also|Solution/"Other Template Engines"> section.
 
-=item * You eat paste.
+=item * You are uncomfortable with text that you didn't copy and paste
+yourself. Everyone knows computers cannot be trusted.
 
 =back
 
-=head2 Ugh! Why a new Top Level Namespace?
+=head1 Ugh! Why a new Top Level Namespace?
 
 I really don't have a good reason but I promise to send myself to bed without
 dinner as punishment.
 
-As I understand it, the original Ruby project's name, Liquid, is a reference
-to the classical states of matter. The engine is stateless. ...okay, so maybe
-there's a little reaching. Anyway, I settled on L<Solution|Solution> because
-it's the Liquid Template Engine but with... stuff floating in it. Yeah,
-pretend you majored in chemistry instead of mathematics. This solution is the
-answer to all your various problems. ...or any of them, actually.
+As I understand it, the original project's name, Liquid, is a reference to the
+classical states of matter (the engine itself being stateless). I settled on
+L<Solution|Solution> because it's Liquid but... with... bits of other stuff
+floating in it. Pretend you majored in chemistry instead of mathematics or
+computer science and you'll know what I mean.
+
+This 'solution' is B<not> the answer to all your problems. ...I'll even go
+ahead and say it's not the best solution for your templating problems. It's
+simply I<a> solution.
 
 =head1 See Also
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution::Tag|Solution::Tag/"Create your own filters">'s docs on custom filter creation
+L<Solution::Tag|Solution::Tag/"Create your own filters">'s docs on custom
+filter creation
 
 =head2 Other Template Engines
 
@@ -163,7 +171,7 @@ template engines.
 
 =back
 
-I<Note: This list is incomplete.>
+I<Note: This list is obviously incomplete.>
 
 =head1 Author
 

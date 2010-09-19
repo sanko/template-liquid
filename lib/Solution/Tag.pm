@@ -75,26 +75,23 @@ For more, see L<Solution::Tag::Unless|Solution::Tag::Unless>.
 
 =head2 C<case>
 
-
-
+TODO
 
 =head2 C<cycle>
 
-
-
+TODO
 
 =head2 C<for>
 
-
-
+TODO
 
 =head2 C<assign>
 
-
-
+TODO
 
 =head2 C<capture>
 
+TODO
 
 =head1 Extending Solution with Custom Tags
 

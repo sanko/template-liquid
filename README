@@ -1,18 +1,18 @@
 NAME
-    Solution - Simple, Stateless Template System
+    Solution - A Simple, Stateless Template System
 
 Synopsis
         use Solution;
 
         my $template = Solution::Template->new( );
-        $template->parse(
+        $template->parse( # See Solution::Tag for more
             '{%for x in (1..3) reversed %}{{x}}, {%endfor%}{{some.text}}'
         );
         print $template->render( { some => { text => 'Contact!' } } );
 
 Description
-    Solution is a template engine which was crafted for very specific
-    requirements:
+    Solution is a template engine based on Liquid. The Liquid template
+    engine was crafted for very specific requirements:
 
     *   It has to have simple markup and beautiful results. Template engines
         which don't produce good looking results are no fun to use.
@@ -28,7 +28,7 @@ Description
 
     *   It needs to be able to style emails as well as HTML.
 
-  Getting Started
+Getting Started
     It's very simple to get started with Solution. Just as in Liquid,
     templates are built and used in two steps: Parse and Render.
 
@@ -49,7 +49,9 @@ Description
     parameters to the render method. Solution is a closed ecosystem; it does
     not know about your local, instance, and global variables.
 
-  Why should I use Solution?
+    For more, see Solution::Tag.
+
+Why should I use Solution?
     *   You want to allow your users to edit the appearance of your
         application, but don't want them to run insecure code on your
         server.
@@ -62,29 +64,32 @@ Description
 
     *   You don't like the markup language of your current template engine.
 
-    *   You wasted three days patching this together when you could have
+    *   You wasted three days reinventing this wheel when you could have
         been doing something productive like volunteering or catching up on
-        past seasons of *Dr. Who*.
+        past seasons of *Doctor Who*.
 
-  Why shouldn't I use Solution?
+Why shouldn't I use Solution?
     *   You've found or written your own template engine which fills your
         needs better than Liquid or Solution ever could.
 
         Psst! Hey, if you haven't found it yet, check the See Also section.
 
-    *   You eat paste.
+    *   You are uncomfortable with text that you didn't copy and paste
+        yourself. Everyone knows computers cannot be trusted.
 
-  Ugh! Why a new Top Level Namespace?
+Ugh! Why a new Top Level Namespace?
     I really don't have a good reason but I promise to send myself to bed
     without dinner as punishment.
 
-    As I understand it, the original Ruby project's name, Liquid, is a
-    reference to the classical states of matter. The engine is stateless.
-    ...okay, so maybe there's a little reaching. Anyway, I settled on
-    Solution because it's the Liquid Template Engine but with... stuff
-    floating in it. Yeah, pretend you majored in chemistry instead of
-    mathematics. This solution is the answer to all your various problems.
-    ...or any of them, actually.
+    As I understand it, the original project's name, Liquid, is a reference
+    to the classical states of matter (the engine itself being stateless). I
+    settled on Solution because it's Liquid but... with... bits of other
+    stuff floating in it. Pretend you majored in chemistry instead of
+    mathematics or computer science and you'll know what I mean.
+
+    This 'solution' is not the answer to all your problems. ...I'll even go
+    ahead and say it's not the best solution for your templating problems.
+    It's simply *a* solution.
 
 See Also
     Liquid for Designers:
@@ -98,7 +103,7 @@ See Also
 
     *   ...which would make Template::Tiny the weird uncle.
 
-    *Note: This list is incomplete.*
+    *Note: This list is obviously incomplete.*
 
 Author
     Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/

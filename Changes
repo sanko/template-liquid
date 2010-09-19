@@ -1,4 +1,4 @@
-Version 0.XXXXX | In the not too distant future | ed14d37
+Version 0.000000001 | 2010-09-18 21:10:07Z (Sat, 18 Sep 2010) | cee8ecb
 
     API Changes/Compatibility Information:
      * ...see below
@@ -13,7 +13,9 @@ Version 0.XXXXX | In the not too distant future | ed14d37
      * ...see above
 
     Notes:
-     * This is based on the Ruby Liquid library
+     * This is based on the Ruby Liquid library. See the sections entitled
+       "Getting Started" and "Ugh! Why a new Top Level Namespace?" in
+       Solution and just about everything in Solution::Tag.
 
 _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
