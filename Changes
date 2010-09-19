@@ -1,7 +1,17 @@
-Version 0.000000003 | 2010-09-19 02:51:25Z (Sun, 19 Sep 2010) | 7f57e32
+Version 0.000000003 | 2010-09-19 23:14:20Z (Sun, 19 Sep 2010) | 17e3ce7
+
+    API Changes/Compatibility Information:
+     * Add support for hashrefs in {% for ... %} tag
+
+    Resolved Issues/Bug Fixes:
+     * Fixing old {% for ... reversed %} regression
+
+    Internal/Behavioral Changes:
+     * Appropriate errors are raised when there are problems rendering
+       {% include ... %} tags
 
     Documentation/Sample Code/Test Suite:
-     * Correcting bad internal links
+     * Correcting bad internal links and some minor reorganization
 
 Version 0.000000002 | 2010-09-19 02:51:25Z (Sun, 19 Sep 2010) | 7f57e32
 
