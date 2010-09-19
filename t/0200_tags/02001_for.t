@@ -151,8 +151,142 @@ is( Solution::Template->parse(
 TEMPLATE
  102 103
 EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable for x in array');
+{% for x in array %} {{ x }}{% endfor %}
+TEMPLATE
+ 100 101 102 103 104 105
+EXPECTED
+TODO: {
+    local $TODO = <<'';
+Liquid bug. Valid syntax
+does not function as expected. The problem is Liquid's
+precidence based context merges. Easily fixed.
 
-# check reversed with array
+    is( Solution::Template->parse(
+            <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable for x.y in array');
+{% for x.y in array %} {{ x.y }}{% endfor %}
+TEMPLATE
+ 100 101 102 103 104 105
+EXPECTED
+}
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable forloop.last [A]');
+{% for x in array %}{{ x }}{% unless forloop.last %}, {% endunless %}{% endfor %}
+TEMPLATE
+100, 101, 102, 103, 104, 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable limit:2');
+{% for x in array limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 100 101
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable limit:0');
+{% for x in array limit:0 %} {{ x }}{% endfor %}
+TEMPLATE
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable limit:var');
+{% assign var = 5 %}
+{% for x in array limit:var %} {{ x }}{%endfor%}
+TEMPLATE
+
+ 100 101 102 103 104
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable limit:50 [beyond end of list])');
+{% assign limit = 50 %}
+{% for x in array limit:limit %} {{ x }}{% endfor %}
+TEMPLATE
+
+ 100 101 102 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable limit: ');
+{% for x in array limit: %} {{ x }}{% endfor %}
+TEMPLATE
+ 100 101 102 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:2');
+{% for x in array offset:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 102 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:0');
+{% for x in array offset:0 %} {{ x }}{% endfor %}
+TEMPLATE
+ 100 101 102 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:var [var == 50]');
+{% assign var = 50 %}
+{% for x in array offset:var %} {{ x }}{%endfor%}
+TEMPLATE
+
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:var [var == 3]');
+{% assign var = 3 %}
+{% for x in array offset:var %} {{ x }}{%endfor%}
+TEMPLATE
+
+ 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:');
+{% for x in array offset: %} {{ x }}{% endfor %}
+TEMPLATE
+ 100 101 102 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:2 limit:2');
+{% for x in array offset:2 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 102 103
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:200 limit:2');
+{% for x in array offset:200 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable offset:2 limit:0');
+{% for x in array offset:2 limit:0 %} {{ x }}{% endfor %}
+TEMPLATE
+
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed');
+{% for x in array reversed %} {{ x }}{% endfor %}
+TEMPLATE
+ 105 104 103 102 101 100
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed offset:2');
+{% for x in array reversed offset:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 102 103 104 105
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed limit:2');
+{% for x in array reversed limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 100 101
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed offset:2 limit:2');
+{% for x in array reversed offset:2 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 102 103
+EXPECTED
+
 # check all the forloop vars
 # make sure the local variable overrides the higher scope
 # I'm finished
