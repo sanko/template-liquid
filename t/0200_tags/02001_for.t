@@ -131,25 +131,25 @@ is( Solution::Template->parse(
                            <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed');
 {% for x in (100..105) reversed %} {{ x }}{% endfor %}
 TEMPLATE
- 100 101 102 103 104 105
+ 105 104 103 102 101 100
 EXPECTED
 is( Solution::Template->parse(
                   <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed offset:2');
 {% for x in (100..105) reversed offset:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 105 104 103 102
+ 102 103 104 105
 EXPECTED
 is( Solution::Template->parse(
                    <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed limit:2');
 {% for x in (100..105) reversed limit:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 101 100
+ 100 101
 EXPECTED
 is( Solution::Template->parse(
           <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed offset:2 limit:2');
 {% for x in (100..105) reversed offset:2 limit:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 103 102
+ 102 103
 EXPECTED
 
 # check reversed with array

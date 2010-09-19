@@ -35,7 +35,7 @@
                 };
             }
             my ($var, $range, $attr) = ($1, $2, $3 || '');
-            my $reversed = $attr =~ s[^reversed\s+?][] ? 1 : 0;
+            my $reversed = $attr =~ s[^reversed\s*?$][] ? 1 : 0;
             my %attr = map {
                 my ($k, $v)
                     = split $Solution::Utility::FilterArgumentSeparator,
