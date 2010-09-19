@@ -3,6 +3,9 @@ Version 0.000000002 | 2010-09-19 00:52:32Z (Sun, 19 Sep 2010) | 92a1cb0
     API Changes/Compatibility Information:
      * New {% include file %} tag
 
+    Documentation/Sample Code/Test Suite:
+     * New example for custom tag creation
+
 Version 0.000000001 | 2010-09-19 00:52:32Z (Sun, 19 Sep 2010) | 92a1cb0
 
     API Changes/Compatibility Information:

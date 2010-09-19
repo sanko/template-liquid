@@ -189,6 +189,9 @@ This will print a random integer between C<0> and C<30>.
 
 =head2 Creating Your Own Tag Blocks
 
+If you just want a quick sample, see C<examples/custom_tag.pl>. There you'll
+find an example C<{^% dump var %}> tag named C<SolutionX::Tag::Dump>.
+
 Block-like tags are very similar to
 L<simple|Solution::Tag/"Create Your Own Tags">. Inherit from
 L<Solution::Tag|Solution::Tag> and register your block

@@ -1,5 +1,6 @@
 Build.PL
 Changes
+examples/custom_tag.pl
 examples/simple.pl
 lib/Solution.pm
 lib/Solution/Block.pm
