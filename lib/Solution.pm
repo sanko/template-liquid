@@ -207,3 +207,33 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
     { package Solution::Tag::IfChanged; }
 }
 1;
+__END__
+Module                            Purpose/Notes              Inheritance
+-----------------------------------------------------------------------------------------------------------------------------------------
+Solution                          | [done]                    |
+    Solution::Block               |                           |
+    Solution::Condition           | [done]                    |
+    Solution::Context             | [done]                    |
+    Solution::Document            | [done]                    |
+    Solution::Drop                |                           |
+    Solution::Errors              | [done]                    |
+    Solution::Extensions          |                           |
+    Solution::FileSystem          |                           |
+    Solution::HTMLTags            |                           |
+    Solution::Module_Ex           |                           |
+    Solution::StandardFilters     | [done]                    |
+    Solution::Strainer            |                           |
+    Solution::Tag                 |                           |
+        Solution::Tag::Assign     | [done]                    | Solution::Tag
+        Solution::Tag::Capture    | [done] extended assign    | Solution::Tag
+        Solution::Tag::Case       |                           |
+        Solution::Tag::Comment    | [done]                    | Solution::Tag
+        Solution::Tag::Cycle      |                           |
+        Solution::Tag::For        | [done] for loop construct | Solution::Tag
+        Solution::Tag::If         | [done] if/elsif/else      | Solution::Tag
+        Solution::Tag::IfChanged  |                           |
+        Solution::Tag::Include    | [done]                    | Solution::Tag
+        Solution::Tag::Unless     | [done]                    | Solution::Tag::If
+    Solution::Template            |                           |
+    Solution::Variable            | [done] echo statement     | Solution::Document
+Solution::Utility       *         | [temp] Non OO bin         |
