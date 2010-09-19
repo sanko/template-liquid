@@ -93,6 +93,10 @@ TODO
 
 TODO
 
+=head2 C<include>
+
+TODO
+
 =head1 Extending Solution with Custom Tags
 
 To create a new tag, simply inherit from L<Solution::Tag|Solution::Tag> and

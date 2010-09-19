@@ -205,6 +205,5 @@ clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
     { package Solution::Module_Ex; }
     { package Solution::Strainer; }
     { package Solution::Tag::IfChanged; }
-    { package Solution::Tag::Include; }
 }
 1;
