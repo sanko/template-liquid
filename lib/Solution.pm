@@ -2,7 +2,7 @@ package Solution;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -2; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
 
     #
     use Solution::Document;
@@ -200,8 +200,10 @@ promise to put myself in timeout as punishment.
 As I understand it, the original project's name, Liquid, is a reference to the
 classical states of matter (the engine itself being stateless). I settled on
 L<Solution|http://en.wikipedia.org/wiki/Solution> because it's Liquid but...
-with... bits of other stuff floating in it. Pretend you majored in chemistry
-instead of mathematics or computer science and you'll know what I mean.
+with... bits of other stuff floating in it. (Pretend you majored in chemistry
+instead of mathematics or computer science.) Liquid tempates will I<always> be
+work with Solution but (due to Solution's expanded syntax) Solution templates
+I<may not> be compatible with Liquid.
 
 This 'solution' is B<not> the answer to all your problems and obviously not
 the only solution for your templating troubles. It's simply I<a> solution.
