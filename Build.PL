@@ -47,7 +47,7 @@ my $mb = $class->new(
                          rules => {par => ['*']}
     },
     meta_merge     => {
-        keywords  => [qw[Liquid Template Engine Solution]],
+        keywords  => [qw[Liquid Template Engine Solution stateless]],
         resources => {
             bugtracker => {web => 'http://github.com/sanko/solution/issues',
                            mailto => 'sanko@cpan.org'
