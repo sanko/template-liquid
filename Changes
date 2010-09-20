@@ -1,4 +1,4 @@
-Version 0.000000003 | 2010-09-19 23:14:20Z (Sun, 19 Sep 2010) | 17e3ce7
+Version 0.000000003 | 2010-09-20 02:24:10Z (Mon, 20 Sep 2010) | 3422f97
 
     API Changes/Compatibility Information:
      * Add support for hashrefs in {% for ... %} tag

@@ -153,7 +153,6 @@ Truncate a string down to C<x> characters.
  This is a long line of text to test the default...
 
 =cut
-
 is( X( q[{{'This is a very quick test of truncating a number of words'|truncatewords:5,'...'}}]
     ),
     'This is a very quick...',
