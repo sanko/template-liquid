@@ -3,6 +3,8 @@ use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Solution;
+
+#
 is(Solution::Template->parse(<<'TEMPLATE')->render(), <<'EXPECTED', '(1..5)');
 {%for x in (1..5) %}X{%endfor%}
 TEMPLATE
@@ -137,22 +139,46 @@ is( Solution::Template->parse(
                   <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed offset:2');
 {% for x in (100..105) reversed offset:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 102 103 104 105
+ 105 104 103 102
 EXPECTED
 is( Solution::Template->parse(
                    <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed limit:2');
 {% for x in (100..105) reversed limit:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 100 101
+ 101 100
 EXPECTED
 is( Solution::Template->parse(
           <<'TEMPLATE')->render(), <<'EXPECTED', 'reversed offset:2 limit:2');
 {% for x in (100..105) reversed offset:2 limit:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 102 103
+ 103 102
 EXPECTED
 
 #
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [101, 100, 94, 25, 84, 63]}), <<'EXPECTED', 'variable reversed sorted offset:2 limit:2');
+{% for x in array reversed sorted offset:2 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 94 84
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [101, 100, 94, 25, 84, 63]}), <<'EXPECTED', 'variable reversed sorted:key offset:2 limit:2');
+{% for x in array reversed sorted:key offset:2 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 94 84
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [101, 100, 94, 25, 84, 63]}), <<'EXPECTED', 'variable sorted offset:2 limit:2');
+{% for x in array sorted offset:2 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 84 94
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({array => [101, 100, 94, 25, 84, 63]}), <<'EXPECTED', 'variable offset:2 limit:2');
+{% for x in array offset:2 limit:2 %} {{ x }}{% endfor %}
+TEMPLATE
+ 94 25
+EXPECTED
 is( Solution::Template->parse(
         <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable for x in array');
 {% for x in array %} {{ x }}{% endfor %}
@@ -274,49 +300,97 @@ is( Solution::Template->parse(
         <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed offset:2');
 {% for x in array reversed offset:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 102 103 104 105
+ 105 104 103 102
 EXPECTED
 is( Solution::Template->parse(
         <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed limit:2');
 {% for x in array reversed limit:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 100 101
+ 101 100
 EXPECTED
 is( Solution::Template->parse(
         <<'TEMPLATE')->render({array => [100 .. 105]}), <<'EXPECTED', 'variable reversed offset:2 limit:2');
 {% for x in array reversed offset:2 limit:2 %} {{ x }}{% endfor %}
 TEMPLATE
- 102 103
+ 103 102
 EXPECTED
 
 # Test hashes
 like(Solution::Template->parse(
            '{ {% for x in var %} {{ x.key }} => {{ x.value }},{% endfor %} }')
-         ->render({var => {A => 1, B => 2, C => 3}}),
+         ->render({var => {A => 3, B => 2, C => 1}}),
      qr[^{ (?: [ABC] => [123],){3} }$],
      'hash'
 );
 like(
     Solution::Template->parse(
         '{ {% for x in var reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }'
-        )->render({var => {A => 1, B => 2, C => 3}}),
+        )->render({var => {A => 3, B => 2, C => 1}}),
     qr[^{ (?: [ABC] => [123],){3} }$],
     'hash reversed'
 );
 like(
     Solution::Template->parse(
         '{ {% for x in var offset:1 %} {{ x.key }} => {{ x.value }},{% endfor %} }'
-        )->render({var => {A => 1, B => 2, C => 3}}),
+        )->render({var => {A => 3, B => 2, C => 1}}),
     qr[^{ (?: [ABC] => [123],){2} }$],
     'hash offset:1'
 );
 like(
     Solution::Template->parse(
         '{ {% for x in var limit:1 %} {{ x.key }} => {{ x.value }},{% endfor %} }'
-        )->render({var => {A => 1, B => 2, C => 3}}),
+        )->render({var => {A => 3, B => 2, C => 1}}),
     qr[^{ (?: [ABC] => [123],) }$],
     'hash limit:1'
 );
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted');
+{ {% for x in var sorted %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  A => 3, B => 2, C => 1, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:key');
+{ {% for x in var sorted:key %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  A => 3, B => 2, C => 1, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value');
+{ {% for x in var sorted:value %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  C => 1, B => 2, A => 3, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted reversed');
+{ {% for x in var sorted reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  C => 1, B => 2, A => 3, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:key reversed');
+{ {% for x in var sorted:key reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  C => 1, B => 2, A => 3, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value reversed');
+{ {% for x in var sorted:value reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  A => 3, B => 2, C => 1, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value offset:1');
+{ {% for x in var sorted:value offset:1 %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  B => 2, A => 3, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value limit:1');
+{ {% for x in var sorted:value limit:1 %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  C => 1, }
+EXPECTED
 
 # check all the forloop vars
 is( Solution::Template->parse(

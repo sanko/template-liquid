@@ -1,6 +1,9 @@
 Version 0.000000004 | 2010-09-20 02:25:51Z (Mon, 20 Sep 2010) | 4d4beee
 
-    Nothing yet.
+    API Changes/Compatibility Information:
+     * Add support for sorting lists and hashes (by key or by value) in
+       {% for ... %} tags with the new 'sorted' keyword. See the section
+       entitled 'Sorting' in Solution::Tag::For
 
 Version 0.000000003 | 2010-09-20 02:25:51Z (Mon, 20 Sep 2010) | 4d4beee
 

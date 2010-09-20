@@ -2,7 +2,7 @@ package Solution::Tag::For;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1.3f%03d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%03d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
     use Solution::Error;
     use Solution::Utility;
@@ -32,12 +32,12 @@ package Solution::Tag::For;
             };
         }
         my ($var, $range, $attr) = ($1, $2, $3 || '');
-        my $reversed = $attr =~ s[^reversed\s*?$][] ? 1 : 0;
+        my $reversed = $attr =~ s[^reversed\b][] ? 1 : 0;
         my %attr = map {
-            my ($k, $v) = split $Solution::Utility::FilterArgumentSeparator,
-                $_, 2;
+            my ($k, $v) = split( $Solution::Utility::FilterArgumentSeparator,
+                $_, 2);
             { $k => $v };
-        } split qr[\s+], $attr || '';
+        } grep {defined && length} split qr[\s+], $attr || '';
         my $self = bless {attributes      => \%attr,
                           collection_name => $range,
                           name            => $var . '-' . $range,
@@ -58,6 +58,10 @@ package Solution::Tag::For;
         my $range    = $self->{'collection_name'};
         my $attr     = $self->{'attributes'};
         my $reversed = $self->{'reversed'};
+        my $sorted   = exists $attr->{'sorted'}
+            ? $self->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
+            : ();
+        $sorted = 'key' if (defined $sorted && ( ($sorted ne 'key') && ($sorted ne 'value')));
         my $offset
             = defined $attr->{'offset'}
             ? $self->resolve($attr->{'offset'})
@@ -69,10 +73,23 @@ package Solution::Tag::For;
         my $list = $self->resolve($range) || [];
         my $type = 'ARRAY';
 
+
         #
         if (ref $list eq 'HASH') {
             $list = [map { {key => $_, value => $list->{$_}} } keys %$list];
+            @$list = sort {
+                    $a->{$sorted} =~ m[^\d+$] && $b->{$sorted} =~ m[^\d+$] ?
+                    ( $a->{$sorted} <=> $b->{$sorted} ) :
+                    ( $a->{$sorted} cmp $b->{$sorted} )
+            } @$list if defined $sorted;
             $type = 'HASH';
+        }
+        elsif (defined $sorted) {
+            @$list = sort {
+                    $a =~ m[^\d+$] && $b =~ m[^\d+$] ?
+                    ($a <=> $b) :
+                    ( $a cmp $b )
+            } @$list;
         }
         {    # Break it down to only the items we plan on using
             my $min = (defined $offset ? $offset : 0);
@@ -105,7 +122,8 @@ package Solution::Tag::For;
                                         index0  => $index,
                                         rindex  => $steps - $index + 1,
                                         rindex0 => $steps - $index,
-                                        type    => $type
+                                        type    => $type,
+                                        sorted  => $sorted
                     };
                     for my $node (@$nodes) {
                         my $rendering = ref $node ? $node->render() : $node;
@@ -207,6 +225,23 @@ attribute.
 
     {% for item in collection reversed %} {{item}} {% endfor %}
 
+=head3 Sorting
+
+You can sort the variable with the C<sorted> attribute. This is an extention
+beyond the scope of Liquid's syntax and thus incompatible but it's useful.
+The
+
+    {% for item in collection sorted %} {{item}} {% endfor %}
+
+If you are sorting a hash, the values are sorted by keys by default. You may
+decide to sort by values like so:
+
+    {% for item in hash sorted:value %} {{item.value}} {% endfor %}
+
+...or make the default obvious with...
+
+    {% for item in hash sorted:key %} {{item.key}} {% endfor %}
+
 =head2 Numeric Ranges
 
 Instead of looping over an existing collection, you can define a range of
@@ -224,7 +259,7 @@ numbers:
 To deal with the possibility of looping through hash references, Solution
 extends the Liquid Engine's functionality. When looping through a hash, each
 item is made a single key/value pair. The item's actual key and value are in
-the C<item.key> and C<item.value>. ...here's an example:
+the C<item.key> and C<item.value> variables. ...here's an example:
 
     # where var = {A => 1, B => 2, C => 3}
     { {% for x in var %}
@@ -261,22 +296,24 @@ L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
 
 Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
 
-The original Liquid template system was developed by jadedPixel
-(http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
+CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009,2010 by Sanko Robinson <sanko@cpan.org>
 
 This program is free software; you can redistribute it and/or modify it under
-the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
-this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
-clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
+the terms of
+L<The Artistic License 2.0|http://www.perlfoundation.org/artistic_license_2_0>.
+See the F<LICENSE> file included with this distribution or
+L<notes on the Artistic License 2.0|http://www.perlfoundation.org/artistic_2_0_notes>
+for clarification.
 
 When separated from the distribution, all original POD documentation is
-covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
-http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
-clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+covered by the
+L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.org/licenses/by-sa/3.0/us/legalcode>.
+See the
+L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
 =for git $Id$
 
