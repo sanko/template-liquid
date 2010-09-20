@@ -38,7 +38,7 @@ my $mb = $class->new(
                         : ()
                        )
     },
-    add_to_cleanup   => [qw[Liquid-*]],
+    add_to_cleanup   => [qw[Solution-*]],
     no_index         => {directory => [qw[examples inc t]]},
     test_files       => \@tests,
     test_file_exts   => ['.t'],
