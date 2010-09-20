@@ -1,4 +1,8 @@
-Version 0.000000003 | 2010-09-20 02:24:10Z (Mon, 20 Sep 2010) | 3422f97
+Version 0.000000004 | 2010-09-20 02:25:51Z (Mon, 20 Sep 2010) | 4d4beee
+
+    Nothing yet.
+
+Version 0.000000003 | 2010-09-20 02:25:51Z (Mon, 20 Sep 2010) | 4d4beee
 
     API Changes/Compatibility Information:
      * Add support for hashrefs in {% for ... %} tag
