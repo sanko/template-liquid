@@ -362,22 +362,40 @@ TEMPLATE
 {  C => 1, B => 2, A => 3, }
 EXPECTED
 is( Solution::Template->parse(
-        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted reversed');
-{ {% for x in var sorted reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash reversed sorted');
+{ {% for x in var reversed sorted %} {{ x.key }} => {{ x.value }},{% endfor %} }
 TEMPLATE
 {  C => 1, B => 2, A => 3, }
 EXPECTED
 is( Solution::Template->parse(
-        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:key reversed');
-{ {% for x in var sorted:key reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash reversed sorted:key');
+{ {% for x in var reversed sorted:key %} {{ x.key }} => {{ x.value }},{% endfor %} }
 TEMPLATE
 {  C => 1, B => 2, A => 3, }
 EXPECTED
 is( Solution::Template->parse(
-        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value reversed');
-{ {% for x in var sorted:value reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash reversed sorted:value');
+{ {% for x in var reversed sorted:value reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
 TEMPLATE
 {  A => 3, B => 2, C => 1, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted reversed (reversed must come first!)');
+{ {% for x in var sorted reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  A => 3, B => 2, C => 1, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:key reversed (reversed must come first!)');
+{ {% for x in var sorted:key reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  A => 3, B => 2, C => 1, }
+EXPECTED
+is( Solution::Template->parse(
+        <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value reversed (reversed must come first!)');
+{ {% for x in var sorted:value reversed %} {{ x.key }} => {{ x.value }},{% endfor %} }
+TEMPLATE
+{  C => 1, B => 2, A => 3, }
 EXPECTED
 is( Solution::Template->parse(
         <<'TEMPLATE')->render({var => {A => 3, B => 2, C => 1}}), <<'EXPECTED', 'hash sorted:value offset:1');
