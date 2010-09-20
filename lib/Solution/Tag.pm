@@ -100,8 +100,8 @@ TODO
 =head1 Extending Solution with Custom Tags
 
 To create a new tag, simply inherit from L<Solution::Tag|Solution::Tag> and
-register your block L<globally|Solution/"register_tag"> or locally with
-L<Solution::Template|Solution::Template/"register_tag">.
+register your block L<globally|Solution/"Solution->register_tag( ... )"> or
+locally with L<Solution::Template|Solution::Template/"register_tag">.
 
 Your constructor should expect the following arguments:
 
