@@ -1,4 +1,4 @@
-Version 0.000000004 | 2010-09-20 02:25:51Z (Mon, 20 Sep 2010) | 4d4beee
+Version 0.0004 | 2010-09-20 23:33:25Z (Mon, 20 Sep 2010) | fd2d1b2
 
     API Changes/Compatibility Information:
      * Add support for sorting lists and hashes (by key or by value) in
