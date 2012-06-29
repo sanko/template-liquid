@@ -29,28 +29,32 @@ package Solution::Block;
                           parent     => $args->{'parent'},
         }, $class;
         $self->{'conditions'} = (
-            $args->{'tag_name'} eq 'else'
-            ? [1]
+            $args->{'tag_name'} eq 'else' ?
+                [1]
             : sub {    # Oh, what a mess...
-                my @conditions = split m[\s+\b(and|or)\b\s+],
-                    (defined $args->{'attrs'} ? $args->{'attrs'} : '');
+                my @conditions
+                    = split m[\s+\b(and|or)\b\s+],
+                    $args->{parent}->{tag_name} eq 'for' ?
+                    1
+                    : (defined $args->{'attrs'} ? $args->{'attrs'} : '');
                 my @equality;
                 while (my $x = shift @conditions) {
                     push @equality, (
                         $x =~ m[\b(?:and|or)\b]    # XXX - ARG
-                        ? bless({template  => $args->{'template'},
-                                 parent    => $self,
-                                 condition => $x,
-                                 lvalue    => pop @equality,
-                                 rvalue =>
-                                     Solution::Condition->new(
+                        ?
+                            bless({template  => $args->{'template'},
+                                   parent    => $self,
+                                   condition => $x,
+                                   lvalue    => pop @equality,
+                                   rvalue =>
+                                       Solution::Condition->new(
                                           {template => $args->{'template'},
                                            parent   => $self,
                                            attrs    => shift @conditions
                                           }
-                                     )
-                                },
-                                'Solution::Condition'
+                                       )
+                                  },
+                                  'Solution::Condition'
                             )
                         : Solution::Condition->new(
                                           {attrs    => $x,

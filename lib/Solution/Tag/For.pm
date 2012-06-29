@@ -6,7 +6,7 @@ package Solution::Tag::For;
     use lib '../../../lib';
     use Solution::Error;
     use Solution::Utility;
-    our @ISA = qw[Solution::Tag];
+    our @ISA = qw[Solution::Tag::If];
     my $Help_String = 'TODO';
     Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
 
@@ -34,14 +34,15 @@ package Solution::Tag::For;
         my ($var, $range, $attr) = ($1, $2, $3 || '');
         my $reversed = $attr =~ s[^reversed\b][] ? 1 : 0;
         my %attr = map {
-            my ($k, $v) = split( $Solution::Utility::FilterArgumentSeparator,
-                $_, 2);
+            my ($k, $v)
+                = split($Solution::Utility::FilterArgumentSeparator, $_, 2);
             { $k => $v };
-        } grep {defined && length} split qr[\s+], $attr || '';
+        } grep { defined && length } split qr[\s+], $attr || '';
         my $self = bless {attributes      => \%attr,
                           collection_name => $range,
                           name            => $var . '-' . $range,
-                          nodelist        => [],
+                          blocks          => [],
+                          conditional_tag => 'else',
                           reversed        => $reversed,
                           tag_name        => $args->{'tag_name'},
                           variable_name   => $var,
@@ -58,43 +59,51 @@ package Solution::Tag::For;
         my $range    = $self->{'collection_name'};
         my $attr     = $self->{'attributes'};
         my $reversed = $self->{'reversed'};
-        my $sorted   = exists $attr->{'sorted'}
-            ? $self->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
+        my $sorted
+            = exists $attr->{'sorted'} ?
+            $self->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
             : ();
-        $sorted = 'key' if (defined $sorted && ( ($sorted ne 'key') && ($sorted ne 'value')));
+        $sorted = 'key'
+            if (defined $sorted
+                && (($sorted ne 'key') && ($sorted ne 'value')));
         my $offset
-            = defined $attr->{'offset'}
-            ? $self->resolve($attr->{'offset'})
+            = defined $attr->{'offset'} ?
+            $self->resolve($attr->{'offset'})
             : ();
         my $limit
-            = defined $attr->{'limit'}
-            ? $self->resolve($attr->{'limit'})
+            = defined $attr->{'limit'} ?
+            $self->resolve($attr->{'limit'})
             : ();
-        my $list = $self->resolve($range) || [];
+        my $list = $self->resolve($range);
         my $type = 'ARRAY';
 
-
         #
+        my $_undef_list = 0;
         if (ref $list eq 'HASH') {
             $list = [map { {key => $_, value => $list->{$_}} } keys %$list];
             @$list = sort {
-                    $a->{$sorted} =~ m[^\d+$] && $b->{$sorted} =~ m[^\d+$] ?
-                    ( $a->{$sorted} <=> $b->{$sorted} ) :
-                    ( $a->{$sorted} cmp $b->{$sorted} )
+                $a->{$sorted} =~ m[^\d+$] && $b->{$sorted} =~ m[^\d+$]
+                    ?
+                    ($a->{$sorted} <=> $b->{$sorted})
+                    : ($a->{$sorted} cmp $b->{$sorted})
             } @$list if defined $sorted;
             $type = 'HASH';
         }
         elsif (defined $sorted) {
             @$list = sort {
-                    $a =~ m[^\d+$] && $b =~ m[^\d+$] ?
-                    ($a <=> $b) :
-                    ( $a cmp $b )
+                $a =~ m[^\d+$] && $b =~ m[^\d+$] ?
+                    ($a <=> $b)
+                    : ($a cmp $b)
             } @$list;
         }
-        {    # Break it down to only the items we plan on using
+        if (!defined $list || !$list || !@$list) {
+            $_undef_list = 1;
+            $list        = [1];
+        }
+        else {    # Break it down to only the items we plan on using
             my $min = (defined $offset ? $offset : 0);
-            my $max = (defined $limit
-                       ? $limit + (defined $offset ? $offset : 0) - 1
+            my $max = (defined $limit ?
+                           $limit + (defined $offset ? $offset : 0) - 1
                        : $#$list
             );
             $max    = $#$list if $max > $#$list;
@@ -106,8 +115,9 @@ package Solution::Tag::For;
         return $self->template->context->stack(
             sub {
                 my $return = '';
-                my $nodes  = $self->{'nodelist'};
                 my $steps  = $#$list;
+                $_undef_list = 1 if $steps == -1;
+                my $nodes = $self->{'blocks'}[$_undef_list]{'nodelist'};
                 for my $index (0 .. $steps) {
                     $self->template->context->scope
                         ->{$self->{'variable_name'}} = $list->[$index];
@@ -269,6 +279,21 @@ the C<item.key> and C<item.value> variables. ...here's an example:
 
 The C<forloop.type> variable will contain C<HASH> if the looped variable is a
 hashref. Also note that the keys/value pairs are left unsorted.
+
+=head2 C<else> tag
+
+The else tag allows us to do this:
+
+    {% for item in collection %}
+        Item {{ forloop.index }}: {{ item.name }}
+    {% else %}
+        There is nothing in the collection.
+    {% endfor %}
+
+The C<else> branch is executed whenever the for branch will never be executed
+(e.g. collection is blank or not an iterable or out of iteration scope).
+
+=for basis https://github.com/Shopify/liquid/pull/56
 
 =head1 TODO
 

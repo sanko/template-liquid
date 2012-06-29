@@ -1,3 +1,8 @@
+Version 0.9.0 | In the not too distant future | xxxxxxxx
+
+    API Changes/Compatibility Information:
+     * Support {% else %} tag in for loops (see docs)
+
 Version 0.0004 | 2010-09-20 23:33:25Z (Mon, 20 Sep 2010) | fd2d1b2
 
     API Changes/Compatibility Information:

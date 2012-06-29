@@ -2,15 +2,15 @@ package Solution;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
-
-    #
+    our $VERSION = '0.9.0';
     use Solution::Document;
-    use Solution::Block;
-    use Solution::Condition;
     use Solution::Context;
     use Solution::Tag;
+    use Solution::Block;
+    use Solution::Condition;
     use Solution::Template;
+
+    #
     {    # Load all the tags from the standard library
         require File::Find;
         require File::Spec;
