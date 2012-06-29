@@ -39,8 +39,8 @@ package Solution::Tag::Assign;
                 $filter =~ s[\s*$][];    # XXX - the splitter should clean...
                 $filter =~ s[^\s*][];    # XXX -  ...this up for us.
                 my @f_args
-                    = $f_args
-                    ? split $Solution::Utility::VariableFilterArgumentParser,
+                    = $f_args ?
+                    split $Solution::Utility::VariableFilterArgumentParser,
                     $f_args
                     : ();
                 push @{$args->{'filters'}}, [$filter, \@f_args];
