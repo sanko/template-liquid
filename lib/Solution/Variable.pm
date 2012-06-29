@@ -31,9 +31,6 @@ package Solution::Variable;
         my $val = $self->resolve($self->{'variable'});
     FILTER: for my $filter (@{$self->{'filters'}}) {
             my ($name, $args) = @$filter;
-
-            #use Data::Dump;
-            #ddx $val, $filter; #, $self->template->context->scope;
             map { $_ = $self->resolve($_) || $_ } @$args;
         PACKAGE: for my $package (@{$self->template->filters}) {
                 if (my $call = $package->can($name)) {

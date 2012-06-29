@@ -3,7 +3,7 @@ package Solution::Context;
     use strict;
     use warnings;
     use lib '../';
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $VERSION = '0.9.0';
     use Solution::Utility;
     use Solution::Error;
     sub scopes    { return $_[0]->{'scopes'} }
@@ -105,7 +105,7 @@ package Solution::Context;
     }
 
     sub resolve {
-        my ($self, $path, $val) = @_;    #warn '### Resolving ' . $path;
+        my ($self, $path, $val) = @_;
         return if !defined $path;
         return if $path eq '';
         return if $path eq 'null';
@@ -118,13 +118,12 @@ package Solution::Context;
         return [int $self->resolve($1) .. int $self->resolve($2)]
             if $path =~ m[^\((\S+)\.\.(\S+)\)$];    # range
         return $1 if $path =~ m[^(\d+(?:[\d\.]+)?)$];    # int or bad float
+        return $self->resolve($1)->[$2] if $path =~ m'^(.+)\[(.+)\]$';
         my @path = split $Solution::Utility::VariableAttributeSeparator,
             $path;
         my $cursor = \$self->scope;
 
         while (local $_ = shift @path) {
-
-            #warn $_;
             my $type = ref $$cursor;
             if ($type eq 'ARRAY') {
                 if (scalar @path == 1) {
@@ -134,24 +133,27 @@ package Solution::Context;
                 }
                 return unless /^(?:0|[0-9]\d*)\z/;
                 if (scalar @path) { $cursor = \$$cursor->[$_]; next; }
-                return defined $val
-                    ? $$cursor->[$_]
+                return defined $val ?
+                    $$cursor->[$_]
                     = $val
                     : $$cursor->[$_];
             }
             if (@path && $type) { $cursor = \$$cursor->{$_}; next; }
 
             #warn $$cursor->{$_} if ref  $$cursor->{$_};
-            return defined $val
-                ? $$cursor->{$_}
+            return defined $val ?
+                $$cursor->{$_}
                 = $val
-                : $type ? $type eq 'HASH'
-                    ? $$cursor->{$_}
-                    : $type eq 'ARRAY' ? $$cursor->[$_]
-                : $$cursor->can($_) ? $$cursor->$_()
+                : $type ?
+                $type eq 'HASH' ?
+                $$cursor->{$_}
+                : $type eq 'ARRAY' ?
+                    $$cursor->[$_]
+                : $$cursor->can($_) ?
+                    $$cursor->$_()
                 : do { warn 'Cannot call ' . $_; () }
-                : defined $$cursor
-                ? $$cursor    # die $path . ' is not a hash/array reference'
+                : defined $$cursor ?
+                $$cursor    # die $path . ' is not a hash/array reference'
                 : '';
             return $$cursor->{$_};
         }

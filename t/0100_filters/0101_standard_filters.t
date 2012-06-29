@@ -55,9 +55,9 @@ is(X(q[{{array | last}}], {array => [1 .. 6]}), '6',
     '{{array | last }} => 6');
 is(X(q[{{array | join}}], {array => [1 .. 6]}),
     '1 2 3 4 5 6', '{{array | join }} => 1 2 3 4 5 6');
-is(X(q[{{array | join:", "}}], {array => [1 .. 6]}),
+is(X(q[{{array | join:', '}}], {array => [1 .. 6]}),
     '1, 2, 3, 4, 5, 6',
-    '{{array | join:", " }} => 1, 2, 3, 4, 5, 6');
+    q[{{array | join:', ' }} => 1, 2, 3, 4, 5, 6]);
 note 'For this next test, C<array> is defined as C<[10,62,14,257,65,32]>';
 is(X(q[{{array | sort}}], {array => [10, 62, 14, 257, 65, 32]}),
     '1014326265257', '{{array | sort}} => 1014326265257');
@@ -72,6 +72,10 @@ is( X( q[{{hash | size}}], {hash => {Beatles => 'Apple', Nirvana => 'SubPop'}}
     '2',
     q[{{hash | size}} => 2 (counts keys)]
 );
+
+# split
+is(X(q[{{ values | split: ',' | last }}], {values => 'foo,bar,baz'}),
+    'baz', q[{{ values | split: ',' | last}}]);
 
 # html/web (including the RubyLiquid bugs... ((sigh)))
 is( X(q[{{ '<div>Hello, <em id="whom">world!</em></div>' | strip_html}}]),

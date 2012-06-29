@@ -5,7 +5,7 @@ package Solution::Utility;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     our $FilterSeparator = qr[\s*\|\s*];
     my $ArgumentSeparator = qr[,];
-    our $FilterArgumentSeparator    = qr[:];
+    our $FilterArgumentSeparator    = qr[\s*:\s*];
     our $VariableAttributeSeparator = qr[\.];
     our $TagStart                   = qr[{%\s*];
     our $TagEnd                     = qr[\s*%}];
@@ -14,7 +14,7 @@ package Solution::Utility;
     our $VariableStart = qr[{{\s*];
     our $VariableEnd   = qr[\s*}}];
     my $VariableIncompleteEnd = qr[}}?];
-    my $QuotedString          = qr/"[^"]+"|'[^']+'/;
+    my $QuotedString          = qr/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/;
     my $QuotedFragment = qr/${QuotedString}|(?:[^\s,\|'"]|${QuotedString})+/;
     my $StrictQuotedFragment = qr/"[^"]+"|'[^']+'|[^\s,\|,\:,\,]+/;
     my $FirstFilterArgument
@@ -35,8 +35,9 @@ package Solution::Utility;
                                 (?:\s*\|\s*(.+)\s*)?                 #   filters
                             ${VariableEnd}                          # }}
                             $]x;
+
     our $VariableFilterArgumentParser
-        = qr[\s*,\s*(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))];
+        = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))];
 
     sub tokenize {
         map { $_ ? $_ : () } split $TemplateParser, shift || '';

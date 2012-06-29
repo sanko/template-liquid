@@ -2,7 +2,7 @@ package Solution::Filter::Standard;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $VERSION = '0.9.0';
     Solution->register_filter() if $Solution::VERSION;
 
     sub date {
@@ -25,6 +25,7 @@ package Solution::Filter::Standard;
         return CORE::join($_[1], keys %{$_[0]}) if ref $_[0] eq 'HASH';
         return $_[0];
     }
+    sub split { [split $_[1], $_[0]] }
 
     sub sort {
         return [sort { $a <=> $b } @{$_[0]}] if ref $_[0] eq 'ARRAY';
@@ -64,8 +65,8 @@ package Solution::Filter::Standard;
         my $l = $length - length($truncate_string);
         $l = 0 if $l < 0;
         return
-            length($data) > $length
-            ? substr($data, 0, $l) . $truncate_string
+            length($data) > $length ?
+            substr($data, 0, $l) . $truncate_string
             : $data;
     }
 
@@ -79,7 +80,8 @@ package Solution::Filter::Standard;
         my $l = $words - 1;
         $l = 0 if $l < 0;
         return $#wordlist > $l
-            ? CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
+            ?
+            CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
             : $data;
     }
     sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
@@ -100,6 +102,11 @@ package Solution::Filter::Standard;
         return $_[0] * $_[1];
     }
     sub divided_by { return $_[0] / $_[1]; }
+
+    #
+    # TODO
+    sub escape      {...}    # Escape's HTML
+    sub escape_once {...}
 }
 1;
 
@@ -181,6 +188,13 @@ Joins elements of the array with a certain character between them.
     # Where array is [1..6]
     {{ array | join }}      => 1 2 3 4 5 6
     {{ array | join:', ' }} => 1, 2, 3, 4, 5, 6
+
+=head2 C<split>
+
+Split input string into an array of substrings separated by given pattern.
+
+    # Where values is 'foo,bar,baz'
+    {{ values | split ',' | last }} => baz
 
 =head2 C<sort>
 
