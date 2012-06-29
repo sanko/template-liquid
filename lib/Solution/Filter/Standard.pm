@@ -6,6 +6,7 @@ package Solution::Filter::Standard;
     Solution->register_filter() if $Solution::VERSION;
 
     sub date {
+        $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
         $_[1] = defined $_[1] ? $_[1] : '%c';
         return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
         return if $_[0] !~ m[^\d+$];
@@ -134,6 +135,13 @@ This is the last resort and flags may differ by system so... Buyer beware.
     {{ date | date:'%c' }} => 12/14/2009 2:05:31 AM
 
 =back
+
+The C<date> filter also supports simple replacements of C<'now'> and
+C<'today'> with the current time. For example:
+
+    {{ 'now' | date :'%Y' }}
+
+...would print the current year.
 
 =head2 C<capitalize>
 

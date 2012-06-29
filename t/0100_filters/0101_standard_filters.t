@@ -4,6 +4,7 @@ use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Solution;
 sub X { Solution::Template->parse(shift)->render(shift) }
+$|++;
 
 # date
 SKIP: {
@@ -26,6 +27,14 @@ SKIP: {
 }
 is(X('{{date|date:"%Y"}}', {date => gmtime(0)}),
     1970, '{{date|date:"%Y"}} => 1970 (int)');
+is( X(q[{{ 'now'|date:"%Y"}}], {}),
+    1900 + [localtime()]->[5],
+    q[{{ 'now'|date:"%Y"}}]
+);
+is( X(q[{{ 'TODAY'|date:"%Y"}}], {}),
+    1900 + [localtime()]->[5],
+    q[{{ 'TODAY'|date:"%Y"}}]
+);
 
 # string/char case
 is(X(q[{{'this is a QUICK test.'|capitalize}}]),
