@@ -47,6 +47,27 @@ INPUT
 [[Test Test Test ]]
 EXPECTED
 
+# From capture_test.rb
+is( Solution::Template->parse(
+        <<'INPUT')->render(), <<'EXPECTED', q[capture to var from outer scope if existing]);
+{% assign first = '' %}{% assign second = '' %}{% for number in (1..3) %}{%
+        capture first %}{{number}}{% endcapture
+        %}{% assign second = first %}{%
+ endfor %}
+{{ first }}-{{ second }}
+INPUT
+
+3-3
+EXPECTED
+is( Solution::Template->parse(
+                  <<'INPUT')->render(), <<'EXPECTED', q[assign from capture]);
+{% assign var = '' %}{% if true %}{% capture var %}first-block-string{% endcapture %}{% endif %}{% if true %}{% capture var %}test-string{% endcapture %}{% endif %}
+{{var}}
+INPUT
+
+test-string
+EXPECTED
+
 # I'm finished
 done_testing();
 
