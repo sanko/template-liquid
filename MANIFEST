@@ -18,6 +18,7 @@ lib/Solution/Tag/Cycle.pm
 lib/Solution/Tag/For.pm
 lib/Solution/Tag/If.pm
 lib/Solution/Tag/Include.pm
+lib/Solution/Tag/Raw.pm
 lib/Solution/Tag/Unless.pm
 lib/Solution/Template.pm
 lib/Solution/Utility.pm
@@ -35,4 +36,6 @@ t/0200_tags/02005_comment.t
 t/0200_tags/02006_if.t
 t/0200_tags/02007_unless.t
 t/0200_tags/02008_include.t
+t/0200_tags/02009_assign.t
+t/0200_tags/02010_raw.t
 t/0200_tags/_includes/testing.inc

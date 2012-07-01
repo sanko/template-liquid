@@ -4,7 +4,6 @@ use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Solution;
 $|++;
-
 is( Solution::Template->parse(
         <<'INPUT')->render({values => [qw[foo bar baz]]}), <<'EXPECTED', q[assign w/ array]);
 {% assign foo = values %}.{{ foo[0] }}.
@@ -34,13 +33,13 @@ EXPECTED
 
 # https://github.com/Shopify/liquid/pull/80
 is( Solution::Template->parse(
-        <<'INPUT')->render(), <<'EXPECTED', q[assign five = 'five' | upcase ]);
+        <<'INPUT')->render(), <<'EXPECTED', q[assign five = 'five' | upcase]);
 {% assign five = 'five' | upcase %}{{five}}
 INPUT
 FIVE
 EXPECTED
 is( Solution::Template->parse(
-             <<'INPUT')->render(), <<'EXPECTED', q[assign ... = false/true ]);
+              <<'INPUT')->render(), <<'EXPECTED', q[assign ... = false/true]);
 {% assign four = false %}{% assign nine = false
 %}{% for t in (0..5)
     %}{% if t == 4 %}{% assign four = true %}{% endif
