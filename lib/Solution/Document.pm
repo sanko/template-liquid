@@ -58,7 +58,7 @@ package Solution::Document;
                                 }
                         );
                     push @{$self->{'nodelist'}}, $_tag;
-                    if ($_tag->conditional_tag) {
+                    if ($self->conditional_tag) {
                         push @{$_tag->{'blocks'}},
                             Solution::Block->new(
                                               {tag_name => $tag,
@@ -79,10 +79,12 @@ package Solution::Document;
                     }
                 }
                 elsif ($self->can('end_tag') && $tag =~ $self->end_tag) {
+                    $self->{'markup_2'} = $token;
                     last NODE;
                 }
-                elsif ($tag =~ $self->conditional_tag) {
-                    $self->push_block({tag_name => $tag,
+                elsif (   $self->conditional_tag
+                       && $tag =~ $self->conditional_tag)
+                {   $self->push_block({tag_name => $tag,
                                        attrs    => $attrs,
                                        markup   => $token,
                                        template => $self->template,
@@ -144,6 +146,7 @@ package Solution::Document;
         }
         return $return;
     }
+    sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
 }
 1;
 

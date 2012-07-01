@@ -4,6 +4,7 @@ Version 0.9.0 | In the not too distant future | xxxxxxxx
      * Support {% else %} tag in for loops (see docs)
      * Support 'now' and 'today' in date filter: {{ 'now' | date :'%Y' }}
      * Support split filter
+     * Support {% raw %} tag
 
     Documentation/Sample Code/Test Suite:
      * Simple tests for {% assign ... %} tag
