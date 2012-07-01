@@ -3,68 +3,56 @@ use warnings;
 use Module::Build;
 use lib 'inc';
 use File::Find qw[find];
-our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+our $VERSION = '0.9.0';
 $|++;
 my $automated_testing = $ENV{'AUTOMATED_TESTING'}
     || $ENV{'PERL_MM_USE_DEFAULT'};
-my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{'RELEASE_TESTING'} ? 1 : 0);
 my @tests;
+my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{'RELEASE_TESTING'} ? 1 : 0);
 find \&find_cb, qw[t/0100_filters t/0200_tags],
     ($is_developer ? 't/9000_author' : ());
-my $class = $is_developer ? 'inc::MBX::Developer' : 'Module::Build';
-
-if (!eval "require $class") {
-    printf 'Failed to load %s: %s This ain\'t good, so... bye!', $class, $@;
-    exit 0;
-}
-my $mb = $class->new(
-    module_name    => 'Solution',
-    license        => 'artistic_2',
-    dist_author    => 'Sanko Robinson <sanko@cpan.org>',
-    dist_version   => $VERSION,
-    dist_abstract  => 'A Simple, Stateless Template System',
-    requires       => {perl => 5.006001, 'File::Spec' => 0},
-    build_requires => {'File::Find'    => 0,
-                       'File::Spec'    => 0,
-                       'Module::Build' => '0.36',
-                       perl            => 5.006001,
-                       'Test::More'    => '0.94',
-                       ($is_developer
-                        ? ('CPAN::Meta::Converter' => 0,
-                           'CPAN::Meta::Validator' => 0,
-                           JSON                    => 0,
-                           'Perl::Tidy'            => 0
-                            )
-                        : ()
-                       )
-    },
-    add_to_cleanup   => [qw[Solution-*]],
-    no_index         => {directory => [qw[examples inc t]]},
-    test_files       => \@tests,
-    test_file_exts   => ['.t'],
-    use_tap_harness  => 1,
-    tap_harness_args => {jobs  => 9,
-                         rules => {par => ['*']}
-    },
-    meta_merge     => {
-        keywords  => [qw[Liquid Template Engine Solution stateless]],
-        resources => {
-            bugtracker => {web => 'http://github.com/sanko/solution/issues',
-                           mailto => 'sanko@cpan.org'
-            },
-            repository => {url  => 'git://github.com/sanko/solution.git',
-                           web  => 'http://github.com/sanko/solution/tree',
-                           type => 'git'
-            },
-            ChangeLog => 'http://github.com/sanko/solution/commits/',
-
-            #homepage => 'http://sankorobinson.com/solution/',
-            license => ['http://www.perlfoundation.org/artistic_license_2_0']
-        }
-    }
+my $mb = Module::Build->new(
+              module_name    => 'Solution',
+              license        => 'artistic_2',
+              dist_author    => 'Sanko Robinson <sanko@cpan.org>',
+              dist_version   => $VERSION,
+              dist_abstract  => 'A Simple, Stateless Template System',
+              requires       => {perl => 5.006001, 'File::Spec' => 0},
+              build_requires => {'File::Find'    => 0,
+                                 'File::Spec'    => 0,
+                                 'Module::Build' => 0.4,
+                                 perl            => 5.006001,
+                                 'Test::More'    => '0.94',
+                                 ($is_developer ?
+                                      ('CPAN::Meta::Converter' => 0,
+                                       'CPAN::Meta::Validator' => 0,
+                                       JSON                    => 0,
+                                       'Perl::Tidy'            => 0
+                                      )
+                                  : ()
+                                 ),
+              },
+              configure_requires => {'Module::Build' => 0.4},
+              add_to_cleanup     => [qw[Solution-*]],
+              no_index           => {directory       => [qw[examples inc t]]},
+              test_files         => \@tests,
+              test_file_exts     => ['.t'],
+              use_tap_harness    => 1,
+              tap_harness_args   => {
+                                   jobs  => 9,
+                                   rules => {par => ['*']}
+              },
+              meta_merge => {
+                  keywords => [qw[Liquid Template Engine Solution stateless]],
+                  resources => {
+                      bugtracker => 'http://github.com/sanko/solution/issues',
+                      repository => 'git://github.com/sanko/solution.git',
+                      ChangeLog => 'http://github.com/sanko/solution/commits/'
+                  }
+              }
 );
-$mb->notes(automated_testing => $automated_testing       ? 1 : 0);
-$mb->notes(is_developer      => $is_developer            ? 1 : 0);
+$mb->notes(automated_testing => $automated_testing ? 1 : 0);
+$mb->notes(is_developer      => $is_developer      ? 1 : 0);
 $mb->notes(test_suite        => \@tests);
 $mb->notes(gmtime            => scalar gmtime);
 $mb->create_build_script;
@@ -76,5 +64,3 @@ sub find_cb {
     return unless $_ =~ m[.+\.t$];
     return push @tests, $File::Find::name;
 }
-
-# $Id$

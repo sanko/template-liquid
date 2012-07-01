@@ -26,6 +26,7 @@ lib/Solution/Variable.pm
 LICENSE
 MANIFEST			This list of files
 META.json
+META.yml
 README
 t/0100_filters/0101_standard_filters.t
 t/0200_tags/02001_for.t

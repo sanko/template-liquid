@@ -68,3 +68,5 @@ examples/example_site/
 examples/site_generator.pl
 ~compile.pl
 ~dist.pl
+MYMETA.json
+examples/~*
