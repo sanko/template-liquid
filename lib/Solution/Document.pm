@@ -58,7 +58,7 @@ package Solution::Document;
                                 }
                         );
                     push @{$self->{'nodelist'}}, $_tag;
-                    if ($self->conditional_tag) {
+                    if ($_tag->conditional_tag) {
                         push @{$_tag->{'blocks'}},
                             Solution::Block->new(
                                               {tag_name => $tag,
