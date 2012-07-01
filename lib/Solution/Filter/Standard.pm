@@ -38,7 +38,13 @@ package Solution::Filter::Standard;
         return scalar keys %{$_[0]} if ref $_[0] eq 'HASH';
         return length $_[0];
     }
-    sub strip_html     { $_[0] =~ s[<.*?>][]g;      return $_[0]; }
+
+    sub strip_html {
+        $_[0] =~ s[<.*?>][]g;
+        $_[0] =~ s[<!--.*?-->][]g;
+        $_[0] =~ s[<script.*?<\/script>][]g;
+        return $_[0];
+    }
     sub strip_newlines { $_[0] =~ s[\n][]g;         return $_[0]; }
     sub newline_to_br  { $_[0] =~ s[\n][<br />\n]g; return $_[0]; }
 
