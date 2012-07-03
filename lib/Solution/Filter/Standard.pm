@@ -109,10 +109,20 @@ package Solution::Filter::Standard;
     }
     sub divided_by { return $_[0] / $_[1]; }
 
+    sub modulo {
+        return ((defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (defined $_[1]
+                               && $_[1] =~ m[[^\d\.]]) ? $_[0] : $_[0] % $_[1]
+        );
+    }
+
     #
     # TODO
-    sub escape      {...}    # Escape's HTML
-    sub escape_once {...}
+    sub escape {...}    # Escape's HTML
+
+    sub escape_once {
+        ...;
+    } # returns an escaped version of html without affecting existing escaped entities
+    sub map {...}    # map/collect on a given property
 }
 1;
 
@@ -346,6 +356,12 @@ Simple multiplication or string repetion.
 Simple division.
 
     {{ 10 | divided_by:2 }} => 5
+
+=head2 C<modulo>
+
+Simple modulo operation.
+
+    {{ 10 | modulo:3 }} => 1
 
 =head1 Author
 
