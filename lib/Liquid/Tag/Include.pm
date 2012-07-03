@@ -1,26 +1,26 @@
-package Solution::Tag::Include;
+package Liquid::Tag::Include;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
+    use Liquid::Error;
+    use Liquid::Utility;
     use File::Spec;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('include', __PACKAGE__) if $Solution::VERSION;
+    BEGIN { our @ISA = qw[Liquid::Tag]; }
+    Liquid->register_tag('include', __PACKAGE__) if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -38,13 +38,13 @@ package Solution::Tag::Include;
     sub render {
         my ($self) = @_;
         my $file = $self->resolve($self->{'file'});
-        raise Solution::ArgumentError
+        raise Liquid::ArgumentError
             'Error: Missing or undefined argument passed to include' && return
             if !defined $file;
         if (   $file !~ m[^[\w\\/\.-_]+$]i
             || $file =~ m[\.[\\/]]
             || $file =~ m[[//\\]\.])
-        {   raise Solution::ArgumentError sprintf
+        {   raise Liquid::ArgumentError sprintf
                 q[Error: Include file '%s' contains invalid characters or sequiences],
                 $file && return;
         }
@@ -54,19 +54,19 @@ package Solution::Tag::Include;
             '_includes',
             $file
         );
-        raise Solution::FileSystemError sprintf
+        raise Liquid::FileSystemError sprintf
             'Error: Included file %s not found', $file
             && return
             if !-f $file;
         open(my ($FH), '<', $file)
-            || raise Solution::FileSystemError sprintf
+            || raise Liquid::FileSystemError sprintf
             'Error: Cannot include file %s: %s',
             $file, $! && return;
         sysread($FH, my ($DATA), -s $FH) == -s $FH
-            || raise Solution::FileSystemError sprintf
+            || raise Liquid::FileSystemError sprintf
             'Error: Cannot include file %s (Failed to read %d bytes): %s',
             $file, -s $FH, $! && return;
-        my $partial = Solution::Template->parse($DATA);
+        my $partial = Liquid::Template->parse($DATA);
         $partial->{'context'} = $self->template->context;
         my $return = $partial->context->stack(sub { $partial->render(); });
         return $return;
@@ -78,7 +78,7 @@ package Solution::Tag::Include;
 
 =head1 NAME
 
-Solution::Tag::Include - Include another file
+Liquid::Tag::Include - Include another file
 
 =head1 Synopsis
 
@@ -91,11 +91,11 @@ templates, you may consider making the snippet an include.
 
 You include static filenames...
 
-   Solution::Template->parse("{%include 'my.inc'%}")->render();
+   Liquid::Template->parse("{%include 'my.inc'%}")->render();
 
 ...or 'dynamic' filenames (for example, based on a variable)...
 
-    Solution::Template->parse('{%include inc%}')->render({inc => 'my.inc'});
+    Liquid::Template->parse('{%include inc%}')->render({inc => 'my.inc'});
 
 =head1 Notes
 
@@ -109,7 +109,7 @@ This is a 15m hack and is subject to change ...and may be completly broken.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

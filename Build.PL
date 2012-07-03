@@ -12,7 +12,7 @@ my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{'RELEASE_TESTING'} ? 1 : 0);
 find \&find_cb, qw[t/0100_filters t/0200_tags],
     ($is_developer ? 't/9000_author' : ());
 my $mb = Module::Build->new(
-              module_name    => 'Solution',
+              module_name    => 'Liquid',
               license        => 'artistic_2',
               dist_author    => 'Sanko Robinson <sanko@cpan.org>',
               dist_version   => $VERSION,
@@ -33,7 +33,7 @@ my $mb = Module::Build->new(
                                  ),
               },
               configure_requires => {'Module::Build' => 0.4},
-              add_to_cleanup     => [qw[Solution-*]],
+              add_to_cleanup     => [qw[Liquid-*]],
               no_index           => {directory       => [qw[examples inc t]]},
               test_files         => \@tests,
               test_file_exts     => ['.t'],
@@ -45,9 +45,9 @@ my $mb = Module::Build->new(
               meta_merge => {
                   keywords => [qw[Liquid Template Engine Solution stateless]],
                   resources => {
-                      bugtracker => 'http://github.com/sanko/solution/issues',
-                      repository => 'git://github.com/sanko/solution.git',
-                      ChangeLog => 'http://github.com/sanko/solution/commits/'
+                      bugtracker => 'http://github.com/sanko/Liquid/issues',
+                      repository => 'git://github.com/sanko/Liquid.git',
+                      ChangeLog => 'http://github.com/sanko/Liquid/commits/'
                   }
               }
 );

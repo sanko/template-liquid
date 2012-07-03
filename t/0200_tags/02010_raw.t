@@ -2,22 +2,22 @@ use strict;
 use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
-use Solution;
+use Liquid;
 
 #
-is( Solution::Template->parse(
+is( Liquid::Template->parse(
               <<'INPUT')->render(), <<'EXPECTED', 'raw gulps everything [A]');
 {%raw%}Test{%endraw%}
 INPUT
 Test
 EXPECTED
-is( Solution::Template->parse(
+is( Liquid::Template->parse(
               <<'INPUT')->render(), <<'EXPECTED', 'raw gulps everything [B]');
 {%raw%}{{ 'Hi!' }}{%endraw%}
 INPUT
 {{ 'Hi!' }}
 EXPECTED
-is( Solution::Template->parse(
+is( Liquid::Template->parse(
               <<'INPUT')->render(), <<'EXPECTED', 'raw gulps everything [C]');
 {% raw %}
 In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.

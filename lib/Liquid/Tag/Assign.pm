@@ -1,25 +1,25 @@
-package Solution::Tag::Assign;
+package Liquid::Tag::Assign;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('assign', __PACKAGE__) if $Solution::VERSION;
+    use Liquid::Error;
+    use Liquid::Utility;
+    BEGIN { our @ISA = qw[Liquid::Tag]; }
+    Liquid->register_tag('assign', __PACKAGE__) if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -31,16 +31,16 @@ package Solution::Tag::Assign;
         $args->{'filters'} = [];
         if ($filters) {
 
-            for my $filter (split $Solution::Utility::FilterSeparator,
+            for my $filter (split $Liquid::Utility::FilterSeparator,
                             $filters)
             {   my ($filter, $f_args)
-                    = split $Solution::Utility::FilterArgumentSeparator,
+                    = split $Liquid::Utility::FilterArgumentSeparator,
                     $filter, 2;
                 $filter =~ s[\s*$][];    # XXX - the splitter should clean...
                 $filter =~ s[^\s*][];    # XXX -  ...this up for us.
                 my @f_args
                     = $f_args ?
-                    split $Solution::Utility::VariableFilterArgumentParser,
+                    split $Liquid::Utility::VariableFilterArgumentParser,
                     $f_args
                     : ();
                 push @{$args->{'filters'}}, [$filter, \@f_args];
@@ -53,7 +53,7 @@ package Solution::Tag::Assign;
         my ($self) = @_;
         my $var    = $self->{'variable'};
         my $val    = $self->resolve($self->{'value'});
-        {    # XXX - Duplicated in Solution::Variable::render
+        {    # XXX - Duplicated in Liquid::Variable::render
         FILTER: for my $filter (@{$self->{'filters'}}) {
                 my ($name, $args) = @$filter;
                 map { $_ = m[^(['"])(.+)\1\s*$] ? $2 : $self->resolve($_) }
@@ -64,7 +64,7 @@ package Solution::Tag::Assign;
                         next FILTER;
                     }
                     else {
-                        raise Solution::FilterNotFound $name;
+                        raise Liquid::FilterNotFound $name;
                     }
                 }
             }
@@ -79,7 +79,7 @@ package Solution::Tag::Assign;
 
 =head1 NAME
 
-Solution::Tag::Assign - Variable assignment construct
+Liquid::Tag::Assign - Variable assignment construct
 
 =head1 Synopsis
 
@@ -94,7 +94,7 @@ a rather straightforward syntax.
     {% assign person.name = 'john' %}
     Hello, {{ person.name | capitalize }}.
 
-You can modify the value C<before> assignment with L<filters|Solution::Filters>.
+You can modify the value C<before> assignment with L<filters|Liquid::Filters>.
 
     {% assign person.name = 'john' | capitalize %}
     Hello, {{ person.name }}.
@@ -103,7 +103,7 @@ You can modify the value C<before> assignment with L<filters|Solution::Filters>.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

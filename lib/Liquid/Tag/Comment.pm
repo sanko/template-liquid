@@ -1,25 +1,25 @@
-package Solution::Tag::Comment;
+package Liquid::Tag::Comment;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('comment') if $Solution::VERSION;
+    use Liquid::Error;
+    BEGIN { our @ISA = qw[Liquid::Tag]; }
+    Liquid->register_tag('comment') if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
         if ($args->{'attrs'}) {
-            raise Solution::SyntaxError {
+            raise Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -42,7 +42,7 @@ package Solution::Tag::Comment;
 
 =head1 NAME
 
-Solution::Tag::Comment - General Purpose Content Eater
+Liquid::Tag::Comment - General Purpose Content Eater
 
 =head1 Synopsis
 
@@ -78,7 +78,7 @@ Code inside a C<comment> tag is not executed during rendering. So, this...
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

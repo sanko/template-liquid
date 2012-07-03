@@ -1,25 +1,25 @@
-package Solution::Tag::Cycle;
+package Liquid::Tag::Cycle;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -3; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    our @ISA = qw[Solution::Tag];
-    Solution->register_tag('cycle') if $Solution::VERSION;
+    use Liquid::Error;
+    use Liquid::Utility;
+    our @ISA = qw[Liquid::Tag];
+    Liquid->register_tag('cycle') if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -33,7 +33,7 @@ package Solution::Tag::Cycle;
             $name = $args->{'attrs'};
         }
         else {
-            raise Solution::SyntaxError {
+            raise Liquid::SyntaxError {
                 message => sprintf(
                     q[Syntax Error in '%s %s' - Valid syntax: cycle [name :] var [, var2, var3 ...]],
                     $args->{'tag_name'}, $args->{'attrs'}
@@ -43,13 +43,13 @@ package Solution::Tag::Cycle;
         }
 
         #$name = $args->{'tag_name'} . '-' . $name;
-        # XXX - Cycle objects are stored in Solution::Document objects
+        # XXX - Cycle objects are stored in Liquid::Document objects
         if (defined $args->{'template'}->document->{'_CYCLES'}{$name}) {
             $self = $args->{'template'}->document->{'_CYCLES'}{$name};
         }
         else {
             my @list
-                = split $Solution::Utility::VariableFilterArgumentParser,
+                = split $Liquid::Utility::VariableFilterArgumentParser,
                 $args->{'attrs'};
             $self = bless {name     => $name,
                            blocks   => [],
@@ -86,12 +86,12 @@ package Solution::Tag::Cycle;
 
 =head1 NAME
 
-Solution::Tag::Cycle - Document-level Persistant Lists
+Liquid::Tag::Cycle - Document-level Persistant Lists
 
 =head1 Description
 
 Often you have to alternate between different colors or similar tasks.
-L<Solution|Solution> has built-in support for such operations, using the
+L<Liquid|Liquid> has built-in support for such operations, using the
 C<cycle> tag.
 
 =head1 Synopsis
@@ -130,7 +130,7 @@ specify the name of the group. This can even be a variable.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

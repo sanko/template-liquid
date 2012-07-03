@@ -1,11 +1,11 @@
-package Solution::Context;
+package Liquid::Context;
 {
     use strict;
     use warnings;
     use lib '../';
     our $VERSION = '0.9.0';
-    use Solution::Utility;
-    use Solution::Error;
+    use Liquid::Utility;
+    use Liquid::Error;
     sub scopes    { return $_[0]->{'scopes'} }
     sub scope     { return $_[0]->{'scopes'}->[-1] }
     sub filters   { return $_[0]->{'filters'} }
@@ -24,14 +24,14 @@ package Solution::Context;
 
     sub push {
         my ($self, $context) = @_;
-        return raise Solution::ContextError 'Cannot push new scope!'
+        return raise Liquid::ContextError 'Cannot push new scope!'
             if scalar @{$self->{'scopes'}} == 100;
         return push @{$self->{'scopes'}}, (defined $context ? $context : {});
     }
 
     sub pop {
         my ($self) = @_;
-        return raise Solution::ContextError 'Cannot pop scope!'
+        return raise Liquid::ContextError 'Cannot pop scope!'
             if scalar @{$self->{'scopes'}} == 1;
         return pop @{$self->{'scopes'}};
     }
@@ -119,7 +119,7 @@ package Solution::Context;
             if $path =~ m[^\((\S+)\.\.(\S+)\)$];    # range
         return $1 if $path =~ m[^(\d+(?:[\d\.]+)?)$];    # int or bad float
         return $self->resolve($1)->[$2] if $path =~ m'^(.+)\[(.+)\]$';
-        my @path = split $Solution::Utility::VariableAttributeSeparator,
+        my @path = split $Liquid::Utility::VariableAttributeSeparator,
             $path;
         my $cursor = \$self->scope;
 

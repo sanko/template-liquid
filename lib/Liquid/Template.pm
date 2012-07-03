@@ -1,10 +1,10 @@
-package Solution::Template;
+package Liquid::Template;
 {
     use strict;
     use warnings;
     use lib '..';
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
-    use Solution::Utility;
+    use Liquid::Utility;
 
     #
     sub context  { $_[0]->{'context'} }
@@ -17,8 +17,8 @@ package Solution::Template;
     #
     sub new {
         my ($class) = @_;
-        my $self = bless {tags    => Solution->tags(),      # Global list
-                          filters => Solution->filters()    # Global list
+        my $self = bless {tags    => Liquid->tags(),      # Global list
+                          filters => Liquid->filters()    # Global list
         }, $class;
         return $self;
     }
@@ -26,8 +26,8 @@ package Solution::Template;
     sub parse {
         my ($class, $source) = @_;
         my $self = ref $class ? $class : $class->new();
-        my @tokens = Solution::Utility::tokenize($source);
-        $self->{'document'} ||= Solution::Document->new({template => $self});
+        my @tokens = Liquid::Utility::tokenize($source);
+        $self->{'document'} ||= Liquid::Document->new({template => $self});
         $self->{'document'}->parse(\@tokens);
         return $self;
     }
@@ -36,7 +36,7 @@ package Solution::Template;
         my ($self, $assigns, $info) = @_;
         $info ||= {};
         $info->{'template'} = $self;
-        $self->{'context'} = Solution::Context->new($assigns, $info);
+        $self->{'context'} = Liquid::Context->new($assigns, $info);
         return $self->document->render();
     }
 
@@ -58,7 +58,7 @@ package Solution::Template;
 
 =head1 NAME
 
-Solution::Template - Base class for all templates and template-like things
+Liquid::Template - Base class for all templates and template-like things
 
 =head1 Description
 
@@ -68,7 +68,7 @@ This is used internally.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

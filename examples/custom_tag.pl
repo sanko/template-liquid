@@ -2,20 +2,20 @@ use strict;
 use warnings;
 use lib '../lib';
 use lib 'lib';
-use Solution;
+use Liquid;
 $|++;
-Solution->register_tag('dump', 'SolutionX::Tag::Dump');
-print Solution::Template->parse(
+Liquid->register_tag('dump', 'LiquidX::Tag::Dump');
+print Liquid::Template->parse(
          <<'END')->render({array => [\%ENV, qw[this that the other], \@INC]});
    array: {% dump array %}
 END
 {
 
-    package SolutionX::Tag::Dump;
+    package LiquidX::Tag::Dump;
     use strict;
     use warnings;
     use Carp qw[confess];
-    BEGIN { our @ISA = qw[Solution::Tag]; }
+    BEGIN { our @ISA = qw[Liquid::Tag]; }
 
     sub new {
         my ($class, $args, $tokens) = @_;

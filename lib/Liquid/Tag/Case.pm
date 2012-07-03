@@ -1,31 +1,31 @@
-package Solution::Tag::Case;
+package Liquid::Tag::Case;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    our @ISA = qw[Solution::Tag::If];
-    use Solution::Error;
-    use Solution::Utility;
-    Solution->register_tag('case') if $Solution::VERSION;
+    our @ISA = qw[Liquid::Tag::If];
+    use Liquid::Error;
+    use Liquid::Utility;
+    Liquid->register_tag('case') if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
             if !defined $args->{'attrs'};
         if ($args->{'attrs'} !~ m[\S$]) {
-            raise Solution::SyntaxError {
+            raise Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -47,15 +47,15 @@ package Solution::Tag::Case;
 
     sub push_block {
         my ($self, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -65,13 +65,13 @@ package Solution::Tag::Case;
                 = join ' or ',
                 map { sprintf '%s == %s', $_, $args->{'parent'}{'value'} }
                 grep { defined $_ }
-                $args->{'attrs'} =~ m[(${Solution::Utility::Expression})
+                $args->{'attrs'} =~ m[(${Liquid::Utility::Expression})
                         (?:(?:\s+or\s+|\s*\,\s*)
-                           (${Solution::Utility::Expression}.*)
+                           (${Liquid::Utility::Expression}.*)
                         )?]x;
         }
         my $block =
-            Solution::Block->new({tag_name => $args->{'tag_name'},
+            Liquid::Block->new({tag_name => $args->{'tag_name'},
                                   end_tag  => 'end' . $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
                                   template => $args->{'template'},
@@ -97,7 +97,7 @@ package Solution::Tag::Case;
 
 =head1 NAME
 
-Solution::Tag::Case - Switch Statement Construct
+Liquid::Tag::Case - Switch Statement Construct
 
 =head1 Description
 

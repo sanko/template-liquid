@@ -1,14 +1,14 @@
-package Solution;
+package Liquid;
 {
     use strict;
     use warnings;
     our $VERSION = '0.9.0';
-    use Solution::Document;
-    use Solution::Context;
-    use Solution::Tag;
-    use Solution::Block;
-    use Solution::Condition;
-    use Solution::Template;
+    use Liquid::Document;
+    use Liquid::Context;
+    use Liquid::Tag;
+    use Liquid::Block;
+    use Liquid::Condition;
+    use Liquid::Template;
 
     #
     {    # Load all the tags from the standard library
@@ -24,7 +24,7 @@ package Solution;
                  no_chdir => 1
                 },
                 File::Spec->rel2abs(
-                      File::Basename::dirname(__FILE__) . '/Solution/' . $type
+                      File::Basename::dirname(__FILE__) . '/Liquid/' . $type
                 )
             );
         }
@@ -41,20 +41,20 @@ package Solution;
 
 =head1 NAME
 
-Solution - A Simple, Stateless Template System
+Liquid - A Simple, Stateless Template System
 
 =head1 Synopsis
 
-    use Solution;
-    my $template = Solution::Template->new();
-    $template->parse(    # See Solution::Tag for more examples
+    use Liquid;
+    my $template = Liquid::Template->new();
+    $template->parse(    # See Liquid::Tag for more examples
           '{% for x in (1..3) reversed %}{{ x }}, {% endfor %}{{ some.text }}'
     );
     print $template->render({some => {text => 'Contact!'}}); # 3, 2, 1, Contact!
 
 =head1 Description
 
-L<Solution|/"'Solution to what?' or 'Ugh! Why a new Top Level Namespace?'"> is
+L<Liquid|/"'Liquid to what?' or 'Ugh! Why a new Top Level Namespace?'"> is
 a template engine based on Liquid. The Liquid template engine was crafted for
 very specific requirements:
 
@@ -78,31 +78,31 @@ objects.
 
 =head1 Getting Started
 
-It's very simple to get started with L<Solution|Solution>. Just as in Liquid,
+It's very simple to get started with L<Liquid|Liquid>. Just as in Liquid,
 templates are built and used in two steps: Parse and Render.
 
-    my $sol = Solution::Template->new();  # Create a Solution::Template object
+    my $sol = Liquid::Template->new();  # Create a Liquid::Template object
     $sol->parse('Hi, {{name}}!');         # Parse and compile the template
     $sol->render({name => 'Sanko'});      # Render the output => "Hi, Sanko!"
 
     # Or if you're in a hurry...
-    Solution::Template->parse('Hi, {{name}}!')->render({name => 'Sanko'});
+    Liquid::Template->parse('Hi, {{name}}!')->render({name => 'Sanko'});
 
 The C<parse> step creates a fully compiled template which can be re-used as
 often as you like. You can store it in memory or in a cache for faster
 rendering later.
 
-All parameters you want Solution to work with have to be passed as parameters
-to the C<render> method. Solution is a closed ecosystem; it does not know
+All parameters you want Liquid to work with have to be passed as parameters
+to the C<render> method. Liquid is a closed ecosystem; it does not know
 about your local, instance, global, or environment variables.
 
-For an expanded overview of the Liquid/Solution syntax, please see
-L<Solution::Tag> and read
+For an expanded overview of the Liquid/Liquid syntax, please see
+L<Liquid::Tag> and read
 L<Liquid for Designers|http://wiki.github.com/tobi/liquid/liquid-for-designers>.
 
-=head1 Extending Solution
+=head1 Extending Liquid
 
-Extending the Solution template engine for your needs is almost too simple.
+Extending the Liquid template engine for your needs is almost too simple.
 Keep reading.
 
 =head2 Custom Filters
@@ -110,22 +110,22 @@ Keep reading.
 Filters are simple subs called when needed. They are not passed any state data
 by design and must return the modified content.
 
-TODO: I need to write Solution::Filter which will be POD with all sorts of
+TODO: I need to write Liquid::Filter which will be POD with all sorts of
 info in it. Yeah.
 
-=head3 C<< Solution->register_filter( ... ) >>
+=head3 C<< Liquid->register_filter( ... ) >>
 
-This registers a package which Solution will assume contains one or more
+This registers a package which Liquid will assume contains one or more
 filters.
 
     # Register a package as a filter
-    Solution->register_filter( 'SolutionX::Filter::Amalgamut' );
+    Liquid->register_filter( 'LiquidX::Filter::Amalgamut' );
 
     # Or simply say...
-    Solution->register_filter( );
-    # ...and Solution will assume the filters are in the calling package
+    Liquid->register_filter( );
+    # ...and Liquid will assume the filters are in the calling package
 
-=head3 C<< Solution->filters( ) >>
+=head3 C<< Liquid->filters( ) >>
 
 Returns a list containing all the tags currently loaded for informational
 purposes.
@@ -133,33 +133,33 @@ purposes.
 =head2 Custom Tags
 
 See the section entitled
-L<Extending Solution with Custom Tags|Solution::Tag/"Extending Solution with Custom Tags">
-in L<Solution::Tag> for more information.
+L<Extending Liquid with Custom Tags|Liquid::Tag/"Extending Liquid with Custom Tags">
+in L<Liquid::Tag> for more information.
 
-To assist with custom tag creation, Solution provides several basic tag types
+To assist with custom tag creation, Liquid provides several basic tag types
 for subclassing and exposes the following methods:
 
-=head3 C<< Solution->register_tag( ... ) >>
+=head3 C<< Liquid->register_tag( ... ) >>
 
 This registers a package which must contain (directly or through inheritance)
 both a C<parse> and C<render> method.
 
-    # Register a new tag which Solution will look for in the given package
-    Solution->register_tag( 'newtag', 'SolutionX::Tag::You're::It' );
+    # Register a new tag which Liquid will look for in the given package
+    Liquid->register_tag( 'newtag', 'LiquidX::Tag::You're::It' );
 
     # Or simply say...
-    Solution->register_tag( 'newtag' );
-    # ...and Solution will assume the new tag is in the calling package
+    Liquid->register_tag( 'newtag' );
+    # ...and Liquid will assume the new tag is in the calling package
 
 Pre-existing tags are replaced when new tags are registered with the same
 name. You may want to do this to override some functionality.
 
-=head3 C<< Solution->tags( ) >>
+=head3 C<< Liquid->tags( ) >>
 
 Returns a hashref containing all the tags currently loaded for informational
 purposes.
 
-=head1 Why should I use Solution?
+=head1 Why should I use Liquid?
 
 =over 4
 
@@ -180,33 +180,33 @@ I<Doctor Who>.
 
 =back
 
-=head1 Why shouldn't I use Solution?
+=head1 Why shouldn't I use Liquid?
 
 =over 4
 
 =item * You've found or written a template engine which fills your needs
-better than Liquid or Solution ever could.
+better than Liquid or Liquid ever could.
 
 =item * You are uncomfortable with text that you didn't copy and paste
 yourself. Everyone knows computers cannot be trusted.
 
 =back
 
-=head1 'Solution to what?' or 'Ugh! Why a new Top Level Namespace?'
+=head1 'Liquid to what?' or 'Ugh! Why a new Top Level Namespace?'
 
 I really don't have a good reason for claiming a new top level namespace and I
 promise to put myself in timeout as punishment.
 
 As I understand it, the original project's name, Liquid, is a reference to the
 classical states of matter (the engine itself being stateless). I settled on
-L<Solution|http://en.wikipedia.org/wiki/Solution> because it's Liquid but...
+L<Liquid|http://en.wikipedia.org/wiki/Liquid> because it's Liquid but...
 with... bits of other stuff floating in it. (Pretend you majored in chemistry
 instead of mathematics or computer science.) Liquid tempates will I<always> be
-work with Solution but (due to Solution's expanded syntax) Solution templates
+work with Liquid but (due to Liquid's expanded syntax) Liquid templates
 I<may not> be compatible with Liquid.
 
-This 'solution' is B<not> the answer to all your problems and obviously not
-the only solution for your templating troubles. It's simply I<a> solution.
+This 'Liquid' is B<not> the answer to all your problems and obviously not
+the only Liquid for your templating troubles. It's simply I<a> Liquid.
 
 =head1 Author
 
@@ -241,41 +241,41 @@ L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/u
 
 =cut
 {
-    { package Solution::Drop; }
-    { package Solution::Extensions; }
-    { package Solution::HTMLTags; }
-    { package Solution::Module_Ex; }
-    { package Solution::Strainer; }
-    { package Solution::Tag::IfChanged; }
+    { package Liquid::Drop; }
+    { package Liquid::Extensions; }
+    { package Liquid::HTMLTags; }
+    { package Liquid::Module_Ex; }
+    { package Liquid::Strainer; }
+    { package Liquid::Tag::IfChanged; }
 }
 1;
 __END__
 Module                            Purpose/Notes              Inheritance
 -----------------------------------------------------------------------------------------------------------------------------------------
-Solution                          | [done]                    |
-    Solution::Block               |                           |
-    Solution::Condition           | [done]                    |
-    Solution::Context             | [done]                    |
-    Solution::Document            | [done]                    |
-    Solution::Drop                |                           |
-    Solution::Errors              | [done]                    |
-    Solution::Extensions          |                           |
-    Solution::FileSystem          |                           |
-    Solution::HTMLTags            |                           |
-    Solution::Module_Ex           |                           |
-    Solution::StandardFilters     | [done]                    |
-    Solution::Strainer            |                           |
-    Solution::Tag                 |                           |
-        Solution::Tag::Assign     | [done]                    | Solution::Tag
-        Solution::Tag::Capture    | [done] extended assign    | Solution::Tag
-        Solution::Tag::Case       |                           |
-        Solution::Tag::Comment    | [done]                    | Solution::Tag
-        Solution::Tag::Cycle      |                           |
-        Solution::Tag::For        | [done] for loop construct | Solution::Tag
-        Solution::Tag::If         | [done] if/elsif/else      | Solution::Tag
-        Solution::Tag::IfChanged  |                           |
-        Solution::Tag::Include    | [done]                    | Solution::Tag
-        Solution::Tag::Unless     | [done]                    | Solution::Tag::If
-    Solution::Template            |                           |
-    Solution::Variable            | [done] echo statement     | Solution::Document
-Solution::Utility       *         | [temp] Non OO bin         |
+Liquid                          | [done]                    |
+    Liquid::Block               |                           |
+    Liquid::Condition           | [done]                    |
+    Liquid::Context             | [done]                    |
+    Liquid::Document            | [done]                    |
+    Liquid::Drop                |                           |
+    Liquid::Errors              | [done]                    |
+    Liquid::Extensions          |                           |
+    Liquid::FileSystem          |                           |
+    Liquid::HTMLTags            |                           |
+    Liquid::Module_Ex           |                           |
+    Liquid::StandardFilters     | [done]                    |
+    Liquid::Strainer            |                           |
+    Liquid::Tag                 |                           |
+        Liquid::Tag::Assign     | [done]                    | Liquid::Tag
+        Liquid::Tag::Capture    | [done] extended assign    | Liquid::Tag
+        Liquid::Tag::Case       |                           |
+        Liquid::Tag::Comment    | [done]                    | Liquid::Tag
+        Liquid::Tag::Cycle      |                           |
+        Liquid::Tag::For        | [done] for loop construct | Liquid::Tag
+        Liquid::Tag::If         | [done] if/elsif/else      | Liquid::Tag
+        Liquid::Tag::IfChanged  |                           |
+        Liquid::Tag::Include    | [done]                    | Liquid::Tag
+        Liquid::Tag::Unless     | [done]                    | Liquid::Tag::If
+    Liquid::Template            |                           |
+    Liquid::Variable            | [done] echo statement     | Liquid::Document
+Liquid::Utility       *         | [temp] Non OO bin         |

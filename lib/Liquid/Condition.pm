@@ -1,22 +1,22 @@
-package Solution::Condition;
+package Liquid::Condition;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../lib';
-    use Solution::Error;
-    our @ISA = qw[Solution::Block];
+    use Liquid::Error;
+    our @ISA = qw[Liquid::Block];
 
     # Makes life easy
     use overload 'bool' => \&is_true, fallback => 1;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
@@ -48,9 +48,9 @@ package Solution::Condition;
                            parent    => $args->{'parent'}
                     }, $class;
             }
-            raise Solution::ContextError 'Unknown operator ' . $condition;
+            raise Liquid::ContextError 'Unknown operator ' . $condition;
         }
-        return Solution::ContextError->new(
+        return Liquid::ContextError->new(
                             'Bad conditional statement: ' . $args->{'attrs'});
     }
     sub ne { return !$_[0]->eq }    # hashes
@@ -163,7 +163,7 @@ package Solution::Condition;
             return !!($self->resolve($self->{'lvalue'}) ? 1 : 0);
         }
         my $condition = $self->can($self->{'condition'});
-        raise Solution::ContextError {
+        raise Liquid::ContextError {
                            message => 'Bad condition ' . $self->{'condition'},
                            fatal   => 1
             }

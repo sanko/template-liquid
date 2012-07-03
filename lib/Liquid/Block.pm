@@ -1,23 +1,23 @@
-package Solution::Block;
+package Liquid::Block;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../lib';
-    use Solution::Error;
-    our @ISA = qw[Solution::Document];
+    use Liquid::Error;
+    our @ISA = qw[Liquid::Document];
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
              message => 'else tags are non-conditional: ' . $args->{'markup'},
              fatal   => 1
             }
@@ -47,16 +47,16 @@ package Solution::Block;
                                    condition => $x,
                                    lvalue    => pop @equality,
                                    rvalue =>
-                                       Solution::Condition->new(
+                                       Liquid::Condition->new(
                                           {template => $args->{'template'},
                                            parent   => $self,
                                            attrs    => shift @conditions
                                           }
                                        )
                                   },
-                                  'Solution::Condition'
+                                  'Liquid::Condition'
                             )
-                        : Solution::Condition->new(
+                        : Liquid::Condition->new(
                                           {attrs    => $x,
                                            template => $args->{'template'},
                                            parent   => $self,
@@ -77,17 +77,17 @@ package Solution::Block;
 
 =head1 NAME
 
-Solution::Block - Simple Node Type
+Liquid::Block - Simple Node Type
 
 =head1 Description
 
 There's not really a lot to say about basic blocks. The real action is in the
-classes which make use of them or subclass it. See L<if|Solution::Tag::If>,
-L<unless|Solution::Tag::Unless>, or L<case|Solution::Tag::Case>.
+classes which make use of them or subclass it. See L<if|Liquid::Tag::If>,
+L<unless|Liquid::Tag::Unless>, or L<case|Liquid::Tag::Case>.
 
 =head1 Bugs
 
-Liquid's (and by extension L<Solution|Solution>'s) treatment of
+Liquid's (and by extension L<Liquid|Liquid>'s) treatment of
 compound inequalities is broken. For example...
 
     {% if 'This and that' contains 'that' and 1 == 3 %}
@@ -104,7 +104,7 @@ It's just... not pretty but I'll work on it.
 
 =head1 See Also
 
-See L<Solution::Condition|Solution::Condition> for a list of supported
+See L<Liquid::Condition|Liquid::Condition> for a list of supported
 inequalities.
 
 =head1 Author

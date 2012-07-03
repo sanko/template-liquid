@@ -1,9 +1,9 @@
-package Solution::Filter::Standard;
+package Liquid::Filter::Standard;
 {
     use strict;
     use warnings;
     our $VERSION = '0.9.0';
-    Solution->register_filter() if $Solution::VERSION;
+    Liquid->register_filter() if $Liquid::VERSION;
 
     sub date {
         $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
@@ -94,7 +94,8 @@ package Solution::Filter::Standard;
     sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
 
     sub minus {
-        return $_[0] =~ m[^\d+$] && $_[1] =~ m[^\d+$] ? $_[0] - $_[1] : ();
+        return $_[0] =~ m[^[\d+\.]$]
+            && $_[1] =~ m[^\d+$] ? $_[0] - $_[1] : ();
     }
 
     sub plus {
@@ -109,10 +110,20 @@ package Solution::Filter::Standard;
     }
     sub divided_by { return $_[0] / $_[1]; }
 
+    sub modulo {
+        return ((defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (defined $_[1]
+                               && $_[1] =~ m[[^\d\.]]) ? $_[0] : $_[0] % $_[1]
+        );
+    }
+
     #
     # TODO
-    sub escape      {...}    # Escape's HTML
-    sub escape_once {...}
+    sub escape {...}    # Escape's HTML
+
+    sub escape_once {
+        ...;
+    } # returns an escaped version of html without affecting existing escaped entities
+    sub map {...}    # map/collect on a given property
 }
 1;
 
@@ -120,7 +131,7 @@ package Solution::Filter::Standard;
 
 =head1 NAME
 
-Solution::Filter::Standard - Default Filters Based on Liquid's Standard Set
+Liquid::Filter::Standard - Default Filters Based on Liquid's Standard Set
 
 =head1 Standard Filters
 

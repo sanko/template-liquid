@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
-use Solution;
-sub X { Solution::Template->parse(shift)->render(shift) }
+use Liquid;
+sub X { Liquid::Template->parse(shift)->render(shift) }
 $|++;
 
 # date
@@ -198,6 +198,15 @@ is(X(q[{{ 5|times:4 }}]), '20', q[{{ 5|times:4 }} => 20]);
 
 # division
 is(X(q[{{ 10 | divided_by:2 }}]), '5', q[{{ 10 | divided_by:2 }} => 5]);
+
+# modulo
+is(X(q[{{ 95 | modulo:6 }}]), '5', q[{{ 95 | modulo:6 }} => 5]);
+
+is(X(q[{{ 95 | modulo:6.4 }}]), '5', q[{{ 95 | modulo:6.4 }} => 5]);
+is(X(q[{{ 95.6 | modulo:6 }}]), '5', q[{{ 95.6 | modulo:6 }} => 5]);
+is(X(q[{{ a | modulo:c }}]), '', q[{{ a | modulo:c }} => [empty string]]);
+is(X(q[{{ 50 | modulo:c }}]), '50', q[{{ 50 | modulo:c }} => 50]);
+is(X(q[{{ a | modulo:3}}]), '0', q[{{ a | modulo:3 }} => 0]);
 
 # I'm finished
 done_testing();

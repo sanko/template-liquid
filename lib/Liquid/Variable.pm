@@ -1,24 +1,24 @@
-package Solution::Variable;
+package Liquid::Variable;
 {
     use strict;
     use warnings;
     use lib '../../lib';
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
-    use Solution::Error;
-    our @ISA = qw[Solution::Document];
+    use Liquid::Error;
+    our @ISA = qw[Liquid::Document];
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'}
-                || !$args->{'template'}->isa('Solution::Template');
-        raise Solution::ContextError {message => 'Missing parent argument',
+                || !$args->{'template'}->isa('Liquid::Template');
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing variable name in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -38,7 +38,7 @@ package Solution::Variable;
                     next FILTER;
                 }
             }
-            raise Solution::FilterNotFound $name;
+            raise Liquid::FilterNotFound $name;
         }
         return join '', @$val      if ref $val eq 'ARRAY';
         return join '', keys %$val if ref $val eq 'HASH';
@@ -51,7 +51,7 @@ package Solution::Variable;
 
 =head1 NAME
 
-Solution::Variable - Generic Value Container
+Liquid::Variable - Generic Value Container
 
 =head1 Description
 
@@ -64,7 +64,7 @@ handling echo statements:
 Internally, a variable is the basic container for everything; lists, scalars,
 hashes, and even objects.
 
-L<Filters|Solution::Filter> are applied to Solution::Variable during the
+L<Filters|Liquid::Filter> are applied to Liquid::Variable during the
 render stage.
 
 =head1 Author

@@ -1,20 +1,20 @@
-package Solution::Tag::Raw;
+package Liquid::Tag::Raw;
 {
     use strict;
     use warnings;
     our $VERSION = '0.9.0';
     use lib '../../../lib';
-    use Solution::Error;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('raw') if $Solution::VERSION;
+    use Liquid::Error;
+    BEGIN { our @ISA = qw[Liquid::Tag]; }
+    Liquid->register_tag('raw') if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
@@ -57,7 +57,7 @@ package Solution::Tag::Raw;
 
 =head1 NAME
 
-Solution::Tag::Raw - General Purpose Content Container
+Liquid::Tag::Raw - General Purpose Content Container
 
 =head1 Synopsis
 

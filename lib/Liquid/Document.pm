@@ -1,11 +1,11 @@
-package Solution::Document;
+package Liquid::Document;
 {
     use strict;
     use warnings;
     use lib '../';
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
-    use Solution::Variable;
-    use Solution::Utility;
+    use Liquid::Variable;
+    use Liquid::Utility;
 
     #
     sub resolve { $_[0]->template->context->resolve($_[1], $_[2]); }
@@ -21,10 +21,10 @@ package Solution::Document;
     #sub scopes { return $_[0]->context->scopes; }
     #sub scope  { return $_[0]->context->scope; }
     #sub merge  { return $_[0]->context->merge($_[1]); }
-    #BEGIN { our @ISA = qw[Solution::Template]; }
+    #BEGIN { our @ISA = qw[Liquid::Template]; }
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
@@ -39,9 +39,9 @@ package Solution::Document;
         (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
         my $self = ref $class ? $class : $class->new($args);
     NODE: while (my $token = shift @{$tokens}) {
-            if ($token =~ qr[^${Solution::Utility::TagStart}  # {%
+            if ($token =~ qr[^${Liquid::Utility::TagStart}  # {%
                                 (.+?)                         # etc
-                              ${Solution::Utility::TagEnd}    # %}
+                              ${Liquid::Utility::TagEnd}    # %}
                              $]x
                 )
             {   my ($tag, $attrs) = (split ' ', $1, 2);
@@ -60,7 +60,7 @@ package Solution::Document;
                     push @{$self->{'nodelist'}}, $_tag;
                     if ($_tag->conditional_tag) {
                         push @{$_tag->{'blocks'}},
-                            Solution::Block->new(
+                            Liquid::Block->new(
                                               {tag_name => $tag,
                                                attrs    => $attrs,
                                                template => $_tag->template,
@@ -94,35 +94,35 @@ package Solution::Document;
                     );
                 }
                 else {
-                    raise Solution::SyntaxError 'Unknown tag: ' . $token;
+                    raise Liquid::SyntaxError 'Unknown tag: ' . $token;
                 }
             }
             elsif (
                 $token =~ qr[^
-                    ${Solution::Utility::VariableStart} # {{
+                    ${Liquid::Utility::VariableStart} # {{
                         (.+?)                           #  stuff + filters?
-                    ${Solution::Utility::VariableEnd}   # }}
+                    ${Liquid::Utility::VariableEnd}   # }}
                 $]x
                 )
             {   my ($variable, $filters) = split qr[\s*\|\s*], $1, 2;
                 my @filters;
-                for my $filter (split $Solution::Utility::FilterSeparator,
+                for my $filter (split $Liquid::Utility::FilterSeparator,
                                 $filters || '')
                 {   my ($filter, $args)
-                        = split $Solution::Utility::FilterArgumentSeparator,
+                        = split $Liquid::Utility::FilterArgumentSeparator,
                         $filter, 2;
                     $filter =~ s[\s*$][]; # XXX - the splitter should clean...
                     $filter =~ s[^\s*][]; # XXX -  ...this up for us.
                     my @args
                         = $args ?
                         split
-                        $Solution::Utility::VariableFilterArgumentParser,
+                        $Liquid::Utility::VariableFilterArgumentParser,
                         $args
                         : ();
                     push @filters, [$filter, \@args];
                 }
                 push @{$self->{'nodelist'}},
-                    Solution::Variable->new({template => $self->template,
+                    Liquid::Variable->new({template => $self->template,
                                              parent   => $self,
                                              markup   => $token,
                                              variable => $variable,

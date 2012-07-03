@@ -1,32 +1,32 @@
-package Solution::Tag::For;
+package Liquid::Tag::For;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    our @ISA = qw[Solution::Tag::If];
+    use Liquid::Error;
+    use Liquid::Utility;
+    our @ISA = qw[Liquid::Tag::If];
     my $Help_String = 'TODO';
-    Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
+    Liquid->register_tag('for', __PACKAGE__) if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
             if !defined $args->{'attrs'};
         if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$])
-        {   raise Solution::SyntaxError {
+        {   raise Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
             };
@@ -35,7 +35,7 @@ package Solution::Tag::For;
         my $reversed = $attr =~ s[^reversed\b][] ? 1 : 0;
         my %attr = map {
             my ($k, $v)
-                = split($Solution::Utility::FilterArgumentSeparator, $_, 2);
+                = split($Liquid::Utility::FilterArgumentSeparator, $_, 2);
             { $k => $v };
         } grep { defined && length } split qr[\s+], $attr || '';
         my $self = bless {attributes      => \%attr,
@@ -151,7 +151,7 @@ package Solution::Tag::For;
 
 =head1 NAME
 
-Solution::Tag::For - Simple loop construct
+Liquid::Tag::For - Simple loop construct
 
 =head1 Synopsis
 
@@ -161,7 +161,7 @@ Solution::Tag::For - Simple loop construct
 
 =head1 Description
 
-L<Solution|Solution> allows for loops over collections.
+L<Liquid|Liquid> allows for loops over collections.
 
 =head2 Loop-scope Variables
 
@@ -266,7 +266,7 @@ numbers:
 
 =head2 Hashes
 
-To deal with the possibility of looping through hash references, Solution
+To deal with the possibility of looping through hash references, Liquid
 extends the Liquid Engine's functionality. When looping through a hash, each
 item is made a single key/value pair. The item's actual key and value are in
 the C<item.key> and C<item.value> variables. ...here's an example:
@@ -298,7 +298,7 @@ The C<else> branch is executed whenever the for branch will never be executed
 =head1 TODO
 
 Since this is a customer facing template engine, Liquid should provide some
-way to limit L<ranges|Solution::Tag::For/"Numeric Ranges"> and/or depth to avoid
+way to limit L<ranges|Liquid::Tag::For/"Numeric Ranges"> and/or depth to avoid
 (functionally) infinite loops with code like...
 
     {% for w in (1..10000000000) %}
@@ -315,7 +315,7 @@ way to limit L<ranges|Solution::Tag::For/"Numeric Ranges"> and/or depth to avoid
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

@@ -1,4 +1,4 @@
-package Solution::Utility;
+package Liquid::Utility;
 {
     use strict;
     use warnings;
@@ -49,7 +49,7 @@ package Solution::Utility;
 
 =head1 NAME
 
-Solution::Utility - Utility stuff. Watch your step.
+Liquid::Utility - Utility stuff. Watch your step.
 
 =head1 Description
 
@@ -59,7 +59,7 @@ It's best to just forget this package exists. It's messy but seems to work.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Liquid|Liquid/"Create your own filters">'s docs on custom filter creation
 
 =head1 Author
 

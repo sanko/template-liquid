@@ -1,25 +1,25 @@
-package Solution::Tag::If;
+package Liquid::Tag::If;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    our @ISA = qw[Solution::Tag];
-    Solution->register_tag('if') if $Solution::VERSION;
+    use Liquid::Error;
+    use Liquid::Utility;
+    our @ISA = qw[Liquid::Tag];
+    Liquid->register_tag('if') if $Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+        raise Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
             }
@@ -40,7 +40,7 @@ package Solution::Tag::If;
     sub push_block {
         my ($self, $args) = @_;
         my $block =
-            Solution::Block->new({tag_name => $args->{'tag_name'},
+            Liquid::Block->new({tag_name => $args->{'tag_name'},
                                   attrs    => $args->{'attrs'},
                                   template => $args->{'template'},
                                   parent   => $self
@@ -68,7 +68,7 @@ package Solution::Tag::If;
 
 =head1 NAME
 
-Solution::Tag::If - Basic If/Elsif/Else Construct
+Liquid::Tag::If - Basic If/Elsif/Else Construct
 
 =head1 Description
 
@@ -79,7 +79,7 @@ same pattern until we find a true condition or a fallback C<else> tag.
 
 =head2 Compound Inequalities
 
-Solution supports compund inequalities. Try these...
+Liquid supports compund inequalities. Try these...
 
     {% if some.value == 3 and some.string contains 'find me' %}
         Wow! It's a match...
@@ -89,7 +89,7 @@ Solution supports compund inequalities. Try these...
 
 =head1 Bugs
 
-Liquid's (and by extension L<Solution|Solution>'s) treatment of
+Liquid's (and by extension L<Liquid|Liquid>'s) treatment of
 compound inequalities is broken. For example...
 
     {% if 'This and that' contains 'that' and 1 == 3 %}
@@ -103,12 +103,12 @@ compound inequalities is broken. For example...
     if ( ( 'This and that' =~ m[that]) && ( 1 == 3 ) ) { ...
 
 It's just... not pretty but I'll work on it. The actual problem is in
-L<Solution::Block|Solution::Block> if you feel like lending a hand. Wink,
+L<Liquid::Block|Liquid::Block> if you feel like lending a hand. Wink,
 wink.
 
 =head1 See Also
 
-See L<Solution::Condition|Solution::Condition> for a list of supported
+See L<Liquid::Condition|Liquid::Condition> for a list of supported
 inequalities.
 
 =head1 Author

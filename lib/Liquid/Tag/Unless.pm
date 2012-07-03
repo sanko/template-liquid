@@ -1,13 +1,13 @@
-package Solution::Tag::Unless;
+package Liquid::Tag::Unless;
 {
     use strict;
     use warnings;
     our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
     use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    our @ISA = qw[Solution::Tag::If];
-    Solution->register_tag('unless') if $Solution::VERSION;
+    use Liquid::Error;
+    use Liquid::Utility;
+    our @ISA = qw[Liquid::Tag::If];
+    Liquid->register_tag('unless') if $Liquid::VERSION;
 
     sub render {
         my ($self) = @_;
@@ -28,11 +28,11 @@ package Solution::Tag::Unless;
 
 =head1 NAME
 
-Solution::Tag::Unless - Unless: The Opposite of If
+Liquid::Tag::Unless - Unless: The Opposite of If
 
 =head1 Description
 
-Unless is the opposite of L<if|Solution::Tag::If>. The block is rendered
+Unless is the opposite of L<if|Liquid::Tag::If>. The block is rendered
 I<unless> the conditon is true.
 
 =head1 Synopsis
@@ -45,12 +45,12 @@ I<unless> the conditon is true.
 
 =head1 Bugs
 
-Since L<unless|Solution::Tag::Unless> is simply a subclass, see the list of
-bugs for L<ifSolution::Tag::If>. They basically apply here too.
+Since L<unless|Liquid::Tag::Unless> is simply a subclass, see the list of
+bugs for L<ifLiquid::Tag::If>. They basically apply here too.
 
 =head1 See Also
 
-See L<Solution::Condition|Solution::Condition> for a list of supported
+See L<Liquid::Condition|Liquid::Condition> for a list of supported
 inequalities.
 
 =head1 Author
