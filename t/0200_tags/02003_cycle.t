@@ -87,5 +87,3 @@ EXPECTED
 
 # I'm finished
 done_testing();
-
-# $Id$

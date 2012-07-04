@@ -2,7 +2,7 @@ package Solution::Tag::Raw;
 {
     use strict;
     use warnings;
-    our $VERSION = '0.9.0';
+    our $VERSION = '0.9.1';
     use lib '../../../lib';
     use Solution::Error;
     BEGIN { our @ISA = qw[Solution::Tag]; }
@@ -119,7 +119,5 @@ When separated from the distribution, all original POD documentation is
 covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
 http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
-
-=for git $Id$
 
 =cut

@@ -2,6 +2,7 @@ Version 0.9.1 | Round about midnight on July 4th, 2012 | xxxxxxx
 
     Resolved Issues/Bug Fixes:
      * Removing unused and undeclared debugging prereq Data::Dump
+     * Fixing version numbers (I hope)
 
 Version 0.9.0 | Early afternoon on July 3rd, 2012 | 5375280
 

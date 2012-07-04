@@ -51,6 +51,4 @@ INPUT
 EXPECTED
 
 # I'm finished
-done_testing();
-
-# $Id$
+done_testing

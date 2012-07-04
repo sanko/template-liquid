@@ -2,7 +2,7 @@ package Solution::Error;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $VERSION = '0.9.1';
     use Carp qw[];
     sub message { return $_[0]->{'message'} }
     sub fatal   { return $_[0]->{'fatal'} }
@@ -37,5 +37,3 @@ package Solution::Error;
     { package Solution::StackLevelError; our @ISA = qw'Solution::Error' }
 }
 1;
-
-# $Id$

@@ -3,7 +3,7 @@ package Solution::Document;
     use strict;
     use warnings;
     use lib '../';
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $VERSION = '0.9.1';
     use Solution::Variable;
     use Solution::Utility;
 
@@ -149,5 +149,3 @@ package Solution::Document;
     sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
 }
 1;
-
-# $Id$

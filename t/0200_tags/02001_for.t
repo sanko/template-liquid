@@ -10,7 +10,6 @@ is(Solution::Template->parse(<<'TEMPLATE')->render(), <<'EXPECTED', '(1..5)');
 TEMPLATE
 XXXXX
 EXPECTED
-
 is( Solution::Template->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', q[(range.from..range.to)]);
 {% for x in (range.from..range.to) %}X{% endfor %}
@@ -425,36 +424,26 @@ is( Solution::Template->parse(
     'forloop.type eq "HASH"'
 );
 
-
 # For-else: https://github.com/Shopify/liquid/pull/56
 is( Solution::Template->parse(
-        <<'TEMPLATE')->render({array=>[1,2,3]}), <<'EXPECTED', '+++');
+            <<'TEMPLATE')->render({array => [1, 2, 3]}), <<'EXPECTED', '+++');
 {%for item in array%}+{%else%}-{%endfor%}
 TEMPLATE
 +++
 EXPECTED
-
 is( Solution::Template->parse(
-        <<'TEMPLATE')->render({array=>[]}), <<'EXPECTED', '-');
+                     <<'TEMPLATE')->render({array => []}), <<'EXPECTED', '-');
 {%for item in array%}+{%else%}-{%endfor%}
 TEMPLATE
 -
 EXPECTED
-
 is( Solution::Template->parse(
-        <<'TEMPLATE')->render({array=>undef}), <<'EXPECTED', '-');
+                  <<'TEMPLATE')->render({array => undef}), <<'EXPECTED', '-');
 {%for item in array%}+{%else%}-{%endfor%}
 TEMPLATE
 -
 EXPECTED
-
-
-
-
-
 
 # make sure the local variable overrides the higher scope
 # I'm finished
 done_testing();
-
-# $Id$

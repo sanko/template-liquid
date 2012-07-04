@@ -3,7 +3,7 @@ package Solution::Context;
     use strict;
     use warnings;
     use lib '../';
-    our $VERSION = '0.9.0';
+    our $VERSION = '0.9.1';
     use Solution::Utility;
     use Solution::Error;
     sub scopes    { return $_[0]->{'scopes'} }
@@ -162,7 +162,5 @@ package Solution::Context;
 1;
 
 =pod
-
-=for git $Id$
 
 =cut

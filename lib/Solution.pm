@@ -2,7 +2,7 @@ package Solution;
 {
     use strict;
     use warnings;
-    our $VERSION = '0.9.0';
+    our $VERSION = '0.9.1';
     use Solution::Document;
     use Solution::Context;
     use Solution::Tag;
@@ -237,16 +237,50 @@ L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.or
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
-=for git $Id$
-
 =cut
 {
-    { package Solution::Drop; }
-    { package Solution::Extensions; }
-    { package Solution::HTMLTags; }
-    { package Solution::Module_Ex; }
-    { package Solution::Strainer; }
-    { package Solution::Tag::IfChanged; }
+    { package Solution::Drop;           our $VERSION = '0.9.1'; }
+    { package Solution::Extensions;     our $VERSION = '0.9.1'; }
+    { package Solution::HTMLTags;       our $VERSION = '0.9.1'; }
+    { package Solution::Module_Ex;      our $VERSION = '0.9.1'; }
+    { package Solution::Strainer;       our $VERSION = '0.9.1'; }
+    { package Solution::Tag::IfChanged; our $VERSION = '0.9.1'; }
+
+    #
+    { package Liquid;                   our $VERSION = '0.9.1' }
+    { package Liquid::Variable;         our $VERSION = '0.9.1' }
+    { package Liquid::Utility;          our $VERSION = '0.9.1' }
+    { package Liquid::Template;         our $VERSION = '0.9.1' }
+    { package Liquid::Tag;              our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Unless;      our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Raw;         our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Include;     our $VERSION = '0.9.1' }
+    { package Liquid::Tag::IfChanged;   our $VERSION = '0.9.1' }
+    { package Liquid::Tag::If;          our $VERSION = '0.9.1' }
+    { package Liquid::Tag::For;         our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Cycle;       our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Comment;     our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Case;        our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Capture;     our $VERSION = '0.9.1' }
+    { package Liquid::Tag::Assign;      our $VERSION = '0.9.1' }
+    { package Liquid::SyntaxError;      our $VERSION = '0.9.1' }
+    { package Liquid::Strainer;         our $VERSION = '0.9.1' }
+    { package Liquid::StandardError;    our $VERSION = '0.9.1' }
+    { package Liquid::StackLevelError;  our $VERSION = '0.9.1' }
+    { package Liquid::Module_Ex;        our $VERSION = '0.9.1' }
+    { package Liquid::HTMLTags;         our $VERSION = '0.9.1' }
+    { package Liquid::FilterNotFound;   our $VERSION = '0.9.1' }
+    { package Liquid::Filter::Standard; our $VERSION = '0.9.1' }
+    { package Liquid::FileSystemError;  our $VERSION = '0.9.1' }
+    { package Liquid::Extensions;       our $VERSION = '0.9.1' }
+    { package Liquid::Error;            our $VERSION = '0.9.1' }
+    { package Liquid::Drop;             our $VERSION = '0.9.1' }
+    { package Liquid::Document;         our $VERSION = '0.9.1' }
+    { package Liquid::ContextError;     our $VERSION = '0.9.1' }
+    { package Liquid::Context;          our $VERSION = '0.9.1' }
+    { package Liquid::Condition;        our $VERSION = '0.9.1' }
+    { package Liquid::Block;            our $VERSION = '0.9.1' }
+    { package Liquid::ArgumentError;    our $VERSION = '0.9.1' }
 }
 1;
 __END__

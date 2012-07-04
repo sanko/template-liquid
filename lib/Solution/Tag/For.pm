@@ -2,7 +2,7 @@ package Solution::Tag::For;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -4; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $VERSION = '0.9.1';
     use lib '../../../lib';
     use Solution::Error;
     use Solution::Utility;
@@ -325,7 +325,7 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009,2010 by Sanko Robinson <sanko@cpan.org>
+Copyright (C) 2009-2012 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of
@@ -339,7 +339,5 @@ covered by the
 L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.org/licenses/by-sa/3.0/us/legalcode>.
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
-
-=for git $Id$
 
 =cut

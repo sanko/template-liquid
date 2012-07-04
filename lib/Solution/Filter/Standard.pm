@@ -2,7 +2,7 @@ package Solution::Filter::Standard;
 {
     use strict;
     use warnings;
-    our $VERSION = '0.9.0';
+    our $VERSION = '0.9.1';
     Solution->register_filter() if $Solution::VERSION;
 
     sub date {
@@ -110,19 +110,18 @@ package Solution::Filter::Standard;
     sub divided_by { return $_[0] / $_[1]; }
 
     sub modulo {
-        return ((defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (defined $_[1]
+        return ((!defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (!defined $_[1]
                                && $_[1] =~ m[[^\d\.]]) ? $_[0] : $_[0] % $_[1]
         );
     }
 
     #
     # TODO
-    sub escape {...}    # Escape's HTML
-
-    sub escape_once {
-        ...;
-    } # returns an escaped version of html without affecting existing escaped entities
-    sub map {...}    # map/collect on a given property
+    #sub escape {...}    # Escape's HTML
+    #sub escape_once {
+    #    ...;
+    #} # returns an escaped version of html without affecting existing escaped entities
+    #sub map {...}    # map/collect on a given property
 }
 1;
 
@@ -371,7 +370,7 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009,2010 by Sanko Robinson <sanko@cpan.org>
+Copyright (C) 2009-2012 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of
@@ -385,7 +384,5 @@ covered by the
 L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.org/licenses/by-sa/3.0/us/legalcode>.
 See the
 L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
-
-=for git $Id$
 
 =cut

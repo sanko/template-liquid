@@ -2,7 +2,7 @@ package Solution::Condition;
 {
     use strict;
     use warnings;
-    our $MAJOR = 0.0; our $MINOR = 0; our $DEV = -1; our $VERSION = sprintf('%1d.%02d' . ($DEV ? (($DEV < 0 ? '' : '_') . '%02d') : ('')), $MAJOR, $MINOR, abs $DEV);
+    our $VERSION = '0.9.1';
     use lib '../../lib';
     use Solution::Error;
     our @ISA = qw[Solution::Block];
@@ -205,7 +205,5 @@ if key exists
 =head1 Known Bugs
 
 
-
-=for git $Id$
 
 =cut

@@ -3,7 +3,6 @@ use warnings;
 use Module::Build;
 use lib 'inc';
 use File::Find qw[find];
-our $VERSION = '0.9.0';
 $|++;
 my $automated_testing = $ENV{'AUTOMATED_TESTING'}
     || $ENV{'PERL_MM_USE_DEFAULT'};
@@ -15,7 +14,6 @@ my $mb = Module::Build->new(
               module_name    => 'Solution',
               license        => 'artistic_2',
               dist_author    => 'Sanko Robinson <sanko@cpan.org>',
-              dist_version   => $VERSION,
               dist_abstract  => 'A Simple, Stateless Template System',
               requires       => {perl => 5.006001, 'File::Spec' => 0},
               build_requires => {'File::Find'    => 0,
