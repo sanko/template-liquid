@@ -33,9 +33,7 @@ package Solution::Tag::Raw;
         my ($self) = @_;
         my $var    = $self->{'variable_name'};
         my $val    = '';
-        use Data::Dump;
         return _dump_nodes(@{$self->{'nodelist'}});
-        ddx $self->{'nodelist'};
     }
 
     sub _dump_nodes {
