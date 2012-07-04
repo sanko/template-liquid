@@ -11,7 +11,7 @@ package Solution::Utility;
     our $TagEnd                     = qr[\s*%}];
     our $VariableSignature          = qr[\(?[\w\-\.\[\]]\)?];
     my $VariableSegment = qr[[\w\-]\??]x;
-    our $VariableStart = qr[{{\s*];
+    our $VariableStart = qr[\{\{\s*];
     our $VariableEnd   = qr[\s*}}];
     my $VariableIncompleteEnd = qr[}}?];
     my $QuotedString          = qr/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/;
