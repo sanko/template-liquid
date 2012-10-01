@@ -11,7 +11,8 @@ use Template::Liquid::Block;
 use Template::Liquid::Condition;
 
 sub register_tag {
-    return $_[0]->{tags}{$_[1]} = ($_[2] // scalar caller) if ref $_[0];
+    return $_[0]->{tags}{$_[1]} = ($_[2] ? $_[2] : scalar caller)
+        if ref $_[0];
     $tags{$_[0]} = scalar caller;
 }
 sub tags { shift->{tags} }
@@ -29,7 +30,7 @@ use Template::Liquid::Tag::Unless;
 
 sub register_filter {
     push @{$_->[0]->{filters}}, $_[1] ? $_[1] : scalar caller if ref $_[0];
-    push @filters, $_[0] // scalar caller;
+    push @filters, $_[0] ? $_[0] : scalar caller;
 }
 sub filters { shift->{filters} }
 use Template::Liquid::Filter::Standard;
