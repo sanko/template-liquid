@@ -1,24 +1,23 @@
-package Solution::Tag;
-{
-    use strict;
-    use warnings;
-    our @ISA = qw[Solution::Document];
-    our $VERSION = '0.9.1';
-    sub tag             { return $_[0]->{'tag_name'}; }
-    sub end_tag         { return $_[0]->{'end_tag'} || undef; }
-    sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
+package Template::Liquid::Tag;
+{ $Template::Liquid::Tag::VERSION = 'v1.0.0' }
+use strict;
+use warnings;
+our @ISA     = qw[Template::Liquid::Document];
+our $VERSION = '0.9.1';
+sub tag             { return $_[0]->{'tag_name'}; }
+sub end_tag         { return $_[0]->{'end_tag'} || undef; }
+sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
 
-    # Should be overridden by child classes
-    sub new {
-        return Solution::StandardError->new(
+# Should be overridden by child classes
+sub new {
+    return Template::Liquid::StandardError->new(
                                    'Please define a constructor in ' . $_[0]);
-    }
+}
 
-    sub push_block {
-        return Solution::StandardError->(
+sub push_block {
+    return Template::Liquid::StandardError->(
                 'Please define a push_block method (for conditional tags) in '
                     . $_[0]);
-    }
 }
 1;
 
@@ -26,11 +25,11 @@ package Solution::Tag;
 
 =head1 NAME
 
-Solution::Tag - Documentation for Solution's Standard and Custom Tagset
+Template::Liquid::Tag - Documentation for Template::Liquid's Standard and Template::Solution's Custom Tagsets
 
 =head1 Description
 
-Tags are used for the logic in your L<template|Solution::Template>. New tags
+Tags are used for the logic in your L<template|Template::Liquid>. New tags
 are very easy to code, so I hope to get many contributions to the standard tag
 library after releasing this code.
 
@@ -42,12 +41,12 @@ set:
 =head2 C<comment>
 
 Comment tags are simple blocks that do nothing during the
-L<render|Solution::Template/"render"> stage. Use these to temporarily disable
+L<render|Template::Liquid/"render"> stage. Use these to temporarily disable
 blocks of code or do insert documentation into your source code.
 
     This is a {% comment %} secret {% endcomment %}line of text.
 
-For more, see L<Solution::Tag::Comment|Solution::Tag::Comment>.
+For more, see L<Template::Liquid::Tag::Comment|Template::Liquid::Tag::Comment>.
 
 =head2 C<if> / C<elseif> / C<else>
 
@@ -71,7 +70,7 @@ This is sorta the opposite of C<if>.
        Psst! It's {{some.value}}.
     {% endunless %}
 
-For more, see L<Solution::Tag::Unless|Solution::Tag::Unless>.
+For more, see L<Template::Liquid::Tag::Unless|Template::Liquid::Tag::Unless>.
 
 =head2 C<case>
 
@@ -99,9 +98,9 @@ TODO
 
 =head1 Extending Solution with Custom Tags
 
-To create a new tag, simply inherit from L<Solution::Tag|Solution::Tag> and
+To create a new tag, simply inherit from L<Template::Liquid::Tag|Template::Liquid::Tag> and
 register your block L<globally|Solution/"Solution->register_tag( ... )"> or
-locally with L<Solution::Template|Solution::Template/"register_tag">.
+locally with L<Template::Liquid|Template::Liquid/"register_tag">.
 
 Your constructor should expect the following arguments:
 
@@ -155,13 +154,13 @@ Enough jibba jabba... here's some functioning code...
     package SolutionX::Tag::Random;
     use strict;
     use warnings;
-    our @ISA = qw[Solution::Tag];
-    Solution->register_tag('random') if $Solution::VERSION;
+    our @ISA = qw[Template::Liquid::Tag];
+    Solution->register_tag('random') if $Template::Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
         $args->{'attrs'} ||= 50;
-        my $self = bless {
+        my $s = bless {
                           max      => $args->{'attrs'},
                           name     => 'rand-' . $args->{'attrs'},
                           tag_name => $args->{'tag_name'},
@@ -169,12 +168,12 @@ Enough jibba jabba... here's some functioning code...
                           template => $args->{'template'},
                           markup   => $args->{'markup'}
         }, $class;
-        return $self;
+        return $s;
     }
 
     sub render {
-        my ($self) = @_;
-        return int rand $self->resolve($self->{'max'});
+        my ($s) = @_;
+        return int rand $s->resolve($s->{'max'});
     }
     1;
 
@@ -183,7 +182,7 @@ Using this new tag is as simple as...
     use Solution;
     use SolutionX::Tag::Random;
 
-    print Solution::Template->parse('{% random max %}')->render({max => 30});
+    print Template::Liquid->parse('{% random max %}')->render({max => 30});
 
 This will print a random integer between C<0> and C<30>.
 
@@ -193,10 +192,10 @@ If you just want a quick sample, see C<examples/custom_tag.pl>. There you'll
 find an example C<{^% dump var %}> tag named C<SolutionX::Tag::Dump>.
 
 Block-like tags are very similar to
-L<simple|Solution::Tag/"Create Your Own Tags">. Inherit from
-L<Solution::Tag|Solution::Tag> and register your block
+L<simple|Template::Liquid::Tag/"Create Your Own Tags">. Inherit from
+L<Template::Liquid::Tag|Template::Liquid::Tag> and register your block
 L<globally|Solution/"register_tag"> or locally with
-L<Solution::Template|Solution::Template/"register_tag">.
+L<Template::Liquid|Template::Liquid/"register_tag">.
 
 The only difference is you define an C<end_tag> in your object.
 
@@ -205,12 +204,12 @@ Here's an example...
     package SolutionX::Tag::Large::Hadron::Collider;
     use strict;
     use warnings;
-    our @ISA = qw[Solution::Tag];
-    Solution->register_tag('lhc') if $Solution::VERSION;
+    our @ISA = qw[Template::Liquid::Tag];
+    Solution->register_tag('lhc') if $Template::Liquid::VERSION;
 
     sub new {
         my ($class, $args) = @_;
-        my $self = bless {
+        my $s = bless {
                           odds     => $args->{'attrs'},
                           name     => 'LHC-' . $args->{'attrs'},
                           tag_name => $args->{'tag_name'},
@@ -219,13 +218,13 @@ Here's an example...
                           markup   => $args->{'markup'},
                           end_tag  => 'end' . $args->{'tag_name'}
         }, $class;
-        return $self;
+        return $s;
     }
 
     sub render {
-        my ($self) = @_;
-        return if int rand $self->resolve($self->{'odds'});
-        return join '', @{$self->{'nodelist'}};
+        my ($s) = @_;
+        return if int rand $s->resolve($s->{'odds'});
+        return join '', @{$s->{'nodelist'}};
     }
     1;
 
@@ -234,7 +233,7 @@ Using this example tag...
     use Solution;
     use SolutionX::Tag::Large::Hadron::Collider;
 
-    warn Solution::Template->parse(q[{% lhc 2 %}Now, that's money well spent!{% endlhc %}])->render();
+    warn Template::Liquid->parse(q[{% lhc 2 %}Now, that's money well spent!{% endlhc %}])->render();
 
 Just like the real thing, our C<lhc> tag works only 50% of the time.
 
@@ -247,8 +246,8 @@ that this is a block that will slurp until the end tag is found. In our
 example, we use C<'end' . $args->{'tag_name'}> because you may eventually
 subclass this tag and let it inherit this constructor. Now that we're sure the
 parser knows what to look for, we go ahead and continue
-L<parsing|Solution::Template/"parse"> the list of tokens. The parser will shove
-child nodes (L<tags|Solution::Tag>, L<variables|Solution::Variable>, and
+L<parsing|Template::Liquid/"parse"> the list of tokens. The parser will shove
+child nodes (L<tags|Template::Liquid::Tag>, L<variables|Template::Liquid::Variable>, and
 simple strings) onto your stack until the C<end_tag> is found.
 
 In the render step, we must return the stringification of all child nodes
@@ -258,8 +257,8 @@ pushed onto the stack by the parser.
 
 The internals are still kinda rough around this bit so documenting it is on my
 TODO list. If you're a glutton for punishment, I guess you can skim the source
-for the L<if tag|Solution::Tag::If> and its subclass, the
-L<unless tag|Solution::Tag::Unless>.
+for the L<if tag|Template::Liquid::Tag::If> and its subclass, the
+L<unless tag|Template::Liquid::Tag::Unless>.
 
 =head1 Author
 

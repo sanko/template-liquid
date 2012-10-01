@@ -1,131 +1,132 @@
-package Solution::Tag::For;
-{
-    use strict;
-    use warnings;
-    our $VERSION = '0.9.1';
-    use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    our @ISA = qw[Solution::Tag::If];
-    my $Help_String = 'TODO';
-    Solution->register_tag('for', __PACKAGE__) if $Solution::VERSION;
+package Template::Liquid::Tag::For;
+{ $Template::Liquid::Tag::For::VERSION = 'v1.0.0' }
+use strict;
+use warnings;
+use lib '../../../lib';
+use Template::Liquid::Error;
+use Template::Liquid::Utility;
+our @ISA = qw[Template::Liquid::Tag::If];
+my $Help_String = 'TODO';
+sub import {Template::Liquid::register_tag( 'for', __PACKAGE__) }
 
-    sub new {
-        my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
-                                      fatal   => 1
-            }
-            if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
-                                      fatal   => 1
-            }
-            if !defined $args->{'parent'};
-        raise Solution::SyntaxError {
+sub new {
+    my ($class, $args) = @_;
+    raise Template::Liquid::ContextError {
+                                       message => 'Missing template argument',
+                                       fatal   => 1
+        }
+        if !defined $args->{'template'};
+    raise Template::Liquid::ContextError {
+                                         message => 'Missing parent argument',
+                                         fatal   => 1
+        }
+        if !defined $args->{'parent'};
+    raise Template::Liquid::SyntaxError {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
-            }
-            if !defined $args->{'attrs'};
-        if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$])
-        {   raise Solution::SyntaxError {
+        }
+        if !defined $args->{'attrs'};
+    if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$]) {
+        raise Template::Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
-            };
-        }
-        my ($var, $range, $attr) = ($1, $2, $3 || '');
-        my $reversed = $attr =~ s[^reversed\b][] ? 1 : 0;
-        my %attr = map {
-            my ($k, $v)
-                = split($Solution::Utility::FilterArgumentSeparator, $_, 2);
-            { $k => $v };
-        } grep { defined && length } split qr[\s+], $attr || '';
-        my $self = bless {attributes      => \%attr,
-                          collection_name => $range,
-                          name            => $var . '-' . $range,
-                          blocks          => [],
-                          conditional_tag => 'else',
-                          reversed        => $reversed,
-                          tag_name        => $args->{'tag_name'},
-                          variable_name   => $var,
-                          end_tag         => 'end' . $args->{'tag_name'},
-                          template        => $args->{'template'},
-                          parent          => $args->{'parent'},
-                          markup          => $args->{'markup'}
-        }, $class;
-        return $self;
+        };
     }
+    my ($var, $range, $attr) = ($1, $2, $3 || '');
+    my $reversed = $attr =~ s[^reversed\b][] ? 1 : 0;
+    my %attr = map {
+        my ($k, $v)
+            = split($Template::Liquid::Utility::FilterArgumentSeparator, $_,
+                    2);
+        { $k => $v };
+    } grep { defined && length } split qr[\s+], $attr || '';
+    my $s = bless {attributes      => \%attr,
+                      collection_name => $range,
+                      name            => $var . '-' . $range,
+                      blocks          => [],
+                      conditional_tag => 'else',
+                      reversed        => $reversed,
+                      tag_name        => $args->{'tag_name'},
+                      variable_name   => $var,
+                      end_tag         => 'end' . $args->{'tag_name'},
+                      template        => $args->{'template'},
+                      parent          => $args->{'parent'},
+                      markup          => $args->{'markup'}
+    }, $class;
+    return $s;
+}
 
-    sub render {
-        my ($self)   = @_;
-        my $range    = $self->{'collection_name'};
-        my $attr     = $self->{'attributes'};
-        my $reversed = $self->{'reversed'};
-        my $sorted
-            = exists $attr->{'sorted'} ?
-            $self->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
-            : ();
-        $sorted = 'key'
-            if (defined $sorted
-                && (($sorted ne 'key') && ($sorted ne 'value')));
-        my $offset
-            = defined $attr->{'offset'} ?
-            $self->resolve($attr->{'offset'})
-            : ();
-        my $limit
-            = defined $attr->{'limit'} ?
-            $self->resolve($attr->{'limit'})
-            : ();
-        my $list = $self->resolve($range);
-        my $type = 'ARRAY';
-
-        #
-        my $_undef_list = 0;
-        if (ref $list eq 'HASH') {
-            $list = [map { {key => $_, value => $list->{$_}} } keys %$list];
-            @$list = sort {
-                $a->{$sorted} =~ m[^\d+$] && $b->{$sorted} =~ m[^\d+$]
-                    ?
-                    ($a->{$sorted} <=> $b->{$sorted})
-                    : ($a->{$sorted} cmp $b->{$sorted})
-            } @$list if defined $sorted;
-            $type = 'HASH';
-        }
-        elsif (defined $sorted) {
-            @$list = sort {
-                $a =~ m[^\d+$] && $b =~ m[^\d+$] ?
-                    ($a <=> $b)
-                    : ($a cmp $b)
-            } @$list;
-        }
-        if (!defined $list || !$list || !@$list) {
-            $_undef_list = 1;
-            $list        = [1];
-        }
-        else {    # Break it down to only the items we plan on using
-            my $min = (defined $offset ? $offset : 0);
-            my $max = (defined $limit ?
-                           $limit + (defined $offset ? $offset : 0) - 1
-                       : $#$list
-            );
-            $max    = $#$list if $max > $#$list;
-            @$list  = @{$list}[$min .. $max];
-            @$list  = reverse @$list if $reversed;
-            $limit  = defined $limit ? $limit : scalar @$list;
-            $offset = defined $offset ? $offset : 0;
-        }
-        return $self->template->context->stack(
-            sub {
-                my $return = '';
-                my $steps  = $#$list;
-                $_undef_list = 1 if $steps == -1;
-                my $nodes = $self->{'blocks'}[$_undef_list]{'nodelist'};
-                for my $index (0 .. $steps) {
-                    $self->template->context->scope
-                        ->{$self->{'variable_name'}} = $list->[$index];
-                    $self->template->context->scope->{'forloop'} = {
+sub render {
+    my ($s)   = @_;
+    my $range    = $s->{'collection_name'};
+    my $attr     = $s->{'attributes'};
+    my $reversed = $s->{'reversed'};
+    my $sorted
+        = exists $attr->{'sorted'} ?
+        $s->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
+        : ();
+    $sorted = 'key'
+        if (defined $sorted
+            && (($sorted ne 'key') && ($sorted ne 'value')));
+    my $offset
+        = defined $attr->{'offset'} ?
+        $s->resolve($attr->{'offset'})
+        : ();
+    my $limit
+        = defined $attr->{'limit'} ?
+        $s->resolve($attr->{'limit'})
+        : ();
+    my $list = $s->resolve($range);
+    my $type = 'ARRAY';
+    #
+    my $_undef_list = 0;
+    if (ref $list eq 'HASH') {
+        $list = [map { {key => $_, value => $list->{$_}} } keys %$list];
+        @$list = sort {
+            $a->{$sorted} =~ m[^\d+$] && $b->{$sorted} =~ m[^\d+$]
+                ?
+                ($a->{$sorted} <=> $b->{$sorted})
+                : ($a->{$sorted} cmp $b->{$sorted})
+        } @$list if defined $sorted;
+        $type = 'HASH';
+    }
+    elsif (defined $sorted) {
+        @$list = sort {
+            $a =~ m[^\d+$] && $b =~ m[^\d+$] ?
+                ($a <=> $b)
+                : ($a cmp $b)
+        } @$list;
+    }
+    if (!defined $list || !$list || !@$list) {
+        $_undef_list = 1;
+        $list        = [1];
+    }
+    else {    # Break it down to only the items we plan on using
+        my $min = (defined $offset ? $offset : 0);
+        my $max = (defined $limit ?
+                       $limit + (defined $offset ? $offset : 0) - 1
+                   : $#$list
+        );
+        $max    = $#$list if $max > $#$list;
+        @$list  = @{$list}[$min .. $max];
+        @$list  = reverse @$list if $reversed;
+        $limit  = defined $limit ? $limit : scalar @$list;
+        $offset = defined $offset ? $offset : 0;
+    }
+    return $s->template->context->stack(
+        sub {
+            my $return = '';
+            my $steps  = $#$list;
+            $_undef_list = 1 if $steps == -1;
+            my $nodes = $s->{'blocks'}[$_undef_list]{'nodelist'};
+            for my $index (0 .. $steps) {
+                $s->template->context->scope->{$s->{'variable_name'}}
+                    = $list->[$index];
+                $s->template->context->scope->{'forloop'} = {
                                         length => $steps + 1,
                                         limit  => $limit,
                                         offset => $offset,
-                                        name   => $self->{'name'},
+                                        name   => $s->{'name'},
                                         first  => ($index == 0 ? !!1 : !1),
                                         last => ($index == $steps ? !!1 : !1),
                                         index   => $index + 1,
@@ -134,16 +135,15 @@ package Solution::Tag::For;
                                         rindex0 => $steps - $index,
                                         type    => $type,
                                         sorted  => $sorted
-                    };
-                    for my $node (@$nodes) {
-                        my $rendering = ref $node ? $node->render() : $node;
-                        $return .= defined $rendering ? $rendering : '';
-                    }
+                };
+                for my $node (@$nodes) {
+                    my $rendering = ref $node ? $node->render() : $node;
+                    $return .= defined $rendering ? $rendering : '';
                 }
-                return $return;
             }
-        );
-    }
+            return $return;
+        }
+    );
 }
 1;
 
@@ -151,7 +151,7 @@ package Solution::Tag::For;
 
 =head1 NAME
 
-Solution::Tag::For - Simple loop construct
+Template::Liquid::Tag::For - Simple loop construct
 
 =head1 Synopsis
 
@@ -298,7 +298,7 @@ The C<else> branch is executed whenever the for branch will never be executed
 =head1 TODO
 
 Since this is a customer facing template engine, Liquid should provide some
-way to limit L<ranges|Solution::Tag::For/"Numeric Ranges"> and/or depth to avoid
+way to limit L<ranges|Template::Liquid::Tag::For/"Numeric Ranges"> and/or depth to avoid
 (functionally) infinite loops with code like...
 
     {% for w in (1..10000000000) %}

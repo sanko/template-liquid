@@ -1,22 +1,22 @@
-package Solution::Condition;
-{
+package Template::Liquid::Condition;
+{$Template::Liquid::Condition::VERSION = 'v1.0.0' }
     use strict;
     use warnings;
     our $VERSION = '0.9.1';
     use lib '../../lib';
-    use Solution::Error;
-    our @ISA = qw[Solution::Block];
+    use Template::Liquid::Error;
+    our @ISA = qw[Template::Liquid::Block];
 
     # Makes life easy
     use overload 'bool' => \&is_true, fallback => 1;
 
     sub new {
         my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
+        raise Template::Liquid::ContextError {message => 'Missing template argument',
                                       fatal   => 1
             }
             if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
+        raise Template::Liquid::ContextError {message => 'Missing parent argument',
                                       fatal   => 1
             }
             if !defined $args->{'parent'};
@@ -48,19 +48,19 @@ package Solution::Condition;
                            parent    => $args->{'parent'}
                     }, $class;
             }
-            raise Solution::ContextError 'Unknown operator ' . $condition;
+            raise Template::Liquid::ContextError 'Unknown operator ' . $condition;
         }
-        return Solution::ContextError->new(
+        return Template::Liquid::ContextError->new(
                             'Bad conditional statement: ' . $args->{'attrs'});
     }
     sub ne { return !$_[0]->eq }    # hashes
 
     sub eq {
-        my ($self) = @_;
-        my $l = $self->resolve($self->{'lvalue'})
-            || $self->{'lvalue'};
-        my $r = $self->resolve($self->{'rvalue'})
-            || $self->{'rvalue'};
+        my ($s) = @_;
+        my $l = $s->resolve($s->{'lvalue'})
+            || $s->{'lvalue'};
+        my $r = $s->resolve($s->{'rvalue'})
+            || $s->{'rvalue'};
         return _equal($l, $r);
     }
 
@@ -100,10 +100,10 @@ package Solution::Condition;
     }
 
     sub gt {
-        my ($self) = @_;
+        my ($s) = @_;
         my ($l, $r)
-            = map { $self->resolve($_) || $_ }
-            ($$self{'lvalue'}, $$self{'rvalue'});
+            = map { $s->resolve($_) || $_ }
+            ($$s{'lvalue'}, $$s{'rvalue'});
         return
               !!(grep {defined} $l, $r)
             ? (grep {m[\D]} $l, $r)
@@ -114,9 +114,9 @@ package Solution::Condition;
     sub lt { return !$_[0]->gt }
 
     sub contains {
-        my ($self) = @_;
-        my $l      = $self->resolve($self->{'lvalue'});
-        my $r      = quotemeta $self->resolve($self->{'rvalue'});
+        my ($s) = @_;
+        my $l      = $s->resolve($s->{'lvalue'});
+        my $r      = quotemeta $s->resolve($s->{'rvalue'});
         return if defined $r && !defined $l;
         return defined($l->{$r}) ? 1 : !1 if ref $l eq 'HASH';
         return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
@@ -124,54 +124,54 @@ package Solution::Condition;
     }
 
     sub _and {
-        my ($self) = @_;
-        my $l = $self->resolve($self->{'lvalue'})
-            || $self->{'lvalue'};
-        my $r = $self->resolve($self->{'rvalue'})
-            || $self->{'rvalue'};
+        my ($s) = @_;
+        my $l = $s->resolve($s->{'lvalue'})
+            || $s->{'lvalue'};
+        my $r = $s->resolve($s->{'rvalue'})
+            || $s->{'rvalue'};
         return (($l && $r) ? 1 : 0);
     }
 
     sub _or {
-        my ($self) = @_;
-        my $l = $self->resolve($self->{'lvalue'})
-            || $self->{'lvalue'};
-        my $r = $self->resolve($self->{'rvalue'})
-            || $self->{'rvalue'};
+        my ($s) = @_;
+        my $l = $s->resolve($s->{'lvalue'})
+            || $s->{'lvalue'};
+        my $r = $s->resolve($s->{'rvalue'})
+            || $s->{'rvalue'};
         return (($l || $r) ? 1 : 0);
     }
     {    # Compound inequalities support
 
         sub and {
-            my ($self) = @_;
-            my $l      = $self->{'lvalue'};
-            my $r      = $self->{'rvalue'};
+            my ($s) = @_;
+            my $l      = $s->{'lvalue'};
+            my $r      = $s->{'rvalue'};
             return (($l && $r) ? 1 : 0);
         }
 
         sub or {
-            my ($self) = @_;
-            my $l      = $self->{'lvalue'};
-            my $r      = $self->{'rvalue'};
+            my ($s) = @_;
+            my $l      = $s->{'lvalue'};
+            my $r      = $s->{'rvalue'};
             return (($l || $r) ? 1 : 0);
         }
     }
 
     sub is_true {
-        my ($self) = @_;
-        if (!defined $self->{'condition'} && !defined $self->{'rvalue'}) {
-            return !!($self->resolve($self->{'lvalue'}) ? 1 : 0);
+        my ($s) = @_;
+        if (!defined $s->{'condition'} && !defined $s->{'rvalue'}) {
+            return !!($s->resolve($s->{'lvalue'}) ? 1 : 0);
         }
-        my $condition = $self->can($self->{'condition'});
-        raise Solution::ContextError {
-                           message => 'Bad condition ' . $self->{'condition'},
+        my $condition = $s->can($s->{'condition'});
+        raise Template::Liquid::ContextError {
+                           message => 'Bad condition ' . $s->{'condition'},
                            fatal   => 1
             }
             if !$condition;
 
         #return !1 if !$condition;
-        return $self->$condition();
-    }
+        return $s->$condition();
+
 }
 1;
 

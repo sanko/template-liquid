@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
-use Solution;
-sub X { Solution::Template->parse(shift)->render(shift) }
+use Template::Liquid;
+sub X { Template::Liquid->parse(shift)->render(shift) }
 $|++;
 
 # date

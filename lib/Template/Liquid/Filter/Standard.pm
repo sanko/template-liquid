@@ -1,135 +1,130 @@
-package Solution::Filter::Standard;
-{
-    use strict;
-    use warnings;
-    our $VERSION = '0.9.1';
-    Solution->register_filter() if $Solution::VERSION;
+package Template::Liquid::Filter::Standard;
+{ $Template::Liquid::Filter::Standard::VERSION = 'v1.0.0' }
+use strict;
+use warnings;
+our $VERSION = '0.9.1';
+sub import {Template::Liquid::register_filter()}
 
-    sub date {
-        $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
-        $_[1] = defined $_[1] ? $_[1] : '%c';
-        return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
-        return if $_[0] !~ m[^\d+$];
-        require POSIX;
-        return POSIX::strftime($_[1], gmtime($_[0]));
-    }
-    sub capitalize { return ucfirst lc $_[0]; }
-    sub upcase     { return uc $_[0] }
-    sub downcase   { return lc $_[0] }
-    sub first      { return @{$_[0]}[0] if ref $_[0] eq 'ARRAY'; }
-    sub last       { return @{$_[0]}[-1] if ref $_[0] eq 'ARRAY'; }
-
-    sub join {
-        $_[1] = defined $_[1] ? $_[1] : ' ';
-        return CORE::join($_[1], @{$_[0]})      if ref $_[0] eq 'ARRAY';
-        return CORE::join($_[1], keys %{$_[0]}) if ref $_[0] eq 'HASH';
-        return $_[0];
-    }
-    sub split { [split $_[1], $_[0]] }
-
-    sub sort {
-        return [sort { $a <=> $b } @{$_[0]}] if ref $_[0] eq 'ARRAY';
-        return sort keys %{$_[0]} if ref $_[0] eq 'HASH';
-        return $_[0];
-    }
-
-    sub size {
-        return scalar @{$_[0]} if ref $_[0] eq 'ARRAY';
-        return scalar keys %{$_[0]} if ref $_[0] eq 'HASH';
-        return length $_[0];
-    }
-
-    sub strip_html {
-        $_[0] =~ s[<.*?>][]g;
-        $_[0] =~ s[<!--.*?-->][]g;
-        $_[0] =~ s[<script.*?<\/script>][]g;
-        return $_[0];
-    }
-    sub strip_newlines { $_[0] =~ s[\n][]g;         return $_[0]; }
-    sub newline_to_br  { $_[0] =~ s[\n][<br />\n]g; return $_[0]; }
-
-    sub replace {
-        $_[2] = defined $_[2] ? $_[2] : '';
-        $_[0] =~ s{$_[1]}{$_[2]}g if $_[1];
-        return $_[0];
-    }
-
-    sub replace_first {
-        $_[2] = defined $_[2] ? $_[2] : '';
-        $_[0] =~ s{$_[1]}{$_[2]};
-        return $_[0];
-    }
-    sub remove       { $_[0] =~ s{$_[1]}{}g; return $_[0] }
-    sub remove_first { $_[0] =~ s{$_[1]}{};  return $_[0] }
-
-    sub truncate {
-        my ($data, $length, $truncate_string) = @_;
-        $length = defined $length ? $length : 50;
-        $truncate_string
-            = defined $truncate_string ? $truncate_string : '...';
-        return if !$data;
-        my $l = $length - length($truncate_string);
-        $l = 0 if $l < 0;
-        return
-            length($data) > $length ?
-            substr($data, 0, $l) . $truncate_string
-            : $data;
-    }
-
-    sub truncatewords {
-        my ($data, $words, $truncate_string) = @_;
-        $words = defined $words ? $words : 15;
-        $truncate_string
-            = defined $truncate_string ? $truncate_string : '...';
-        return if !$data;
-        my @wordlist = split ' ', $data;
-        my $l = $words - 1;
-        $l = 0 if $l < 0;
-        return $#wordlist > $l
-            ?
-            CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
-            : $data;
-    }
-    sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
-    sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
-
-    sub minus {
-        return $_[0] =~ m[^\d+$] && $_[1] =~ m[^\d+$] ? $_[0] - $_[1] : ();
-    }
-
-    sub plus {
-        return $_[0] =~ m[^\d+$]
-            && $_[1] =~ m[^\d+$] ? $_[0] + $_[1] : $_[0] . $_[1];
-    }
-
-    sub times {
-        return $_[0] if $_[1] !~ m[^\d+$];
-        return $_[0] x $_[1] if $_[0] !~ m[^\d+$];
-        return $_[0] * $_[1];
-    }
-    sub divided_by { return $_[0] / $_[1]; }
-
-    sub modulo {
-        return ((!defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (!defined $_[1]
-                               && $_[1] =~ m[[^\d\.]]) ? $_[0] : $_[0] % $_[1]
-        );
-    }
-
-    #
-    # TODO
-    #sub escape {...}    # Escape's HTML
-    #sub escape_once {
-    #    ...;
-    #} # returns an escaped version of html without affecting existing escaped entities
-    #sub map {...}    # map/collect on a given property
+sub date {
+    $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
+    $_[1] = defined $_[1] ? $_[1] : '%c';
+    return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
+    return if $_[0] !~ m[^\d+$];
+    require POSIX;
+    return POSIX::strftime($_[1], gmtime($_[0]));
 }
+sub capitalize { return ucfirst lc $_[0]; }
+sub upcase     { return uc $_[0] }
+sub downcase   { return lc $_[0] }
+sub first      { return @{$_[0]}[0] if ref $_[0] eq 'ARRAY'; }
+sub last       { return @{$_[0]}[-1] if ref $_[0] eq 'ARRAY'; }
+
+sub join {
+    $_[1] = defined $_[1] ? $_[1] : ' ';
+    return CORE::join($_[1], @{$_[0]})      if ref $_[0] eq 'ARRAY';
+    return CORE::join($_[1], keys %{$_[0]}) if ref $_[0] eq 'HASH';
+    return $_[0];
+}
+sub split { [split $_[1], $_[0]] }
+
+sub sort {
+    return [sort { $a <=> $b } @{$_[0]}] if ref $_[0] eq 'ARRAY';
+    return sort keys %{$_[0]} if ref $_[0] eq 'HASH';
+    return $_[0];
+}
+
+sub size {
+    return scalar @{$_[0]} if ref $_[0] eq 'ARRAY';
+    return scalar keys %{$_[0]} if ref $_[0] eq 'HASH';
+    return length $_[0];
+}
+
+sub strip_html {
+    $_[0] =~ s[<.*?>][]g;
+    $_[0] =~ s[<!--.*?-->][]g;
+    $_[0] =~ s[<script.*?<\/script>][]g;
+    return $_[0];
+}
+sub strip_newlines { $_[0] =~ s[\n][]g;         return $_[0]; }
+sub newline_to_br  { $_[0] =~ s[\n][<br />\n]g; return $_[0]; }
+
+sub replace {
+    $_[2] = defined $_[2] ? $_[2] : '';
+    $_[0] =~ s{$_[1]}{$_[2]}g if $_[1];
+    return $_[0];
+}
+
+sub replace_first {
+    $_[2] = defined $_[2] ? $_[2] : '';
+    $_[0] =~ s{$_[1]}{$_[2]};
+    return $_[0];
+}
+sub remove       { $_[0] =~ s{$_[1]}{}g; return $_[0] }
+sub remove_first { $_[0] =~ s{$_[1]}{};  return $_[0] }
+
+sub truncate {
+    my ($data, $length, $truncate_string) = @_;
+    $length          = defined $length          ? $length          : 50;
+    $truncate_string = defined $truncate_string ? $truncate_string : '...';
+    return if !$data;
+    my $l = $length - length($truncate_string);
+    $l = 0 if $l < 0;
+    return length($data) > $length ?
+        substr($data, 0, $l) . $truncate_string
+        : $data;
+}
+
+sub truncatewords {
+    my ($data, $words, $truncate_string) = @_;
+    $words           = defined $words           ? $words           : 15;
+    $truncate_string = defined $truncate_string ? $truncate_string : '...';
+    return if !$data;
+    my @wordlist = split ' ', $data;
+    my $l = $words - 1;
+    $l = 0 if $l < 0;
+    return $#wordlist > $l
+        ?
+        CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
+        : $data;
+}
+sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
+sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
+
+sub minus {
+    return $_[0] =~ m[^\d+$] && $_[1] =~ m[^\d+$] ? $_[0] - $_[1] : ();
+}
+
+sub plus {
+    return $_[0] =~ m[^\d+$]
+        && $_[1] =~ m[^\d+$] ? $_[0] + $_[1] : $_[0] . $_[1];
+}
+
+sub times {
+    return $_[0] if $_[1] !~ m[^\d+$];
+    return $_[0] x $_[1] if $_[0] !~ m[^\d+$];
+    return $_[0] * $_[1];
+}
+sub divided_by { return $_[0] / $_[1]; }
+
+sub modulo {
+    return ((!defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (!defined $_[1]
+                               && $_[1] =~ m[[^\d\.]]) ? $_[0] : $_[0] % $_[1]
+    );
+}
+#
+# TODO
+#sub escape {...}    # Escape's HTML
+#sub escape_once {
+#    ...;
+#} # returns an escaped version of html without affecting existing escaped entities
+#sub map {...}    # map/collect on a given property
 1;
 
 =pod
 
 =head1 NAME
 
-Solution::Filter::Standard - Default Filters Based on Liquid's Standard Set
+Template::Liquid::Filter::Standard - Default Filters Based on Liquid's Standard Set
 
 =head1 Standard Filters
 

@@ -11,7 +11,7 @@ my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{'RELEASE_TESTING'} ? 1 : 0);
 find \&find_cb, qw[t/0100_filters t/0200_tags],
     ($is_developer ? 't/9000_author' : ());
 my $mb = Module::Build->new(
-              module_name    => 'Solution',
+              module_name    => 'Template::Liquid',
               license        => 'artistic_2',
               dist_author    => 'Sanko Robinson <sanko@cpan.org>',
               dist_abstract  => 'A Simple, Stateless Template System',
@@ -31,8 +31,8 @@ my $mb = Module::Build->new(
                                  ),
               },
               configure_requires => {'Module::Build' => 0.4},
-              add_to_cleanup     => [qw[Solution-*]],
-              no_index           => {directory       => [qw[examples inc t]]},
+              add_to_cleanup     => [qw[Template-Liquid-*]],
+              no_index           => {directory => [qw[examples inc t]]},
               test_files         => \@tests,
               test_file_exts     => ['.t'],
               use_tap_harness    => 1,
@@ -41,13 +41,14 @@ my $mb = Module::Build->new(
                                    rules => {par => ['*']}
               },
               meta_merge => {
-                  keywords => [qw[Liquid Template Engine Solution stateless]],
+                  keywords => [qw[Liquid template engine Solution stateless]],
                   resources => {
-                      bugtracker => 'http://github.com/sanko/solution/issues',
-                      repository => 'git://github.com/sanko/solution.git',
-                      ChangeLog => 'http://github.com/sanko/solution/commits/'
+                      bugtracker => 'http://github.com/sanko/template-liquid/issues',
+                      repository => 'git://github.com/sanko/template-liquid.git',
+                      ChangeLog => 'http://github.com/sanko/template-liquid/commits/'
                   }
-              }
+              },
+              create_readme => 1
 );
 $mb->notes(automated_testing => $automated_testing ? 1 : 0);
 $mb->notes(is_developer      => $is_developer      ? 1 : 0);

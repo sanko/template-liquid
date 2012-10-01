@@ -1,4 +1,10 @@
-Version 0.9.1 | Round about midnight on July 4th, 2012 | xxxxxxx
+Version 1.0.0 | Soon | xxxxxxxxxx
+
+    Notes:
+     * Project renamed from Solution to Template::Liquid because... oh, who
+       cares
+
+Version 0.9.1 | Round about midnight on July 4th, 2012 | f43dca9
 
     Resolved Issues/Bug Fixes:
      * Removing unused and undeclared debugging prereq Data::Dump

@@ -1,48 +1,49 @@
-package Solution::Tag::Comment;
-{
-    use strict;
-    use warnings;
-    our $VERSION = '0.9.1';
-    use lib '../../../lib';
-    use Solution::Error;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('comment') if $Solution::VERSION;
+package Template::Liquid::Tag::Comment;
+{ $Template::Liquid::Tag::Capture::VERSION = 'v1.0.0' }
+use strict;
+use warnings;
+use lib '../../../lib';
+use Template::Liquid::Error;
+BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
+sub import {Template::Liquid::register_tag( 'comment', __PACKAGE__) }
 
-    sub new {
-        my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
-                                      fatal   => 1
-            }
-            if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
-                                      fatal   => 1
-            }
-            if !defined $args->{'parent'};
-        if ($args->{'attrs'}) {
-            raise Solution::SyntaxError {
+
+sub new {
+    my ($class, $args) = @_;
+    raise Template::Liquid::ContextError {
+                                       message => 'Missing template argument',
+                                       fatal   => 1
+        }
+        if !defined $args->{'template'};
+    raise Template::Liquid::ContextError {
+                                         message => 'Missing parent argument',
+                                         fatal   => 1
+        }
+        if !defined $args->{'parent'};
+    if ($args->{'attrs'}) {
+        raise Template::Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
-            };
-        }
-        my $self = bless {name     => '#-' . $1,
-                          nodelist => [],
-                          tag_name => $args->{'tag_name'},
-                          end_tag  => 'end' . $args->{'tag_name'},
-                          template => $args->{'template'},
-                          parent   => $args->{'parent'},
-                          markup   => $args->{'markup'}
-        }, $class;
-        return $self;
+        };
     }
-    sub render { }
+    my $s = bless {name     => '#-' . $1,
+                      nodelist => [],
+                      tag_name => $args->{'tag_name'},
+                      end_tag  => 'end' . $args->{'tag_name'},
+                      template => $args->{'template'},
+                      parent   => $args->{'parent'},
+                      markup   => $args->{'markup'}
+    }, $class;
+    return $s;
 }
+sub render { }
 1;
 
 =pod
 
 =head1 NAME
 
-Solution::Tag::Comment - General Purpose Content Eater
+Template::Liquid::Tag::Comment - General Purpose Content Eater
 
 =head1 Synopsis
 

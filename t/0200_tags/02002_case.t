@@ -2,10 +2,10 @@ use strict;
 use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
-use Solution;
+use Template::Liquid;
 
 #
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
                     <<'INPUT')->render(), <<'EXPECTED', 'Falls back to else');
 {% case condition %}
 {% when 1 %}
@@ -18,7 +18,7 @@ INPUT
     Else
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'INPUT')->render(), <<'EXPECTED', 'No match and no fallback else [A]');
 {% case condition %}
 {% when 1 %}
@@ -27,7 +27,7 @@ is( Solution::Template->parse(
 INPUT
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', 'No match and no fallback else [B]');
 {% case condition %}
 {% when 1 %}
@@ -40,7 +40,7 @@ TEMPLATE
 ARGS
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', 'Simple condition [A]');
 {% case condition %}
 {% when 1 %}
@@ -53,7 +53,7 @@ ARGS
         One
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', 'Simple condition [B]');
 {% case condition %}
 {% when 1 %}
@@ -68,7 +68,7 @@ ARGS
         Three
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', 'Compound condition [C]');
 {% case condition %}
 {% when 1 %}
@@ -83,7 +83,7 @@ ARGS
         Two or Three
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', 'Compound condition [D]');
 {% case condition %}
 {% when 1 %}
@@ -96,7 +96,7 @@ TEMPLATE
 ARGS
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
         <<'TEMPLATE')->render(eval <<'ARGS'), <<'EXPECTED', 'Non-numeric condition [A]');
 {% case condition %}
 {% when "Alpha" %}
@@ -111,7 +111,7 @@ ARGS
     A
 
 EXPECTED
-is( Solution::Template->parse(
+is( Template::Liquid->parse(
           <<'TEMPLATE')->render(), <<'EXPECTED', 'Non-numeric condition [B]');
 {% case "Gamma" %}
 {% when "Alpha" %}

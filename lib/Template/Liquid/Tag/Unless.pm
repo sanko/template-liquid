@@ -1,25 +1,23 @@
-package Solution::Tag::Unless;
-{
-    use strict;
-    use warnings;
-    our $VERSION = '0.9.1';
-    use lib '../../../lib';
-    use Solution::Error;
-    use Solution::Utility;
-    our @ISA = qw[Solution::Tag::If];
-    Solution->register_tag('unless') if $Solution::VERSION;
+package Template::Liquid::Tag::Unless;
+{ $Template::Liquid::Tag::Unless::VERSION = 'v1.0.0' }
+use strict;
+use warnings;
+our $VERSION = '0.9.1';
+use lib '../../../lib';
+use Template::Liquid::Error;
+use Template::Liquid::Utility;
+our @ISA = qw[Template::Liquid::Tag::If];
+sub import {Template::Liquid::register_tag( 'unless', __PACKAGE__) }
 
-    sub render {
-        my ($self) = @_;
-        return $self->{'blocks'}->[0]->render()
-            if !(grep { $_->is_true ? 1 : 0 }
-                 @{$self->{'blocks'}->[0]->{'conditions'}}
-            );
-        for my $index (1 .. $#{$self->{'blocks'}}) {
-            my $block = $self->{'blocks'}->[$index];
-            return $block->render()
-                if grep { $_ || 0 } @{$block->{'conditions'}};
-        }
+sub render {
+    my ($s) = @_;
+    return $s->{'blocks'}->[0]->render()
+        if !(grep { $_->is_true ? 1 : 0 }
+             @{$s->{'blocks'}->[0]->{'conditions'}});
+    for my $index (1 .. $#{$s->{'blocks'}}) {
+        my $block = $s->{'blocks'}->[$index];
+        return $block->render()
+            if grep { $_ || 0 } @{$block->{'conditions'}};
     }
 }
 1;
@@ -28,11 +26,11 @@ package Solution::Tag::Unless;
 
 =head1 NAME
 
-Solution::Tag::Unless - Unless: The Opposite of If
+Template::Liquid::Tag::Unless - Unless: The Opposite of If
 
 =head1 Description
 
-Unless is the opposite of L<if|Solution::Tag::If>. The block is rendered
+Unless is the opposite of L<if|Template::Liquid::Tag::If>. The block is rendered
 I<unless> the conditon is true.
 
 =head1 Synopsis
@@ -45,12 +43,12 @@ I<unless> the conditon is true.
 
 =head1 Bugs
 
-Since L<unless|Solution::Tag::Unless> is simply a subclass, see the list of
-bugs for L<ifSolution::Tag::If>. They basically apply here too.
+Since L<unless|Template::Liquid::Tag::Unless> is simply a subclass, see the list of
+bugs for L<ifTemplate::Liquid::Tag::If>. They basically apply here too.
 
 =head1 See Also
 
-See L<Solution::Condition|Solution::Condition> for a list of supported
+See L<Template::Liquid::Condition|Template::Liquid::Condition> for a list of supported
 inequalities.
 
 =head1 Author

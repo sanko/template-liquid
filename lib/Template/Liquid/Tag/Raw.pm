@@ -1,53 +1,53 @@
-package Solution::Tag::Raw;
-{
-    use strict;
-    use warnings;
-    our $VERSION = '0.9.1';
-    use lib '../../../lib';
-    use Solution::Error;
-    BEGIN { our @ISA = qw[Solution::Tag]; }
-    Solution->register_tag('raw') if $Solution::VERSION;
+package Template::Liquid::Tag::Raw;
+{ $Template::Liquid::Tag::Raw::VERSION = 'v1.0.0' }
+use strict;
+use warnings;
+use lib '../../../lib';
+use Template::Liquid::Error;
+BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
+sub import {Template::Liquid::register_tag( 'raw', __PACKAGE__) }
 
-    sub new {
-        my ($class, $args) = @_;
-        raise Solution::ContextError {message => 'Missing template argument',
-                                      fatal   => 1
-            }
-            if !defined $args->{'template'};
-        raise Solution::ContextError {message => 'Missing parent argument',
-                                      fatal   => 1
-            }
-            if !defined $args->{'parent'};
-        my $self = bless {name     => '?-' . int rand(time),
-                          blocks   => [],
-                          tag_name => $args->{'tag_name'},
-                          template => $args->{'template'},
-                          parent   => $args->{'parent'},
-                          markup   => $args->{'markup'},
-                          end_tag  => 'end' . $args->{'tag_name'}
-        }, $class;
-        return $self;
-    }
-
-    sub render {
-        my ($self) = @_;
-        my $var    = $self->{'variable_name'};
-        my $val    = '';
-        return _dump_nodes(@{$self->{'nodelist'}});
-    }
-
-    sub _dump_nodes {
-        my $ret = '';
-        for my $node (@_) {
-            my $rendering = ref $node ? $node->{'markup'} : $node;
-            $ret .= defined $rendering ? $rendering : '';
-            $ret .= _dump_nodes(@{$node->{'nodelist'}})
-                if ref $node && $node->{'nodelist'};
-            $ret .= ref $node
-                && defined $node->{'markup_2'} ? $node->{'markup_2'} : '';
+sub new {
+    my ($class, $args) = @_;
+    raise Template::Liquid::ContextError {
+                                       message => 'Missing template argument',
+                                       fatal   => 1
         }
-        return $ret;
+        if !defined $args->{'template'};
+    raise Template::Liquid::ContextError {
+                                         message => 'Missing parent argument',
+                                         fatal   => 1
+        }
+        if !defined $args->{'parent'};
+    my $s = bless {name     => '?-' . int rand(time),
+                      blocks   => [],
+                      tag_name => $args->{'tag_name'},
+                      template => $args->{'template'},
+                      parent   => $args->{'parent'},
+                      markup   => $args->{'markup'},
+                      end_tag  => 'end' . $args->{'tag_name'}
+    }, $class;
+    return $s;
+}
+
+sub render {
+    my ($s) = @_;
+    my $var    = $s->{'variable_name'};
+    my $val    = '';
+    return _dump_nodes(@{$s->{'nodelist'}});
+}
+
+sub _dump_nodes {
+    my $ret = '';
+    for my $node (@_) {
+        my $rendering = ref $node ? $node->{'markup'} : $node;
+        $ret .= defined $rendering ? $rendering : '';
+        $ret .= _dump_nodes(@{$node->{'nodelist'}})
+            if ref $node && $node->{'nodelist'};
+        $ret .= ref $node
+            && defined $node->{'markup_2'} ? $node->{'markup_2'} : '';
     }
+    return $ret;
 }
 1;
 
@@ -55,7 +55,7 @@ package Solution::Tag::Raw;
 
 =head1 NAME
 
-Solution::Tag::Raw - General Purpose Content Container
+Template::Liquid::Tag::Raw - General Purpose Content Container
 
 =head1 Synopsis
 
