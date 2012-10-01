@@ -59,15 +59,12 @@ Extending Template::Liquid
     Filters are simple subs called when needed. They are not passed any
     state data by design and must return the modified content.
 
-    TODO: I need to write Template::Liquid::Filter which will be POD with
-    all sorts of info in it. Yeah.
-
    "Template::Liquid->register_filter( ... )"
     This registers a package which Template::Liquid will assume contains one
     or more filters.
 
         # Register a package as a filter
-        Template::Liquid->register_filter( 'SolutionX::Filter::Amalgamut' );
+        Template::Liquid->register_filter( 'Template::Solution::Filter::Amalgamut' );
 
         # Or simply say...
         Template::Liquid->register_filter( );
@@ -89,7 +86,7 @@ Extending Template::Liquid
     inheritance) both a "parse" and "render" method.
 
         # Register a new tag which Template::Liquid will look for in the given package
-        Template::Liquid->register_tag( 'newtag', 'SolutionX::Tag::You're::It' );
+        Template::Liquid->register_tag( 'newtag', 'Template::Solution::Tag::You're::It' );
 
         # Or simply say...
         Template::Liquid->register_tag( 'newtag' );
@@ -97,6 +94,8 @@ Extending Template::Liquid
 
     Pre-existing tags are replaced when new tags are registered with the
     same name. You may want to do this to override some functionality.
+
+    For an example of a custom tag, see Template::Solution::Tag::Include.
 
    "Template::Liquid->tags( )"
     Returns a hashref containing all the tags currently loaded for
@@ -126,9 +125,10 @@ Why shouldn't I use Template::Liquid?
     *   You are uncomfortable with text that you didn't copy and paste
         yourself. Everyone knows computers cannot be trusted.
 
-Template::Solution?
+Template::LiquidX or Template::Solution?
     I'd really rather use Template::Solution::{Package} for extentions but
-    who cares?
+    who cares? Namespaces are kinda useless if you're the only person using
+    the code.
 
     As I understand it, the original project's name, Liquid, is a reference
     to the classical states of matter (the engine itself being stateless). I

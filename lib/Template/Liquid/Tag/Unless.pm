@@ -43,7 +43,7 @@ I<unless> the conditon is true.
 =head1 Bugs
 
 Since L<unless|Template::Liquid::Tag::Unless> is simply a subclass, see the list of
-bugs for L<ifTemplate::Liquid::Tag::If>. They basically apply here too.
+bugs for L<if|Template::Liquid::Tag::If>. They basically apply here too.
 
 =head1 See Also
 

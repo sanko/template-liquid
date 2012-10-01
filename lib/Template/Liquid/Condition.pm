@@ -176,7 +176,7 @@ sub is_true {
 
 =head1 NAME
 
-Template::Liquid::Condition - Basic Relational and Equality Operators
+Template::Liquid::Condition - Basic Relational, Equality, and Content Operators
 
 =head1 Description
 
