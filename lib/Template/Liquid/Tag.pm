@@ -48,6 +48,15 @@ blocks of code or do insert documentation into your source code.
 
 For more, see L<Template::Liquid::Tag::Comment|Template::Liquid::Tag::Comment>.
 
+=head2 C<raw>
+
+Raw temporarily disables tag processing. This is useful for generating content
+(eg, Mustache, Handlebars) which uses conflicting syntax.
+
+    {% raw %}
+        In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
+    {% endraw %}
+
 =head2 C<if> / C<elseif> / C<else>
 
     {% if post.body contains search_string %}
@@ -74,23 +83,172 @@ For more, see L<Template::Liquid::Tag::Unless|Template::Liquid::Tag::Unless>.
 
 =head2 C<case>
 
-TODO
+If you need more conditions, you can use the case statement:
+
+    {% case condition %}
+        {% when 1 %}
+            hit 1
+        {% when 2 or 3 %}
+            hit 2 or 3
+        {% else %}
+            ... else ...
+    {% endcase %}
 
 =head2 C<cycle>
 
-TODO
+Often you have to alternate between different colors or similar tasks. Liquid
+has built-in support for such operations, using the cycle tag.
+
+    {% cycle 'one', 'two', 'three' %}
+    {% cycle 'one', 'two', 'three' %}
+    {% cycle 'one', 'two', 'three' %}
+    {% cycle 'one', 'two', 'three' %}
+
+...will result in...
+
+    one
+    two
+    three
+    one
+
+If no name is supplied for the cycle group, then it's assumed that multiple
+calls with the same parameters are one group.
+
+If you want to have total control over cycle groups, you can optionally
+specify the name of the group. This can even be a variable.
+
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    {% cycle 'group 2': 'one', 'two', 'three' %}
+    {% cycle 'group 2': 'one', 'two', 'three' %}
+
+...will result in...
+
+    one
+    two
+    one
+    two
 
 =head2 C<for>
 
-TODO
+Liquid allows for loops over collections:
+
+    {% for item in array %}
+        {{ item }}
+    {% endfor %}
+
+During every for loop, the following helper variables are available for extra
+styling needs:
+
+=over
+
+=item C<forloop.length> - length of the entire for loop
+
+=item C<forloop.index> - index of the current iteration
+
+=item C<forloop.index0> - index of the current iteration (zero based)
+
+=item C<forloop.rindex> - how many items are still left?
+
+=item C<forloop.rindex0> - how many items are still left? (zero based)
+
+=item C<forloop.first> - is this the first iteration?
+
+=item C<forloop.last> - is this the last iteration?
+
+=back
+
+There are several attributes you can use to influence which items you receive
+in your loop
+
+C<limit:int> lets you restrict how many items you get. C<offset:int> lets you
+start the collection with the nth item.
+
+    # array = [1,2,3,4,5,6]
+    {% for item in array limit:2 offset:2 %}
+        {{ item }}
+    {% endfor %}
+    # results in 3,4
+
+=head3 Reversing the loop
+
+To iterate in reverse use the obviously named C<reverse> keyword:
+
+    {% for item in collection reversed %} {{item}} {% endfor %}
+
+=head3 Custom, Dynamic Range Options
+
+Instead of looping over an existing collection, you can define a range of
+numbers to loop through. The range can be defined by both literal and variable
+numbers:
+
+    # if item.quantity is 4...
+    {% for i in (1..item.quantity) %}
+        {{ i }}
+    {% endfor %}
+    # results in 1,2,3,4
+
+=head3 C<break>
+
+You can use the C<{% break %}> tag to break out of the enclosing
+L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block. Every for block is
+implicitly ended with a break.
+
+    # if array is [[1, 2], [3, 4], [5, 6]]
+    {% for item in array %}{% for i in item %}{% if i == 1 %}{% break %}{% endif %}{{ i }}{% endfor %}{% endfor %}
+    # results in 3456
+
+=head3 C<continue>
+
+You can use the C<{% continue %}> tag to fall through the current iteration
+of the enclosing L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block.
+
+    # if array is {items => [1, 2, 3, 4, 5]}
+    {% for i in array.items %}{% if i == 3 %}{% continue %}{% else %}{{ i }}{% endif %}{% endfor %}
+    # results in 1245
 
 =head2 C<assign>
 
-TODO
+You can store data in your own variables, to be used in output or other tags
+as desired. The simplest way to create a variable is with the assign tag,
+which has a pretty straightforward syntax:
+
+    {% assign name = 'freestyle' %}
+
+    {% for t in collections.tags %}{% if t == name %}
+        <p>Freestyle!</p>
+    {% endif %}{% endfor %}
+
+Another way of doing this would be to assign true / false values to the
+variable:
+
+    {% assign freestyle = false %}
+
+    {% for t in collections.tags %}{% if t == 'freestyle' %}
+        {% assign freestyle = true %}
+    {% endif %}{% endfor %}
+
+    {% if freestyle %}
+        <p>Freestyle!</p>
+    {% endif %}
+
+If you want to combine a number of strings into a single string and save it to
+a variable, you can do that with the capture tag.
 
 =head2 C<capture>
 
-TODO
+This tag is a block which "captures" whatever is rendered inside it, then
+assigns the captured value to the given variable instead of rendering it to
+the screen.
+
+    {% capture attribute_name %}{{ item.title | handleize }}-{{ i }}-color{% endcapture %}
+
+    <label for="{{ attribute_name }}">Color:</label>
+    <select name="attributes[{{ attribute_name }}]" id="{{ attribute_name }}">
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="blue">Blue</option>
+    </select>
 
 =head2 C<include>
 
