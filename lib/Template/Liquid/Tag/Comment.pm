@@ -79,7 +79,8 @@ Code inside a C<comment> tag is not executed during rendering. So, this...
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Template::Liquid|Template::Liquid/"Create your own filters">'s docs on
+custom filter creation
 
 =head1 Author
 

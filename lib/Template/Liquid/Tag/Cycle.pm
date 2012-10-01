@@ -131,7 +131,8 @@ specify the name of the group. This can even be a variable.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Solution|Solution/"Create your own filters">'s docs on custom filter creation
+L<Template::Liquid|Template::Liquid/"Create your own filters">'s docs on
+custom filter creation
 
 =head1 Author
 

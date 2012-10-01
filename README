@@ -127,9 +127,8 @@ Why shouldn't I use Template::Liquid?
         yourself. Everyone knows computers cannot be trusted.
 
 Template::Solution?
-    I really don't have a good reason for using Template::Solution for
-    extentions instead of something like Template::LiquidX and I promise to
-    put myself in timeout as punishment.
+    I'd really rather use Template::Solution::{Package} for extentions but
+    who cares?
 
     As I understand it, the original project's name, Liquid, is a reference
     to the classical states of matter (the engine itself being stateless). I
