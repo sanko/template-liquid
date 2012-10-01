@@ -2,7 +2,6 @@ package Template::Liquid::Tag::Unless;
 { $Template::Liquid::Tag::Unless::VERSION = 'v1.0.0' }
 use strict;
 use warnings;
-our $VERSION = '0.9.1';
 use lib '../../../lib';
 use Template::Liquid::Error;
 use Template::Liquid::Utility;

@@ -5,8 +5,7 @@ use warnings;
 use lib '../../../lib';
 use Template::Liquid::Error;
 BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag( 'comment', __PACKAGE__) }
-
+sub import { Template::Liquid::register_tag('comment', __PACKAGE__) }
 
 sub new {
     my ($class, $args) = @_;
@@ -27,12 +26,12 @@ sub new {
         };
     }
     my $s = bless {name     => '#-' . $1,
-                      nodelist => [],
-                      tag_name => $args->{'tag_name'},
-                      end_tag  => 'end' . $args->{'tag_name'},
-                      template => $args->{'template'},
-                      parent   => $args->{'parent'},
-                      markup   => $args->{'markup'}
+                   nodelist => [],
+                   tag_name => $args->{'tag_name'},
+                   end_tag  => 'end' . $args->{'tag_name'},
+                   template => $args->{'template'},
+                   parent   => $args->{'parent'},
+                   markup   => $args->{'markup'}
     }, $class;
     return $s;
 }

@@ -2,7 +2,6 @@ package Template::Liquid::Filter::Standard;
 { $Template::Liquid::Filter::Standard::VERSION = 'v1.0.0' }
 use strict;
 use warnings;
-our $VERSION = '0.9.1';
 sub import {Template::Liquid::register_filter()}
 
 sub date {
