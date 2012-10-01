@@ -2,6 +2,7 @@ Build.PL
 Changes
 examples/custom_tag.pl
 examples/simple.pl
+lib/Solution.pm
 lib/Template/Liquid.pm
 lib/Template/Liquid/Block.pm
 lib/Template/Liquid/Condition.pm
@@ -43,3 +44,4 @@ t/0200_tags/02010_raw.t
 t/0200_tags/02011_break.t
 t/0200_tags/02012_continue.t
 t/0200_tags/_includes/testing.inc
+t/9000_author/09001_solution_pm.t
