@@ -176,29 +176,166 @@ sub is_true {
 
 =head1 NAME
 
-Template::Liquid::Condition -
+Template::Liquid::Condition - Basic Relational and Equality Operators
 
-=head1 Supported Inequalities
+=head1 Description
 
-=head2 C<==> / C<eq>
+These operators evaluate to true/false values. This is used internally but
+since you're here... might as well skim it. Nothing new to most people.
 
-=head2 C<!=> / C<ne>
+=head1 Relational Operators
 
-=head2 C<< > >> / C<< < >>
+If you're familiar with basic math, you already understand these. Any of these
+operators can be combined with binary 'and' and 'or'.
+
+=head2 C<< > >>
+
+Binary operator which returns true if the left argument is numerically less
+than the right argument.
+
+Given...
+
+    3 > 4  # false
+    4 > 3  # true
+    # where x == 10 and y == 12
+    x > y  # false
+    y > x  # true
+    x > 3  # true
+    x > x  # false
+
+=head2 C<< < >>
+
+Binary operator which returns true if the left argument is numerically greater
+than the right argument.
+
+Given...
+
+    3 < 4   # true
+    4 < 3   # false
+    # where x == 10 and y == 12
+    x < y   # true
+    y < x   # false
+    x < 30  # true
+    x < x   # false
+
+=head2 C<==>
+
+Binary operator which returns true if the left argument is numerically equal
+to the right argument.
+
+    # where x == 10 and y == 12
+    x == y   # false
+    x == 10  # true
+    y == y   # true
+
+=head2 C<!=>
+
+Binary operator which returns true if the left argument is numerically not
+equal to the right argument.
+
+    # where x == 10 and y == 12
+    x != y  # true
+    5 != 5  # false
+
+=head2 C<eq>
+
+Binary operator which returns true if the left argument is stringwise equal to
+the right argument.
+
+    'test' eq 'test'   # true
+    'test' eq 'reset'  # false
+    # where x  = 'cool beans'
+    x eq 'awesome'     # false
+    x eq 'Cool beans'  # false
+    x eq 'cool beans'  # true
+    x eq x             # true
+
+=head2 C<ne>
+
+Binary operator which returns true if the left argument is stringwise not
+equal to the right argument.
+
+    'test' ne 'test'   # false
+    'test' ne 'reset'  # true
+    # where x  = 'cool beans'
+    x ne 'awesome'     # true
+    x ne 'Cool beans'  # true
+    x ne 'cool beans'  # false
+    x ne x             # false
+
+=head2 C<lt>
+
+Binary operator which returns true if the left argument is stringwise less
+than the right argument.
+
+    'a' lt 'c'  # true
+    'A' lt 'a'  # true
+    # where x  = 'q'
+    x lt 'r'    # true
+    x lt 'm'    # false
+    x lt x      # false
+
+=head2 C<gt>
+
+Binary operator which returns true if the left argument is stringwise greater
+than the right argument.
+
+    'a' gt 'c'  # false
+    'A' gt 'a'  # false
+    # where x  = 'q'
+    x gt 'r'    # false
+    x gt 'm'    # true
+    x gt x      # true
+
+=head1 Other Operators
+
+These are nice things to have around...
 
 =head2 C<contains>
 
+The C<contains> operator is context sensitive.
+
 =head3 Strings
 
-matches qr[${string}] # case matters
+If the variable on the left is a string, this operator searches the string
+for a pattern match, and (as if in scalar context) returns true if it
+succeeds, false if it fails.
+
+Note that this is a simple C<$x =~ qr[${y}]> match. Case matters.
+
+Given...
+
+    # where x = 'The Angels have the police box!'
+    x contains 'police'       # true
+    x contains 'Police'       # false
+    x contains 'police box?'  # false
+    x contains 'police box!'  # true
+    x contains x              # true
 
 =head3 Lists
 
-grep list
+If the variable is a list, the operator greps the list to find the attribute.
+If found, a true value is returned. Otherwise, the return value is false.
+
+Given...
+
+    # where x = ['one', 'two', 'three']
+    x contains 'five'  # false
+    x contains 'six'   # false
+    x contains 'one'   # true
 
 =head3 Hashes
 
-if key exists
+If the variable is a hash reference, the operator returns true if the
+specified element in the hash has ever been initialized, even if the
+corresponding value is undefined.
+
+Given...
+
+    # where x = { okay => 'okay', blah => undef }
+    x contains 'okay'     # false
+    x contains 'alright'  # false
+    x contains 'blah'     # true
 
 =head1 Known Bugs
 

@@ -90,8 +90,8 @@ Solution supports compund inequalities. Try these...
 
 =head1 Bugs
 
-Liquid's (and by extension L<Solution|Solution>'s) treatment of
-compound inequalities is broken. For example...
+Liquid's (and by extension L<Template::Liquid|Template::Liquid>'s) treatment
+of compound inequalities is broken. For example...
 
     {% if 'This and that' contains 'that' and 1 == 3 %}
 
@@ -104,13 +104,13 @@ compound inequalities is broken. For example...
     if ( ( 'This and that' =~ m[that]) && ( 1 == 3 ) ) { ...
 
 It's just... not pretty but I'll work on it. The actual problem is in
-L<Template::Liquid::Block|Template::Liquid::Block> if you feel like lending a hand. Wink,
-wink.
+L<Template::Liquid::Block|Template::Liquid::Block> if you feel like lending a
+hand. Wink, wink.
 
 =head1 See Also
 
-See L<Template::Liquid::Condition|Template::Liquid::Condition> for a list of supported
-inequalities.
+See L<Template::Liquid::Condition|Template::Liquid::Condition> for a list of
+supported inequality types.
 
 =head1 Author
 
