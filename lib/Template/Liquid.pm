@@ -15,6 +15,7 @@ use Template::Liquid::Condition;
 sub register_tag  { $tags{$_[0]} = scalar caller }
 sub tags { return \%tags }
 use Template::Liquid::Tag::Assign;
+use Template::Liquid::Tag::Break;
 use Template::Liquid::Tag::Capture;
 use Template::Liquid::Tag::Case;
 use Template::Liquid::Tag::Comment;
@@ -38,7 +39,7 @@ sub resolve  { $_[0]->{'context'}->resolve($_[1], $_[2]) }
 #
 sub new {
     my ($class) = @_;
-    my $s = bless { }, $class;
+    my $s = bless { break => 0 }, $class;
     return $s;
 }
 

@@ -7,7 +7,7 @@ use Template::Liquid::Error;
 use Template::Liquid::Utility;
 our @ISA = qw[Template::Liquid::Tag::If];
 my $Help_String = 'TODO';
-sub import {Template::Liquid::register_tag( 'for', __PACKAGE__) }
+sub import { Template::Liquid::register_tag('for', __PACKAGE__) }
 
 sub new {
     my ($class, $args) = @_;
@@ -41,23 +41,23 @@ sub new {
         { $k => $v };
     } grep { defined && length } split qr[\s+], $attr || '';
     my $s = bless {attributes      => \%attr,
-                      collection_name => $range,
-                      name            => $var . '-' . $range,
-                      blocks          => [],
-                      conditional_tag => 'else',
-                      reversed        => $reversed,
-                      tag_name        => $args->{'tag_name'},
-                      variable_name   => $var,
-                      end_tag         => 'end' . $args->{'tag_name'},
-                      template        => $args->{'template'},
-                      parent          => $args->{'parent'},
-                      markup          => $args->{'markup'}
+                   collection_name => $range,
+                   name            => $var . '-' . $range,
+                   blocks          => [],
+                   conditional_tag => 'else',
+                   reversed        => $reversed,
+                   tag_name        => $args->{'tag_name'},
+                   variable_name   => $var,
+                   end_tag         => 'end' . $args->{'tag_name'},
+                   template        => $args->{'template'},
+                   parent          => $args->{'parent'},
+                   markup          => $args->{'markup'}
     }, $class;
     return $s;
 }
 
 sub render {
-    my ($s)   = @_;
+    my ($s)      = @_;
     my $range    = $s->{'collection_name'};
     my $attr     = $s->{'attributes'};
     my $reversed = $s->{'reversed'};
@@ -119,7 +119,7 @@ sub render {
             my $steps  = $#$list;
             $_undef_list = 1 if $steps == -1;
             my $nodes = $s->{'blocks'}[$_undef_list]{'nodelist'};
-            for my $index (0 .. $steps) {
+        STEP: for my $index (0 .. $steps) {
                 $s->template->context->scope->{$s->{'variable_name'}}
                     = $list->[$index];
                 $s->template->context->scope->{'forloop'} = {
@@ -139,6 +139,10 @@ sub render {
                 for my $node (@$nodes) {
                     my $rendering = ref $node ? $node->render() : $node;
                     $return .= defined $rendering ? $rendering : '';
+                    if ($s->template->{break}) {
+                        $s->template->{break} = 0;
+                        last STEP;
+                    }
                 }
             }
             return $return;
