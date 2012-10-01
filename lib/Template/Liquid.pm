@@ -19,6 +19,7 @@ use Template::Liquid::Tag::Break;
 use Template::Liquid::Tag::Capture;
 use Template::Liquid::Tag::Case;
 use Template::Liquid::Tag::Comment;
+use Template::Liquid::Tag::Continue;
 use Template::Liquid::Tag::Cycle;
 use Template::Liquid::Tag::For;
 use Template::Liquid::Tag::If;
@@ -39,7 +40,7 @@ sub resolve  { $_[0]->{'context'}->resolve($_[1], $_[2]) }
 #
 sub new {
     my ($class) = @_;
-    my $s = bless { break => 0 }, $class;
+    my $s = bless { break => 0, continue => 0 }, $class;
     return $s;
 }
 

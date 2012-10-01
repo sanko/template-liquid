@@ -15,6 +15,7 @@ lib/Template/Liquid/Tag/Break.pm
 lib/Template/Liquid/Tag/Capture.pm
 lib/Template/Liquid/Tag/Case.pm
 lib/Template/Liquid/Tag/Comment.pm
+lib/Template/Liquid/Tag/Continue.pm
 lib/Template/Liquid/Tag/Cycle.pm
 lib/Template/Liquid/Tag/For.pm
 lib/Template/Liquid/Tag/If.pm
@@ -40,4 +41,5 @@ t/0200_tags/02008_include.t
 t/0200_tags/02009_assign.t
 t/0200_tags/02010_raw.t
 t/0200_tags/02011_break.t
+t/0200_tags/02012_continue.t
 t/0200_tags/_includes/testing.inc

@@ -1,7 +1,7 @@
 Version 1.0.0 | Soon | xxxxxxxxxx
 
     API Changes/Compatibility Information:
-     * Support {% break %} tag in for loops (see docs)
+     * Support {% break %} and {% continue %} tags in for loops (see docs)
 
     Notes:
      * Project renamed from Solution to Template::Liquid because... oh, who

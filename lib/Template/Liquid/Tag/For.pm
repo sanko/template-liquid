@@ -143,6 +143,10 @@ sub render {
                         $s->template->{break} = 0;
                         last STEP;
                     }
+                    if ($s->template->{continue}) {
+                        $s->template->{continue} = 0;
+                        next STEP;
+                    }
                 }
             }
             return $return;
