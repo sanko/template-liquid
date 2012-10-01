@@ -24,7 +24,6 @@ use Template::Liquid::Tag::Continue;
 use Template::Liquid::Tag::Cycle;
 use Template::Liquid::Tag::For;
 use Template::Liquid::Tag::If;
-use Template::Liquid::Tag::Include;
 use Template::Liquid::Tag::Raw;
 use Template::Liquid::Tag::Unless;
 
@@ -140,8 +139,7 @@ Keep reading.
 Filters are simple subs called when needed. They are not passed any state data
 by design and must return the modified content.
 
-TODO: I need to write Template::Liquid::Filter which will be POD with all sorts of
-info in it. Yeah.
+=for todo I need to write Template::Liquid::Filter which will be POD with all sorts of info in it. Yeah.
 
 =head3 C<< Template::Liquid->register_filter( ... ) >>
 
@@ -149,7 +147,7 @@ This registers a package which Template::Liquid will assume contains one or more
 filters.
 
     # Register a package as a filter
-    Template::Liquid->register_filter( 'SolutionX::Filter::Amalgamut' );
+    Template::Liquid->register_filter( 'Template::Solution::Filter::Amalgamut' );
 
     # Or simply say...
     Template::Liquid->register_filter( );
@@ -175,7 +173,7 @@ This registers a package which must contain (directly or through inheritance)
 both a C<parse> and C<render> method.
 
     # Register a new tag which Template::Liquid will look for in the given package
-    Template::Liquid->register_tag( 'newtag', 'SolutionX::Tag::You're::It' );
+    Template::Liquid->register_tag( 'newtag', 'Template::Solution::Tag::You're::It' );
 
     # Or simply say...
     Template::Liquid->register_tag( 'newtag' );
@@ -183,6 +181,8 @@ both a C<parse> and C<render> method.
 
 Pre-existing tags are replaced when new tags are registered with the same
 name. You may want to do this to override some functionality.
+
+For an example of a custom tag, see L<Template::Solution::Tag::Include>.
 
 =head3 C<< Template::Liquid->tags( ) >>
 

@@ -185,8 +185,19 @@ since you're here... might as well skim it. Nothing new to most people.
 
 =head1 Relational Operators
 
-If you're familiar with basic math, you already understand these. Any of these
-operators can be combined with binary 'and' and 'or'.
+If you're familiar with basic math, you already understand these.
+
+Any of the following operators can be combined with logical C<and> and C<or>:
+
+    5 > 2 and 'okay' contains 'ok' # true
+    4 > 6 or 4 < 6                 # true ...silly, but true
+    # where x = [1 .. 10]
+    x contains 3 and x contains 0  # false
+
+Binary C<and> performs a short-circuit logical AND operation. That is, if the
+left operand is false, the right operand is not even evaluated. Likewise,
+binary C<or> performs a short-circuit logical OR operation. That is, if the
+left operand is true, the right operand is not even evaluated.
 
 =head2 C<< > >>
 

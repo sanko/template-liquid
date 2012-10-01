@@ -91,10 +91,14 @@ templates, you may consider making the snippet an include.
 
 You include static filenames...
 
-   Template::Liquid->parse("{%include 'my.inc'%}")->render();
+    use Template::Liquid;
+    use Template::Solution::Tag::Include;
+    Template::Liquid->parse("{%include 'my.inc'%}")->render();
 
 ...or 'dynamic' filenames (for example, based on a variable)...
 
+    use Template::Liquid;
+    use Template::Solution::Tag::Include;
     Template::Liquid->parse('{%include inc%}')->render({inc => 'my.inc'});
 
 =head1 Notes
