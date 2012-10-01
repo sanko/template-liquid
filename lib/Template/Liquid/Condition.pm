@@ -127,7 +127,7 @@ sub _and {
         || $s->{'lvalue'};
     my $r = $s->resolve($s->{'rvalue'})
         || $s->{'rvalue'};
-    return (($l && $r) ? 1 : 0);
+    return !!($l && $r);
 }
 
 sub _or {
@@ -136,7 +136,7 @@ sub _or {
         || $s->{'lvalue'};
     my $r = $s->resolve($s->{'rvalue'})
         || $s->{'rvalue'};
-    return (($l || $r) ? 1 : 0);
+    return !!($l || $r);
 }
 {    # Compound inequalities support
 
@@ -144,14 +144,14 @@ sub _or {
         my ($s) = @_;
         my $l   = $s->{'lvalue'};
         my $r   = $s->{'rvalue'};
-        return (($l && $r) ? 1 : 0);
+        return !!($l && $r);
     }
 
     sub or {
         my ($s) = @_;
         my $l   = $s->{'lvalue'};
         my $r   = $s->{'rvalue'};
-        return (($l || $r) ? 1 : 0);
+        return !!($l || $r);
     }
 }
 
