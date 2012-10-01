@@ -1,10 +1,8 @@
 package Template::Liquid;
 { $Template::Liquid::VERSION = 'v1.0.0' }
-
 use strict;
 use warnings;
 our (%tags, @filters);
-
 #
 use Template::Liquid::Document;
 use Template::Liquid::Context;
@@ -12,8 +10,11 @@ use Template::Liquid::Tag;
 use Template::Liquid::Block;
 use Template::Liquid::Condition;
 
-sub register_tag  { $tags{$_[0]} = scalar caller }
-sub tags { return \%tags }
+sub register_tag {
+    return $_[0]->{tags}{$_[1]} = ($_[2] // scalar caller) if ref $_[0];
+    $tags{$_[0]} = scalar caller;
+}
+sub tags { shift->{tags} }
 use Template::Liquid::Tag::Assign;
 use Template::Liquid::Tag::Break;
 use Template::Liquid::Tag::Capture;
@@ -27,11 +28,12 @@ use Template::Liquid::Tag::Include;
 use Template::Liquid::Tag::Raw;
 use Template::Liquid::Tag::Unless;
 
-
-sub register_filter { push @filters, $_[1] ? $_[1] : scalar caller }
-sub filters { return \@filters }
+sub register_filter {
+    push @{$_->[0]->{filters}}, $_[1] ? $_[1] : scalar caller if ref $_[0];
+    push @filters, $_[0] // scalar caller;
+}
+sub filters { shift->{filters} }
 use Template::Liquid::Filter::Standard;
-
 #
 sub context  { $_[0]->{'context'} }
 sub document { $_[0]->{'document'} }
@@ -40,7 +42,11 @@ sub resolve  { $_[0]->{'context'}->resolve($_[1], $_[2]) }
 #
 sub new {
     my ($class) = @_;
-    my $s = bless { break => 0, continue => 0 }, $class;
+    my $s = bless {break    => 0,
+                   continue => 0,
+                   filters  => [@filters],
+                   tags     => {%tags}
+    }, $class;
     return $s;
 }
 
@@ -48,8 +54,7 @@ sub parse {
     my ($class, $source) = @_;
     my $s = ref $class ? $class : $class->new();
     my @tokens = Template::Liquid::Utility::tokenize($source);
-    $s->{'document'}
-        ||= Template::Liquid::Document->new({template => $s});
+    $s->{'document'} ||= Template::Liquid::Document->new({template => $s});
     $s->{'document'}->parse(\@tokens);
     return $s;
 }
@@ -61,8 +66,6 @@ sub render {
     $s->{'context'} = Template::Liquid::Context->new($assigns, $info);
     return $s->document->render();
 }
-
-
 1;
 
 =pod
@@ -219,10 +222,10 @@ yourself. Everyone knows computers cannot be trusted.
 
 =back
 
-=head1 Template::Solution?
+=head1 Template::LiquidX or Template::Solution?
 
 I'd really rather use Template::Solution::{Package} for extentions but who
-cares?
+cares? Namespaces are kinda useless if you're the only person using the code.
 
 As I understand it, the original project's name, Liquid, is a reference to the
 classical states of matter (the engine itself being stateless). I settled on

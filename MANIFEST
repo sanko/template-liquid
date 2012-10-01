@@ -19,11 +19,11 @@ lib/Template/Liquid/Tag/Continue.pm
 lib/Template/Liquid/Tag/Cycle.pm
 lib/Template/Liquid/Tag/For.pm
 lib/Template/Liquid/Tag/If.pm
-lib/Template/Liquid/Tag/Include.pm
 lib/Template/Liquid/Tag/Raw.pm
 lib/Template/Liquid/Tag/Unless.pm
 lib/Template/Liquid/Utility.pm
 lib/Template/Liquid/Variable.pm
+lib/Template/Solution/Tag/Include.pm
 LICENSE
 MANIFEST			This list of files
 META.json

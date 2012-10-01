@@ -24,7 +24,7 @@ sub push_block {
 
 =head1 NAME
 
-Template::Liquid::Tag - Documentation for Template::Liquid's Standard and Template::Solution's Custom Tagsets
+Template::Liquid::Tag - Documentation for Template::Liquid's Standard Tagsets
 
 =head1 Description
 
@@ -55,6 +55,8 @@ Raw temporarily disables tag processing. This is useful for generating content
     {% raw %}
         In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
     {% endraw %}
+
+For more, see L<Template::Liquid::Tag::Raw|Template::Liquid::Tag::Raw>.
 
 =head2 C<if> / C<elseif> / C<else>
 
@@ -93,6 +95,8 @@ If you need more conditions, you can use the case statement:
             ... else ...
     {% endcase %}
 
+For more, see L<Template::Liquid::Tag::Case|Template::Liquid::Tag::Case>.
+
 =head2 C<cycle>
 
 Often you have to alternate between different colors or similar tasks. Liquid
@@ -127,6 +131,8 @@ specify the name of the group. This can even be a variable.
     two
     one
     two
+
+For more, see L<Template::Liquid::Tag::Cycle|Template::Liquid::Tag::Cycle>.
 
 =head2 C<for>
 
@@ -169,6 +175,8 @@ start the collection with the nth item.
     {% endfor %}
     # results in 3,4
 
+For more, see L<Template::Liquid::Tag::For|Template::Liquid::Tag::For>.
+
 =head3 Reversing the loop
 
 To iterate in reverse use the obviously named C<reverse> keyword:
@@ -197,6 +205,8 @@ implicitly ended with a break.
     {% for item in array %}{% for i in item %}{% if i == 1 %}{% break %}{% endif %}{{ i }}{% endfor %}{% endfor %}
     # results in 3456
 
+For more, see L<Template::Liquid::Tag::Break|Template::Liquid::Tag::Break>.
+
 =head3 C<continue>
 
 You can use the C<{% continue %}> tag to fall through the current iteration
@@ -205,6 +215,8 @@ of the enclosing L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block.
     # if array is {items => [1, 2, 3, 4, 5]}
     {% for i in array.items %}{% if i == 3 %}{% continue %}{% else %}{{ i }}{% endif %}{% endfor %}
     # results in 1245
+
+For more, see L<Template::Liquid::Tag::Continue|Template::Liquid::Tag::Continue>.
 
 =head2 C<assign>
 
@@ -234,6 +246,8 @@ variable:
 If you want to combine a number of strings into a single string and save it to
 a variable, you can do that with the capture tag.
 
+For more, see L<Template::Liquid::Tag::Assign|Template::Liquid::Tag::Assign>.
+
 =head2 C<capture>
 
 This tag is a block which "captures" whatever is rendered inside it, then
@@ -249,15 +263,16 @@ the screen.
         <option value="blue">Blue</option>
     </select>
 
-=head2 C<include>
-
-TODO
+For more, see L<Template::Liquid::Tag::Capture|Template::Liquid::Tag::Capture>.
 
 =head1 Extending Solution with Custom Tags
 
-To create a new tag, simply inherit from L<Template::Liquid::Tag|Template::Liquid::Tag> and
-register your block L<globally|Solution/"Solution->register_tag( ... )"> or
-locally with L<Template::Liquid|Template::Liquid/"register_tag">.
+To create a new tag, simply inherit from L<Template::Liquid::Tag|Template::Liquid::Tag>
+and register your block L<globally|Template::Liquid/"Template::Liquid->register_tag( ... )">
+or locally with L<Template::Liquid|Template::Liquid/"register_tag">.
+
+For a complete example of this, see
+L<Template::Solution::Tag::Include|Template::Solution::Tag::Include>.
 
 Your constructor should expect the following arguments:
 
@@ -336,7 +351,7 @@ Enough jibba jabba... here's some functioning code...
 
 Using this new tag is as simple as...
 
-    use Solution;
+    use Template::Liquid;
     use Template::Solution::Tag::Random;
 
     print Template::Liquid->parse('{% random max %}')->render({max => 30});
@@ -387,7 +402,7 @@ Here's an example...
 
 Using this example tag...
 
-    use Solution;
+    use Template::Liquid;
     use Template::Solution::Tag::Large::Hadron::Collider;
 
     warn Template::Liquid->parse(q[{% lhc 2 %}Now, that's money well spent!{% endlhc %}])->render();

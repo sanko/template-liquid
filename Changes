@@ -2,6 +2,7 @@ Version 1.0.0 | Soon | xxxxxxxxxx
 
     API Changes/Compatibility Information:
      * Support {% break %} and {% continue %} tags in for loops (see docs)
+     * New example extention Template::Solution::Tag::Include
 
     Notes:
      * Project renamed from Solution to Template::Liquid because... oh, who

@@ -87,7 +87,7 @@ L<unless|Template::Liquid::Tag::Unless>, or L<case|Template::Liquid::Tag::Case>.
 
 =head1 Bugs
 
-Liquid's (and by extension L<Solution|Solution>'s) treatment of
+Liquid's (and by extension L<Template::Liquid|Template::Liquid>'s) treatment of
 compound inequalities is broken. For example...
 
     {% if 'This and that' contains 'that' and 1 == 3 %}

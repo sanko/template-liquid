@@ -1,5 +1,5 @@
-package Template::Liquid::Tag::Include;
-{ $Template::Liquid::Tag::Include::VERSION = 'v1.0.0' }
+package Template::Solution::Tag::Include;
+{ $Template::Solution::Tag::Include::VERSION = 'v1.0.0' }
 use strict;
 use warnings;
 use lib '../../../lib';
@@ -78,7 +78,7 @@ sub render {
 
 =head1 NAME
 
-Template::Liquid::Tag::Include - Include another file
+Template::Solution::Tag::Include - Include another file
 
 =head1 Synopsis
 
