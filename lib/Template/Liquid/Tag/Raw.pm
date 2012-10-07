@@ -1,11 +1,8 @@
 package Template::Liquid::Tag::Raw;
 { $Template::Liquid::Tag::Raw::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
+require Template::Liquid::Error;
 BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag( 'raw', __PACKAGE__) }
+sub import {Template::Liquid::register_tag( 'raw') }
 
 sub new {
     my ($class, $args) = @_;

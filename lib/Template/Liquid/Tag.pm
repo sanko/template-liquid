@@ -1,7 +1,5 @@
 package Template::Liquid::Tag;
 { $Template::Liquid::Tag::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
 our @ISA     = qw[Template::Liquid::Document];
 sub tag             { return $_[0]->{'tag_name'}; }
 sub end_tag         { return $_[0]->{'end_tag'} || undef; }
@@ -324,8 +322,6 @@ C<$args> variable.
 Enough jibba jabba... here's some functioning code...
 
     package Template::Solution::Tag::Random;
-    use strict;
-    use warnings;
     our @ISA = qw[Template::Liquid::Tag];
     sub import { Template::Liquid::register_tag('random', __PACKAGE__) }
 
@@ -345,7 +341,7 @@ Enough jibba jabba... here's some functioning code...
 
     sub render {
         my ($s) = @_;
-        return int rand $s->resolve($s->{'max'});
+        return int rand $s->{template}{context}->resolve($s->{'max'});
     }
     1;
 
@@ -374,8 +370,6 @@ The only difference is you define an C<end_tag> in your object.
 Here's an example...
 
     package Template::Solution::Tag::Large::Hadron::Collider;
-    use strict;
-    use warnings;
     our @ISA = qw[Template::Liquid::Tag];
     sub import { Template::Liquid::register_tag('lhc', __PACKAGE__) }
 
@@ -395,7 +389,7 @@ Here's an example...
 
     sub render {
         my ($s) = @_;
-        return if int rand $s->resolve($s->{'odds'});
+        return if int rand $s->{template}{context}->{template}{context}->resolve($s->{'odds'});
         return join '', @{$s->{'nodelist'}};
     }
     1;

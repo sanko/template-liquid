@@ -1,9 +1,6 @@
 package Template::Liquid::Variable;
 { $Template::Liquid::Variable::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../lib';
-use Template::Liquid::Error;
+require Template::Liquid::Error;
 our @ISA = qw[Template::Liquid::Document];
 
 sub new {
@@ -29,17 +26,23 @@ sub new {
 
 sub render {
     my ($s) = @_;
-    my $val = $s->resolve($s->{'variable'});
-FILTER: for my $filter (@{$s->{'filters'}}) {
-        my ($name, $args) = @$filter;
-        map { $_ = $s->resolve($_) || $_ } @$args;
-    PACKAGE: for my $package (@{$s->template->filters}) {
-            if (my $call = $package->can($name)) {
-                $val = $call->($val, @$args);
-                next FILTER;
+    my $val = $s->{template}{context}->resolve($s->{variable});
+    {    # XXX - Duplicated in Template::Liquid::Assign::render
+        if (scalar @{$s->{filters}}) {
+            my %_filters = $s->{template}->filters;
+        FILTER: for my $filter (@{$s->{filters}}) {
+                my ($name, $args) = @$filter;
+                map { $_ = $s->{template}{context}->resolve($_) || $_ }
+                    @$args;
+                my $package = $_filters{$name};
+                my $call = $package ? $package->can($name) : ();
+                if ($call) {
+                    $val = $call->($val, @$args);
+                    next FILTER;
+                }
+                raise Template::Liquid::FilterNotFound $name;
             }
         }
-        raise Template::Liquid::FilterNotFound $name;
     }
     return join '', @$val      if ref $val eq 'ARRAY';
     return join '', keys %$val if ref $val eq 'HASH';
@@ -64,8 +67,8 @@ handling echo statements:
 Internally, a variable is the basic container for everything; lists, scalars,
 hashes, and even objects.
 
-L<Filters|Template::Liquid::Filter> are applied to Template::Liquid::Variable during the
-render stage.
+L<Filters|Template::Liquid::Filters::Standard> are applied to variables during
+the render stage.
 
 =head1 Author
 

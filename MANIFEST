@@ -2,14 +2,13 @@ Build.PL
 Changes
 examples/custom_tag.pl
 examples/simple.pl
-lib/Solution.pm
 lib/Template/Liquid.pm
 lib/Template/Liquid/Block.pm
 lib/Template/Liquid/Condition.pm
 lib/Template/Liquid/Context.pm
 lib/Template/Liquid/Document.pm
 lib/Template/Liquid/Error.pm
-lib/Template/Liquid/Filter/Standard.pm
+lib/Template/Liquid/Filters.pm
 lib/Template/Liquid/Tag.pm
 lib/Template/Liquid/Tag/Assign.pm
 lib/Template/Liquid/Tag/Break.pm
@@ -24,7 +23,7 @@ lib/Template/Liquid/Tag/Raw.pm
 lib/Template/Liquid/Tag/Unless.pm
 lib/Template/Liquid/Utility.pm
 lib/Template/Liquid/Variable.pm
-lib/Template/Solution/Tag/Include.pm
+lib/Template/LiquidX/Tag/Include.pm
 LICENSE
 MANIFEST			This list of files
 META.json

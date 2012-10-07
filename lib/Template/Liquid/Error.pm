@@ -12,7 +12,7 @@ sub new {
         && !(ref $args && ref $args eq 'HASH');
     $args->{'fatal'} = defined $args->{'fatal'} ? $args->{'fatal'} : 0;
     require Carp;
-    Carp::longmess() =~ m[^.+?\n\t(.+)]s;
+    Carp::longmess() =~ m[^.+?\n\t(.+)]so;
     $args->{'message'} = sprintf '%s: %s %s', $class, $args->{'message'}, $1;
     return bless $args, $class;
 }

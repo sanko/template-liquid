@@ -1,40 +1,50 @@
 package Template::Liquid::Utility;
 { $Template::Liquid::Utility::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-our $FilterSeparator = qr[\s*\|\s*];
-my $ArgumentSeparator = qr[,];
-our $FilterArgumentSeparator    = qr[\s*:\s*];
-our $VariableAttributeSeparator = qr[\.];
-our $TagStart                   = qr[{%\s*];
-our $TagEnd                     = qr[\s*%}];
-our $VariableSignature          = qr[\(?[\w\-\.\[\]]\)?];
-my $VariableSegment = qr[[\w\-]\??]x;
-our $VariableStart = qr[\{\{\s*];
-our $VariableEnd   = qr[\s*}}];
+our $FilterSeparator = qr[\s*\|\s*]o;
+my $ArgumentSeparator = qr[,]o;
+our $FilterArgumentSeparator    = qr[\s*:\s*]o;
+our $VariableAttributeSeparator = qr[\.]o;
+our $TagStart                   = qr[{%\s*]o;
+our $TagEnd                     = qr[\s*%}]o;
+our $VariableSignature          = qr[\(?[\w\-\.\[\]]\)?]o;
+my $VariableSegment = qr[[\w\-]\??]ox;
+our $VariableStart = qr[\{\{\s*]o;
+our $VariableEnd   = qr[\s*}}]o;
 my $VariableIncompleteEnd = qr[}}?];
-my $QuotedString          = qr/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/;
-my $QuotedFragment = qr/${QuotedString}|(?:[^\s,\|'"]|${QuotedString})+/;
-my $StrictQuotedFragment = qr/"[^"]+"|'[^']+'|[^\s,\|,\:,\,]+/;
+my $QuotedString          = qr/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/o;
+my $QuotedFragment = qr/${QuotedString}|(?:[^\s,\|'"]|${QuotedString})+/o;
+my $StrictQuotedFragment = qr/"[^"]+"|'[^']+'|[^\s,\|,\:,\,]+/o;
 my $FirstFilterArgument
-    = qr/${FilterArgumentSeparator}(?:${StrictQuotedFragment})/;
-my $OtherFilterArgument = qr/${ArgumentSeparator}(?:${StrictQuotedFragment})/;
+    = qr/${FilterArgumentSeparator}(?:${StrictQuotedFragment})/o;
+my $OtherFilterArgument
+    = qr/${ArgumentSeparator}(?:${StrictQuotedFragment})/o;
 my $SpacelessFilter
-    = qr/${FilterSeparator}(?:${StrictQuotedFragment})(?:${FirstFilterArgument}(?:${OtherFilterArgument})*)?/;
-our $Expression    = qr/(?:${QuotedFragment}(?:${SpacelessFilter})*)/;
-our $TagAttributes = qr[(\w+)(?:\s*\:\s*(${QuotedFragment}))?];
-my $AnyStartingTag = qr[\{\{|\{\%];
+    = qr/${FilterSeparator}(?:${StrictQuotedFragment})(?:${FirstFilterArgument}(?:${OtherFilterArgument})*)?/o;
+our $Expression    = qr/(?:${QuotedFragment}(?:${SpacelessFilter})*)/o;
+our $TagAttributes = qr[(\w+)(?:\s*\:\s*(${QuotedFragment}))?]o;
+my $AnyStartingTag = qr[\{\{|\{\%]o;
 my $PartialTemplateParser
-    = qr[${TagStart}.*?${TagEnd}|${VariableStart}.*?${VariableIncompleteEnd}];
-my $TemplateParser = qr[(${PartialTemplateParser}|${AnyStartingTag})];
+    = qr[${TagStart}.*?${TagEnd}|${VariableStart}.*?${VariableIncompleteEnd}]o;
+my $TemplateParser = qr[(${PartialTemplateParser}|${AnyStartingTag})]o;
 our $VariableParser = qr[^
                             ${VariableStart}                        # {{
                                 ([\w\.]+)    #   name
                                 (?:\s*\|\s*(.+)\s*)?                 #   filters
                             ${VariableEnd}                          # }}
-                            $]x;
+                            $]ox;
 our $VariableFilterArgumentParser
-    = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))];
+    = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))]o;
+
+our $TagMatch = qr[^${Template::Liquid::Utility::TagStart}   # {%
+                                (.+?)                              # etc
+                              ${Template::Liquid::Utility::TagEnd} # %}
+                             $]ox;
+our $VarMatch = qr[^
+                    ${Template::Liquid::Utility::VariableStart} # {{
+                        (.+?)                           #  stuff + filters?
+                    ${Template::Liquid::Utility::VariableEnd}   # }}
+                $]ox;
+
 
 sub tokenize {
     map { $_ ? $_ : () } split $TemplateParser, shift || '';

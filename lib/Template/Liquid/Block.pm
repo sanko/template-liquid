@@ -1,9 +1,6 @@
 package Template::Liquid::Block;
 { $Template::Liquid::Block::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../lib';
-use Template::Liquid::Error;
+require Template::Liquid::Error;
 our @ISA = qw[Template::Liquid::Document];
 
 sub new {
@@ -34,14 +31,14 @@ sub new {
             [1]
         : sub {    # Oh, what a mess...
             my @conditions
-                = split m[\s+\b(and|or)\b\s+],
+                = split m[\s+\b(and|or)\b\s+]o,
                 $args->{parent}->{tag_name} eq 'for' ?
                 1
                 : (defined $args->{'attrs'} ? $args->{'attrs'} : '');
             my @equality;
             while (my $x = shift @conditions) {
                 push @equality, (
-                    $x =~ m[\b(?:and|or)\b]    # XXX - ARG
+                    $x =~ m[\b(?:and|or)\b]o    # XXX - ARG
                     ?
                         bless({template  => $args->{'template'},
                                parent    => $s,

@@ -1,21 +1,14 @@
 package Template::Liquid;
 { $Template::Liquid::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-our (%tags, @filters);
+our (%tags, %filters);
 #
 use Template::Liquid::Document;
 use Template::Liquid::Context;
 use Template::Liquid::Tag;
 use Template::Liquid::Block;
 use Template::Liquid::Condition;
-
-sub register_tag {
-    return $_[0]->{tags}{$_[1]} = ($_[2] ? $_[2] : scalar caller)
-        if ref $_[0];
-    $tags{$_[0]} = scalar caller;
-}
-sub tags { shift->{tags} }
+sub register_tag { $tags{$_} = scalar caller for @_ }
+sub tags {%tags}
 use Template::Liquid::Tag::Assign;
 use Template::Liquid::Tag::Break;
 use Template::Liquid::Tag::Capture;
@@ -27,25 +20,18 @@ use Template::Liquid::Tag::For;
 use Template::Liquid::Tag::If;
 use Template::Liquid::Tag::Raw;
 use Template::Liquid::Tag::Unless;
+sub register_filter { $filters{$_} = scalar caller for @_ }
+sub filters {%filters}
 
-sub register_filter {
-    push @{$_->[0]->{filters}}, $_[1] ? $_[1] : scalar caller if ref $_[0];
-    push @filters, $_[0] ? $_[0] : scalar caller;
-}
-sub filters { shift->{filters} }
-use Template::Liquid::Filter::Standard;
-#
-sub context  { $_[0]->{'context'} }
-sub document { $_[0]->{'document'} }
-sub parent   { $_[0]->{'parent'} }
-sub resolve  { $_[0]->{'context'}->resolve($_[1], $_[2]) }
+# merge
+use Template::Liquid::Filters;
 #
 sub new {
     my ($class) = @_;
     my $s = bless {break    => 0,
                    continue => 0,
-                   filters  => [@filters],
-                   tags     => {%tags}
+                   tags     => {},
+                   filters  => {}
     }, $class;
     return $s;
 }
@@ -64,7 +50,7 @@ sub render {
     $info ||= {};
     $info->{'template'} = $s;
     $s->{'context'} = Template::Liquid::Context->new($assigns, $info);
-    return $s->document->render();
+    return $s->{document}->render();
 }
 1;
 
@@ -132,8 +118,8 @@ L<Liquid for Designers|http://wiki.github.com/tobi/liquid/liquid-for-designers>.
 
 =head1 Extending Template::Liquid
 
-Extending the Template::Liquid template engine for your needs is almost too simple.
-Keep reading.
+Extending the Template::Liquid template engine for your needs is almost too
+simple. Keep reading.
 
 =head2 Custom Filters
 
@@ -153,11 +139,6 @@ filters.
     # Or simply say...
     Template::Liquid->register_filter( );
     # ...and Template::Liquid will assume the filters are in the calling package
-
-=head3 C<< Template::Liquid->filters( ) >>
-
-Returns a list containing all the tags currently loaded for informational
-purposes.
 
 =head2 Custom Tags
 
@@ -184,11 +165,6 @@ Pre-existing tags are replaced when new tags are registered with the same
 name. You may want to do this to override some functionality.
 
 For an example of a custom tag, see L<Template::Solution::Tag::Include>.
-
-=head3 C<< Template::Liquid->tags( ) >>
-
-Returns a hashref containing all the tags currently loaded for informational
-purposes.
 
 =head1 Why should I use Template::Liquid?
 

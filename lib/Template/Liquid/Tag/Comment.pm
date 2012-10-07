@@ -1,11 +1,8 @@
 package Template::Liquid::Tag::Comment;
 { $Template::Liquid::Tag::Capture::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
+require Template::Liquid::Error;
 BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import { Template::Liquid::register_tag('comment', __PACKAGE__) }
+sub import { Template::Liquid::register_tag('comment') }
 
 sub new {
     my ($class, $args) = @_;

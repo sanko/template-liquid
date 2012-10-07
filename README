@@ -70,10 +70,6 @@ Extending Template::Liquid
         Template::Liquid->register_filter( );
         # ...and Template::Liquid will assume the filters are in the calling package
 
-   "Template::Liquid->filters( )"
-    Returns a list containing all the tags currently loaded for
-    informational purposes.
-
   Custom Tags
     See the section entitled Extending Template::Liquid with Custom Tags in
     Template::Liquid::Tag for more information.
@@ -96,10 +92,6 @@ Extending Template::Liquid
     same name. You may want to do this to override some functionality.
 
     For an example of a custom tag, see Template::Solution::Tag::Include.
-
-   "Template::Liquid->tags( )"
-    Returns a hashref containing all the tags currently loaded for
-    informational purposes.
 
 Why should I use Template::Liquid?
     *   You want to allow your users to edit the appearance of your

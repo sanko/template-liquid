@@ -1,12 +1,9 @@
 package Template::Liquid::Tag::Capture;
 { $Template::Liquid::Tag::Capture::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag( 'capture', __PACKAGE__) }
+sub import {Template::Liquid::register_tag( 'capture') }
 
 sub new {
     my ($class, $args) = @_;
@@ -25,7 +22,7 @@ sub new {
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
-    if ($args->{'attrs'} !~ qr[^(\S+)\s*?$]) {
+    if ($args->{'attrs'} !~ qr[^(\S+)\s*?$]o) {
         raise Template::Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
@@ -51,7 +48,7 @@ sub render {
         my $rendering = ref $node ? $node->render() : $node;
         $val .= defined $rendering ? $rendering : '';
     }
-    $s->resolve($var, $val);
+    $s->{template}{context}->resolve($var, $val);
     return '';
 }
 1;

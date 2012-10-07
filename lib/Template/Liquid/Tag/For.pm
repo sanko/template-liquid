@@ -1,13 +1,10 @@
 package Template::Liquid::Tag::For;
 { $Template::Liquid::Tag::For::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 our @ISA = qw[Template::Liquid::Tag::If];
 my $Help_String = 'TODO';
-sub import { Template::Liquid::register_tag('for', __PACKAGE__) }
+sub import { Template::Liquid::register_tag('for') }
 
 sub new {
     my ($class, $args) = @_;
@@ -26,20 +23,20 @@ sub new {
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
-    if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$]) {
+    if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$]o) {
         raise Template::Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };
     }
     my ($var, $range, $attr) = ($1, $2, $3 || '');
-    my $reversed = $attr =~ s[^reversed\b][] ? 1 : 0;
+    my $reversed = $attr =~ s[^reversed\b][]o? 1 : 0;
     my %attr = map {
         my ($k, $v)
             = split($Template::Liquid::Utility::FilterArgumentSeparator, $_,
                     2);
         { $k => $v };
-    } grep { defined && length } split qr[\s+], $attr || '';
+    } grep { defined && length } split qr[\s+]o, $attr || '';
     my $s = bless {attributes      => \%attr,
                    collection_name => $range,
                    name            => $var . '-' . $range,
@@ -63,27 +60,27 @@ sub render {
     my $reversed = $s->{'reversed'};
     my $sorted
         = exists $attr->{'sorted'} ?
-        $s->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
+        $s->{template}{context}->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
         : ();
     $sorted = 'key'
         if (defined $sorted
             && (($sorted ne 'key') && ($sorted ne 'value')));
     my $offset
         = defined $attr->{'offset'} ?
-        $s->resolve($attr->{'offset'})
+        $s->{template}{context}->resolve($attr->{'offset'})
         : ();
     my $limit
         = defined $attr->{'limit'} ?
-        $s->resolve($attr->{'limit'})
+        $s->{template}{context}->resolve($attr->{'limit'})
         : ();
-    my $list = $s->resolve($range);
+    my $list = $s->{template}{context}->resolve($range);
     my $type = 'ARRAY';
     #
     my $_undef_list = 0;
     if (ref $list eq 'HASH') {
         $list = [map { {key => $_, value => $list->{$_}} } keys %$list];
         @$list = sort {
-            $a->{$sorted} =~ m[^\d+$] && $b->{$sorted} =~ m[^\d+$]
+            $a->{$sorted} =~ m[^\d+$]o && $b->{$sorted} =~ m[^\d+$]o
                 ?
                 ($a->{$sorted} <=> $b->{$sorted})
                 : ($a->{$sorted} cmp $b->{$sorted})
@@ -113,16 +110,16 @@ sub render {
         $limit  = defined $limit ? $limit : scalar @$list;
         $offset = defined $offset ? $offset : 0;
     }
-    return $s->template->context->stack(
+    return $s->{template}{context}->stack(
         sub {
             my $return = '';
             my $steps  = $#$list;
             $_undef_list = 1 if $steps == -1;
             my $nodes = $s->{'blocks'}[$_undef_list]{'nodelist'};
         STEP: for my $index (0 .. $steps) {
-                $s->template->context->scope->{$s->{'variable_name'}}
+                $s->{template}{context}{scopes}[-1]->{$s->{'variable_name'}}
                     = $list->[$index];
-                $s->template->context->scope->{'forloop'} = {
+                $s->{template}{context}{scopes}[-1]->{'forloop'} = {
                                         length => $steps + 1,
                                         limit  => $limit,
                                         offset => $offset,
@@ -139,12 +136,12 @@ sub render {
                 for my $node (@$nodes) {
                     my $rendering = ref $node ? $node->render() : $node;
                     $return .= defined $rendering ? $rendering : '';
-                    if ($s->template->{break}) {
-                        $s->template->{break} = 0;
+                    if ($s->{template}{break}) {
+                        $s->{template}{break} = 0;
                         last STEP;
                     }
-                    if ($s->template->{continue}) {
-                        $s->template->{continue} = 0;
+                    if ($s->{template}{continue}) {
+                        $s->{template}{continue} = 0;
                         next STEP;
                     }
                 }

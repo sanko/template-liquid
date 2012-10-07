@@ -1,21 +1,12 @@
 package Template::Liquid::Context;
 { $Template::Liquid::Context::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../';
-use Template::Liquid::Utility;
-use Template::Liquid::Error;
-sub scopes    { return $_[0]->{'scopes'} }
-sub scope     { return $_[0]->{'scopes'}->[-1] }
-sub filters   { return $_[0]->{'filters'} }
-sub registers { return $_[0]->{'registers'} }
+require Template::Liquid::Utility;
+require Template::Liquid::Error;
 
 sub new {
     my ($class, $assigns, $args) = @_;
     return bless {
-        filters   => ($args->{'filters'}   ? $args->{'filters'}   : []),
-        registers => ($args->{'registers'} ? $args->{'registers'} : {}),
-        scopes    => [$assigns             ? $assigns             : {}],
+        scopes   => [$assigns ? $assigns : {}],
         template => $args->{'template'},    # Required
         errors   => []
     }, $class;
@@ -37,7 +28,7 @@ sub pop {
 
 sub stack {
     my ($s, $block) = @_;
-    my $old_scope = $s->scope;
+    my $old_scope = $s->{scopes}[-1];
     $s->push();
     $s->merge($old_scope);
     my $result = $block->($s);
@@ -47,7 +38,7 @@ sub stack {
 
 sub merge {
     my ($s, $new) = @_;
-    return $s->{'scopes'}->[0] = __merge(reverse $s->scope, $new);
+    return $s->{'scopes'}->[0] = __merge(reverse $s->{scopes}[-1], $new);
 }
 
 sub _merge {    # Deeply merges data structures
@@ -93,7 +84,7 @@ sub __merge {    # unless right is more interesting, this is a left-
     };
     for my $key (keys %{$_[0]}) {
         my ($left_ref, $right_ref)
-            = map { ref($_->{$key}) =~ m[^(HASH|ARRAY)$] ? $1 : 'SCALAR' }
+            = map { ref($_->{$key}) =~ m[^(HASH|ARRAY)$]o ? $1 : 'SCALAR' }
             ($_[0], $_[1]);
 
         #warn sprintf '%-12s [%6s|%-6s]', $key, $left_ref, $right_ref;
@@ -115,12 +106,12 @@ sub resolve {
     return !!1 if $path eq 'true';
     return $2 if $path =~ m[^(['"])(.+)\1$];
     return [int $s->resolve($1) .. int $s->resolve($2)]
-        if $path =~ m[^\((\S+)\.\.(\S+)\)$];    # range
-    return $1 if $path =~ m[^(\d+(?:[\d\.]+)?)$];    # int or bad float
-    return $s->resolve($1)->[$2] if $path =~ m'^(.+)\[(.+)\]$';
+        if $path =~ m[^\((\S+)\.\.(\S+)\)$]o;    # range
+    return $1 if $path =~ m[^(\d+(?:[\d\.]+)?)$]o;    # int or bad float
+    return $s->resolve($1)->[$2] if $path =~ m'^(.+)\[(.+)\]$'o;
     my @path = split $Template::Liquid::Utility::VariableAttributeSeparator,
         $path;
-    my $cursor = \$s->scope;
+    my $cursor = \$s->{scopes}[-1];
 
     while (local $_ = shift @path) {
         my $type = ref $$cursor;
@@ -130,7 +121,7 @@ sub resolve {
                 return scalar $$cursor->[0]  if $path->[0] eq 'first';
                 return scalar $$cursor->[-1] if $path->[0] eq 'last';
             }
-            return unless /^(?:0|[0-9]\d*)\z/;
+            return unless /^(?:0|[0-9]\d*)\z/o;
             if (scalar @path) { $cursor = \$$cursor->[$_]; next; }
             return defined $val ?
                 $$cursor->[$_]

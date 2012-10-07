@@ -1,16 +1,13 @@
 package Template::Liquid::Tag::Continue;
 { $Template::Liquid::Tag::Continue::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 BEGIN { our @ISA = qw[Template::Liquid::Tag::Break]; }
-sub import {Template::Liquid::register_tag('continue', __PACKAGE__) }
+sub import {Template::Liquid::register_tag('continue') }
 
 sub render {
     my $s   = shift;
-    $s->template->{continue} = 1;
+    $s->{template}->{continue} = 1;
     return '';
 }
 1;

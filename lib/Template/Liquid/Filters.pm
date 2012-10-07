@@ -1,14 +1,20 @@
-package Template::Liquid::Filter::Standard;
-{ $Template::Liquid::Filter::Standard::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-sub import {Template::Liquid::register_filter()}
+package Template::Liquid::Filters;
+{ $Template::Liquid::Filter::VERSION = 'v1.0.0' }
+
+sub import {
+    Template::Liquid::register_filter(
+        qw[ date capitalize upcase downcase first last join split sort size
+            strip_html strip_newlines newline_to_br replace replace_first remove
+            remove_first truncate truncatewords prepend append minus plus times
+            divided_by modulo]
+    );
+}
 
 sub date {
     $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
     $_[1] = defined $_[1] ? $_[1] : '%c';
     return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
-    return if $_[0] !~ m[^\d+$];
+    return if $_[0] !~ m[^\d+$]o;
     require POSIX;
     return POSIX::strftime($_[1], gmtime($_[0]));
 }
@@ -39,13 +45,13 @@ sub size {
 }
 
 sub strip_html {
-    $_[0] =~ s[<.*?>][]g;
-    $_[0] =~ s[<!--.*?-->][]g;
-    $_[0] =~ s[<script.*?<\/script>][]g;
+    $_[0] =~ s[<.*?>][]go;
+    $_[0] =~ s[<!--.*?-->][]go;
+    $_[0] =~ s[<script.*?<\/script>][]go;
     return $_[0];
 }
-sub strip_newlines { $_[0] =~ s[\n][]g;         return $_[0]; }
-sub newline_to_br  { $_[0] =~ s[\n][<br />\n]g; return $_[0]; }
+sub strip_newlines { $_[0] =~ s[\n][]go;         return $_[0]; }
+sub newline_to_br  { $_[0] =~ s[\n][<br />\n]go; return $_[0]; }
 
 sub replace {
     $_[2] = defined $_[2] ? $_[2] : '';
@@ -90,24 +96,24 @@ sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
 sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
 
 sub minus {
-    return $_[0] =~ m[^\d+$] && $_[1] =~ m[^\d+$] ? $_[0] - $_[1] : ();
+    return $_[0] =~ m[^\d+$]o && $_[1] =~ m[^\d+$]o ? $_[0] - $_[1] : ();
 }
 
 sub plus {
-    return $_[0] =~ m[^\d+$]
-        && $_[1] =~ m[^\d+$] ? $_[0] + $_[1] : $_[0] . $_[1];
+    return $_[0] =~ m[^\d+$]o
+        && $_[1] =~ m[^\d+$]o ? $_[0] + $_[1] : $_[0] . $_[1];
 }
 
 sub times {
-    return $_[0] if $_[1] !~ m[^\d+$];
-    return $_[0] x $_[1] if $_[0] !~ m[^\d+$];
+    return $_[0] if $_[1] !~ m[^\d+$]o;
+    return $_[0] x $_[1] if $_[0] !~ m[^\d+$]o;
     return $_[0] * $_[1];
 }
 sub divided_by { return $_[0] / $_[1]; }
 
 sub modulo {
-    return ((!defined $_[0] && $_[0] =~ m[[^\d\.]]) ? '' : (!defined $_[1]
-                               && $_[1] =~ m[[^\d\.]]) ? $_[0] : $_[0] % $_[1]
+    return ((!defined $_[0] && $_[0] =~ m[[^\d\.]]o) ? '' : (!defined $_[1]
+                              && $_[1] =~ m[[^\d\.]]o) ? $_[0] : $_[0] % $_[1]
     );
 }
 #
@@ -123,7 +129,7 @@ sub modulo {
 
 =head1 NAME
 
-Template::Liquid::Filter::Standard - Default Filters Based on Liquid's Standard Set
+Template::Liquid::Filters - Default Filters Based on Liquid's Standard Set
 
 =head1 Standard Filters
 
@@ -251,7 +257,7 @@ is optional and defaults to an empty string (C<''>).
     {{ 'Replace that with this' | replace:this,'this' }} => Replace this with this
     {{ 'I have a listhp.'       | replace:'th' }}        => I have a lisp.
 
-=head1 C<replace_first>
+=head2 C<replace_first>
 
 Replaces the first occurrence of a string with another string. The replacement
 value is optional and defaults to an empty string (C<''>).

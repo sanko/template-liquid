@@ -1,12 +1,9 @@
 package Template::Liquid::Tag::Break;
 { $Template::Liquid::Tag::Break::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag('break', __PACKAGE__) }
+sub import {Template::Liquid::register_tag('break') }
 sub new {
     my ($class, $args) = @_;
     raise Template::Liquid::ContextError {
@@ -36,7 +33,7 @@ sub new {
 }
 sub render {
     my $s   = shift;
-    $s->template->{break} = 1;
+    $s->{template}->{break} = 1;
     return '';
 }
 1;

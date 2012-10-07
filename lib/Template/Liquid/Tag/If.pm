@@ -1,12 +1,9 @@
 package Template::Liquid::Tag::If;
 { $Template::Liquid::Tag::If::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 our @ISA = qw[Template::Liquid::Tag];
-sub import {Template::Liquid::register_tag( 'if', __PACKAGE__) }
+sub import {Template::Liquid::register_tag( 'if') }
 
 
 sub new {
@@ -25,7 +22,7 @@ sub new {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
-        if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$];
+        if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$]o;
     my $condition = $args->{'attrs'};
     my $s = bless {name     => $args->{'tag_name'} . '-' . $condition,
                       blocks   => [],
@@ -34,7 +31,7 @@ sub new {
                       parent   => $args->{'parent'},
                       markup   => $args->{'markup'},
                       end_tag  => 'end' . $args->{'tag_name'},
-                      conditional_tag => qr[^(?:else|else?if)$]
+                      conditional_tag => qr[^(?:else|else?if)$]o
     }, $class;
     return $s;
 }

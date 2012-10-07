@@ -1,12 +1,9 @@
 package Template::Liquid::Tag::Case;
 { $Template::Liquid::Tag::Case::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
 our @ISA = qw[Template::Liquid::Tag::If];
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
-sub import {Template::Liquid::register_tag( 'case', __PACKAGE__) }
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
+sub import {Template::Liquid::register_tag( 'case') }
 
 
 sub new {
@@ -26,7 +23,7 @@ sub new {
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
-    if ($args->{'attrs'} !~ m[\S$]) {
+    if ($args->{'attrs'} !~ m[\S$]o) {
         raise Template::Liquid::SyntaxError {
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
@@ -41,7 +38,7 @@ sub new {
                       value           => $args->{'attrs'},
                       first_block     => 0,
                       end_tag         => 'end' . $args->{'tag_name'},
-                      conditional_tag => qr[^(?:else|when)$]
+                      conditional_tag => qr[^(?:else|when)$]o
     }, $class;
     return $s;
 }
@@ -70,7 +67,7 @@ sub push_block {
             $args->{'attrs'} =~ m[(${Template::Liquid::Utility::Expression})
                         (?:(?:\s+or\s+|\s*\,\s*)
                            (${Template::Liquid::Utility::Expression}.*)
-                        )?]x;
+                        )?]ox;
     }
     my $block =
         Template::Liquid::Block->new({tag_name => $args->{'tag_name'},

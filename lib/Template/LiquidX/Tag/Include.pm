@@ -1,13 +1,10 @@
-package Template::Solution::Tag::Include;
-{ $Template::Solution::Tag::Include::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+package Template::LiquidX::Tag::Include;
+{ $Template::LiquidX::Tag::Include::VERSION = 'v1.0.0' }
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 use File::Spec;
 BEGIN { our @ISA = qw[Template::Liquid::Tag]  }
-sub import {Template::Liquid::register_tag( 'include', __PACKAGE__) }
+sub import {Template::Liquid::register_tag( 'include') }
 
 sub new {
     my ($class, $args) = @_;
@@ -38,20 +35,20 @@ sub new {
 
 sub render {
     my ($s) = @_;
-    my $file = $s->resolve($s->{'file'});
+    my $file = $s->{template}{context}->resolve($s->{'file'});
     raise Template::Liquid::ArgumentError
         'Error: Missing or undefined argument passed to include' && return
         if !defined $file;
-    if (   $file !~ m[^[\w\\/\.-_]+$]i
-        || $file =~ m[\.[\\/]]
-        || $file =~ m[[//\\]\.])
+    if (   $file !~ m[^[\w\\/\.-_]+$]io
+        || $file =~ m[\.[\\/]]o
+        || $file =~ m[[//\\]\.]o)
     {   raise Template::Liquid::ArgumentError sprintf
             q[Error: Include file '%s' contains invalid characters or sequiences],
             $file && return;
     }
     $file = File::Spec->catdir(
 
-        # $s->template->context->registers->{'site'}->source,
+        # $s->{template}{context}->registers->{'site'}->source,
         '_includes',
         $file
     );
@@ -68,8 +65,8 @@ sub render {
         'Error: Cannot include file %s (Failed to read %d bytes): %s',
         $file, -s $FH, $! && return;
     my $partial = Template::Liquid->parse($DATA);
-    $partial->{'context'} = $s->template->context;
-    my $return = $partial->context->stack(sub { $partial->render(); });
+    $partial->{'context'} = $s->{template}{context};
+    my $return = $partial->{context}->stack(sub { $partial->render(); });
     return $return;
 }
 1;
@@ -78,7 +75,7 @@ sub render {
 
 =head1 NAME
 
-Template::Solution::Tag::Include - Include another file
+Template::LiquidX::Tag::Include - Include another file
 
 =head1 Synopsis
 
@@ -92,13 +89,13 @@ templates, you may consider making the snippet an include.
 You include static filenames...
 
     use Template::Liquid;
-    use Template::Solution::Tag::Include;
+    use Template::LiquidX::Tag::Include;
     Template::Liquid->parse("{%include 'my.inc'%}")->render();
 
 ...or 'dynamic' filenames (for example, based on a variable)...
 
     use Template::Liquid;
-    use Template::Solution::Tag::Include;
+    use Template::LiquidX::Tag::Include;
     Template::Liquid->parse('{%include inc%}')->render({inc => 'my.inc'});
 
 =head1 Notes

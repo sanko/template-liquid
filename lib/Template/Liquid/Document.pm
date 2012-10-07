@@ -1,15 +1,9 @@
 package Template::Liquid::Document;
 { $Template::Liquid::Document::VERSION = 'v1.0.0' }
+require Template::Liquid::Variable;
+require Template::Liquid::Utility;
 use strict;
-use warnings;
-use lib '../';
-use Template::Liquid::Variable;
-use Template::Liquid::Utility;
 #
-sub resolve { $_[0]->template->context->resolve($_[1], $_[2]); }
-sub template { $_[0]->{'template'} }
-sub parent   { $_[0]->{'parent'} }
-
 sub new {
     my ($class, $args) = @_;
     raise Template::Liquid::ContextError {
@@ -27,19 +21,16 @@ sub parse {
     my ($class, $args, $tokens);
     (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
     my $s = ref $class ? $class : $class->new($args);
+    my %_tags = $s->{template}->tags;
 NODE: while (my $token = shift @{$tokens}) {
-        if ($token =~ qr[^${Template::Liquid::Utility::TagStart}  # {%
-                                (.+?)                         # etc
-                              ${Template::Liquid::Utility::TagEnd}    # %}
-                             $]x
-            )
-        {   my ($tag, $attrs) = (split ' ', $1, 2);
-            my ($package, $call) = $s->template->tags->{$tag};
-            if ($package
-                && ($call = $s->template->tags->{$tag}->can('new')))
-            {   my $_tag =
+        if ($token =~ $Template::Liquid::Utility::TagMatch) {
+            my ($tag, $attrs) = (split ' ', $1, 2);
+            my $package = $_tags{$tag};
+            my $call = $package ? $package->can('new') : ();
+            if (defined $call) {
+                my $_tag =
                     $call->($package,
-                            {template => $s->template,
+                            {template => $s->{template},
                              parent   => $s,
                              tag_name => $tag,
                              markup   => $token,
@@ -50,11 +41,11 @@ NODE: while (my $token = shift @{$tokens}) {
                 if ($_tag->conditional_tag) {
                     push @{$_tag->{'blocks'}},
                         Template::Liquid::Block->new(
-                                              {tag_name => $tag,
-                                               attrs    => $attrs,
-                                               template => $_tag->template,
-                                               parent   => $_tag
-                                              }
+                                            {tag_name => $tag,
+                                             attrs    => $attrs,
+                                             template => $_tag->{template},
+                                             parent   => $_tag
+                                            }
                         );
                     $_tag->parse($tokens);
                     {    # finish previous block
@@ -76,7 +67,7 @@ NODE: while (my $token = shift @{$tokens}) {
             {   $s->push_block({tag_name => $tag,
                                 attrs    => $attrs,
                                 markup   => $token,
-                                template => $s->template,
+                                template => $s->{template},
                                 parent   => $s
                                },
                                $tokens
@@ -86,14 +77,8 @@ NODE: while (my $token = shift @{$tokens}) {
                 raise Template::Liquid::SyntaxError 'Unknown tag: ' . $token;
             }
         }
-        elsif (
-            $token =~ qr[^
-                    ${Template::Liquid::Utility::VariableStart} # {{
-                        (.+?)                           #  stuff + filters?
-                    ${Template::Liquid::Utility::VariableEnd}   # }}
-                $]x
-            )
-        {   my ($variable, $filters) = split qr[\s*\|\s*], $1, 2;
+        elsif ($token =~ $Template::Liquid::Utility::VarMatch) {
+            my ($variable, $filters) = split qr[\s*\|\s*]o, $1, 2;
             my @filters;
             for my $filter (split $Template::Liquid::Utility::FilterSeparator,
                             $filters || '')
@@ -101,8 +86,8 @@ NODE: while (my $token = shift @{$tokens}) {
                     = split
                     $Template::Liquid::Utility::FilterArgumentSeparator,
                     $filter, 2;
-                $filter =~ s[\s*$][];    # XXX - the splitter should clean...
-                $filter =~ s[^\s*][];    # XXX -  ...this up for us.
+                $filter =~ s[\s*$][]o;    # XXX - the splitter should clean...
+                $filter =~ s[^\s*][]o;    # XXX -  ...this up for us.
                 my @args
                     = $args ?
                     split
@@ -112,12 +97,13 @@ NODE: while (my $token = shift @{$tokens}) {
                 push @filters, [$filter, \@args];
             }
             push @{$s->{'nodelist'}},
-                Template::Liquid::Variable->new({template => $s->template,
-                                                 parent   => $s,
-                                                 markup   => $token,
-                                                 variable => $variable,
-                                                 filters  => \@filters
-                                                }
+                Template::Liquid::Variable->new(
+                                               {template => $s->{template},
+                                                parent   => $s,
+                                                markup   => $token,
+                                                variable => $variable,
+                                                filters  => \@filters
+                                               }
                 );
         }
         else {
@@ -173,4 +159,3 @@ http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
 clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
 =cut
-

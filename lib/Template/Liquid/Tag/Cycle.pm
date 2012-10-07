@@ -1,12 +1,9 @@
 package Template::Liquid::Tag::Cycle;
 { $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.0' }
-use strict;
-use warnings;
-use lib '../../../lib';
-use Template::Liquid::Error;
-use Template::Liquid::Utility;
+require Template::Liquid::Error;
+require Template::Liquid::Utility;
 our @ISA = qw[Template::Liquid::Tag];
-sub import {Template::Liquid::register_tag( 'cycle', __PACKAGE__) }
+sub import {Template::Liquid::register_tag( 'cycle') }
 
 
 sub new {
@@ -25,13 +22,13 @@ sub new {
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
-        if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$];
+        if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$]o;
     my ($name, $s);
-    if ($args->{'attrs'} =~ m[^\s*(.+?)\s*\:\s*(.*)$]) {    # Named syntax
+    if ($args->{'attrs'} =~ m[^\s*(.+?)\s*\:\s*(.*)$]o) {    # Named syntax
         ($name, $args->{'attrs'}) = ($1, $2);
         $name = $2 if $name =~ m[^(['"])(.+)\1$];
     }
-    elsif ($args->{'attrs'} =~ m[^(.+)$]) {                 # Simple syntax
+    elsif ($args->{'attrs'} =~ m[^(.+)$]o) {                 # Simple syntax
         $name = $args->{'attrs'};
     }
     else {
@@ -46,8 +43,8 @@ sub new {
 
     #$name = $args->{'tag_name'} . '-' . $name;
     # XXX - Cycle objects are stored in Template::Liquid::Document objects
-    if (defined $args->{'template'}->document->{'_CYCLES'}{$name}) {
-        $s = $args->{'template'}->document->{'_CYCLES'}{$name};
+    if (defined $args->{'template'}{document}->{'_CYCLES'}{$name}) {
+        $s = $args->{'template'}{document}->{'_CYCLES'}{$name};
     }
     else {
         my @list
@@ -62,21 +59,21 @@ sub new {
                        markup   => $args->{'markup'},
                        position => 0
         }, $class;
-        $args->{'template'}->document->{'_CYCLES'}{$name} = $s;
+        $args->{'template'}{document}->{'_CYCLES'}{$name} = $s;
     }
     return $s;
 }
 
 sub render {
     my ($s) = @_;
-    my $name = $s->resolve($s->{'name'})
+    my $name = $s->{template}{context}->resolve($s->{'name'})
         || $s->{'name'};
-    $s = $s->template->document->{'_CYCLES'}{$name} || $s;
+    $s = $s->{template}{document}->{'_CYCLES'}{$name} || $s;
     my $node = $s->{'list'}[$s->{'position'}++];
     my $return
         = ref $node ?
         $node->render()
-        : $s->resolve($node);
+        : $s->{template}{context}->resolve($node);
     $s->{'position'} = 0
         if $s->{'position'} >= scalar @{$s->{'list'}};
     return $return;
