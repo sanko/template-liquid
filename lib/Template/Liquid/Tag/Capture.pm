@@ -2,48 +2,50 @@ package Template::Liquid::Tag::Capture;
 { $Template::Liquid::Tag::Capture::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag( 'capture') }
+BEGIN { use base 'Template::Liquid::Tag'; }
+sub import { Template::Liquid::register_tag('capture') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
     if ($args->{'attrs'} !~ qr[^(\S+)\s*?$]o) {
-        raise Template::Liquid::SyntaxError {
+        raise Template::Liquid::Error {
+                       type    => 'Syntax',
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };
     }
     my $s = bless {name          => 'c-' . $1,
-                      nodelist      => [],
-                      tag_name      => $args->{'tag_name'},
-                      variable_name => $1,
-                      end_tag       => 'end' . $args->{'tag_name'},
-                      template      => $args->{'template'},
-                      parent        => $args->{'parent'},
-                      markup        => $args->{'markup'},
+                   nodelist      => [],
+                   tag_name      => $args->{'tag_name'},
+                   variable_name => $1,
+                   end_tag       => 'end' . $args->{'tag_name'},
+                   template      => $args->{'template'},
+                   parent        => $args->{'parent'},
+                   markup        => $args->{'markup'},
     }, $class;
     return $s;
 }
 
 sub render {
     my ($s) = @_;
-    my $var    = $s->{'variable_name'};
-    my $val    = '';
+    my $var = $s->{'variable_name'};
+    my $val = '';
     for my $node (@{$s->{'nodelist'}}) {
         my $rendering = ref $node ? $node->render() : $node;
         $val .= defined $rendering ? $rendering : '';

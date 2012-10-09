@@ -1,22 +1,23 @@
 package Template::Liquid::Variable;
 { $Template::Liquid::Variable::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
-our @ISA = qw[Template::Liquid::Document];
+use base 'Template::Liquid::Document';
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'}
         || !$args->{'template'}->isa('Template::Liquid');
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing variable name in ' . $args->{'markup'},
                    fatal   => 1
         }

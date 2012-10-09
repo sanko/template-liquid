@@ -2,35 +2,39 @@ package Template::Liquid::Tag::For;
 { $Template::Liquid::Tag::For::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-our @ISA = qw[Template::Liquid::Tag::If];
+use base 'Template::Liquid::Tag::If';
 my $Help_String = 'TODO';
 sub import { Template::Liquid::register_tag('for') }
+use strict;
+use warnings;
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
     if ($args->{'attrs'} !~ qr[^([\w\.]+)\s+in\s+(.+?)(?:\s+(.*)\s*?)?$]o) {
-        raise Template::Liquid::SyntaxError {
+        raise Template::Liquid::Error {
+                       type    => 'Syntax',
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };
     }
     my ($var, $range, $attr) = ($1, $2, $3 || '');
-    my $reversed = $attr =~ s[^reversed\b][]o? 1 : 0;
+    my $reversed = $attr =~ s[^reversed\b][]o ? 1 : 0;
     my %attr = map {
         my ($k, $v)
             = split($Template::Liquid::Utility::FilterArgumentSeparator, $_,
@@ -59,18 +63,22 @@ sub render {
     my $attr     = $s->{'attributes'};
     my $reversed = $s->{'reversed'};
     my $sorted
-        = exists $attr->{'sorted'} ?
-        $s->{template}{context}->resolve($attr->{'sorted'}) || $attr->{'sorted'} || 'key'
+        = exists $attr->{'sorted'}
+        ?
+        $s->{template}{context}->resolve($attr->{'sorted'})
+        || $attr->{'sorted'} || 'key'
         : ();
     $sorted = 'key'
         if (defined $sorted
             && (($sorted ne 'key') && ($sorted ne 'value')));
     my $offset
-        = defined $attr->{'offset'} ?
+        = defined $attr->{'offset'}
+        ?
         $s->{template}{context}->resolve($attr->{'offset'})
         : ();
     my $limit
-        = defined $attr->{'limit'} ?
+        = defined $attr->{'limit'}
+        ?
         $s->{template}{context}->resolve($attr->{'limit'})
         : ();
     my $list = $s->{template}{context}->resolve($range);
@@ -166,7 +174,7 @@ Template::Liquid::Tag::For - Simple loop construct
 
 =head1 Description
 
-L<Solution|Solution> allows for loops over collections.
+For loops... uh, loop over collections.
 
 =head2 Loop-scope Variables
 
@@ -322,6 +330,9 @@ Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
 L<Template::Liquid|Template::Liquid/"Create your own filters">'s docs on
 custom filter creation
+
+L<Template::Liquid::Tag::Break|Template::Liquid::Tag::Break> and
+L<Template::Liquid::Tag::Continue|Template::Liquid::Tag::Continue>
 
 =head1 Author
 

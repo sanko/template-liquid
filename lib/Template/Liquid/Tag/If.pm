@@ -2,36 +2,36 @@ package Template::Liquid::Tag::If;
 { $Template::Liquid::Tag::If::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-our @ISA = qw[Template::Liquid::Tag];
-sub import {Template::Liquid::register_tag( 'if') }
-
+use base 'Template::Liquid::Tag';
+sub import { Template::Liquid::register_tag('if') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
         if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$]o;
     my $condition = $args->{'attrs'};
-    my $s = bless {name     => $args->{'tag_name'} . '-' . $condition,
-                      blocks   => [],
-                      tag_name => $args->{'tag_name'},
-                      template => $args->{'template'},
-                      parent   => $args->{'parent'},
-                      markup   => $args->{'markup'},
-                      end_tag  => 'end' . $args->{'tag_name'},
-                      conditional_tag => qr[^(?:else|else?if)$]o
+    my $s = bless {name            => $args->{'tag_name'} . '-' . $condition,
+                   blocks          => [],
+                   tag_name        => $args->{'tag_name'},
+                   template        => $args->{'template'},
+                   parent          => $args->{'parent'},
+                   markup          => $args->{'markup'},
+                   end_tag         => 'end' . $args->{'tag_name'},
+                   conditional_tag => qr[^(?:else|else?if)$]o
     }, $class;
     return $s;
 }

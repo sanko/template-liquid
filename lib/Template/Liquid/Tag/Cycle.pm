@@ -2,23 +2,23 @@ package Template::Liquid::Tag::Cycle;
 { $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-our @ISA = qw[Template::Liquid::Tag];
-sub import {Template::Liquid::register_tag( 'cycle') }
-
+use base 'Template::Liquid::Tag';
+sub import { Template::Liquid::register_tag('cycle') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
@@ -32,11 +32,13 @@ sub new {
         $name = $args->{'attrs'};
     }
     else {
-        raise Template::Liquid::SyntaxError {
-            message => sprintf(
+        raise Template::Liquid::Error {
+            type => 'Syntax',
+            message =>
+                sprintf(
                 q[Syntax Error in '%s %s' - Valid syntax: cycle [name :] var [, var2, var3 ...]],
                 $args->{'tag_name'}, $args->{'attrs'}
-            ),
+                ),
             fatal => 1
         };
     }
@@ -51,13 +53,13 @@ sub new {
             = split $Template::Liquid::Utility::VariableFilterArgumentParser,
             $args->{'attrs'};
         $s = bless {name     => $name,
-                       blocks   => [],
-                       tag_name => $args->{'tag_name'},
-                       list     => \@list,
-                       template => $args->{'template'},
-                       parent   => $args->{'parent'},
-                       markup   => $args->{'markup'},
-                       position => 0
+                    blocks   => [],
+                    tag_name => $args->{'tag_name'},
+                    list     => \@list,
+                    template => $args->{'template'},
+                    parent   => $args->{'parent'},
+                    markup   => $args->{'markup'},
+                    position => 0
         }, $class;
         $args->{'template'}{document}->{'_CYCLES'}{$name} = $s;
     }
@@ -124,12 +126,83 @@ specify the name of the group. This can even be a variable.
     one
     two
 
+=head1 Notes
+
+The cycle tag is the only one which retains state between calls to render For
+a particular document. So...
+
+    use Template::Liquid;
+    my $solution = Template::Liquid->parse(<<'TEMPLATE');
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    {% cycle 'group 2': 'one', 'two', 'three' %}
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    TEMPLATE
+    print $solution->render() for 1..3;
+
+...would print...
+
+    one
+    one
+    two
+    three
+    two
+    one
+    two
+    three
+    three
+
+...rather than...
+
+    one
+    one
+    two
+    one
+    one
+    two
+    one
+    one
+    two
+
+...which is what would happen if the state was reset after every render.
+
+Remember than state is held for each document so...
+
+    use Template::Liquid;
+    my $solution_a = Template::Liquid->parse(<<'TEMPLATE');
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    {% cycle 'group 2': 'one', 'two', 'three' %}
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    TEMPLATE
+    my $solution_b = Template::Liquid->parse(<<'TEMPLATE');
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    {% cycle 'group 2': 'one', 'two', 'three' %}
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    TEMPLATE
+    my $solution_c = Template::Liquid->parse(<<'TEMPLATE');
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    {% cycle 'group 2': 'one', 'two', 'three' %}
+    {% cycle 'group 1': 'one', 'two', 'three' %}
+    TEMPLATE
+
+    print $solution_a->render();
+    print $solution_b->render();
+    print $solution_c->render();
+
+...would print...
+
+    one
+    one
+    two
+    one
+    one
+    two
+    one
+    one
+    two
+
 =head1 See Also
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
-
-L<Template::Liquid|Template::Liquid/"Create your own filters">'s docs on
-custom filter creation
 
 =head1 Author
 

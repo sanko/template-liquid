@@ -1,20 +1,29 @@
 package Template::Liquid::Tag;
 { $Template::Liquid::Tag::VERSION = 'v1.0.0' }
-our @ISA     = qw[Template::Liquid::Document];
+use base 'Template::Liquid::Document';
 sub tag             { return $_[0]->{'tag_name'}; }
 sub end_tag         { return $_[0]->{'end_tag'} || undef; }
 sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
 
 # Should be overridden by child classes
 sub new {
-    return Template::Liquid::StandardError->new(
-                                   'Please define a constructor in ' . $_[0]);
+    return
+        Template::Liquid::Error->new(
+                         {type    => 'Subclass',
+                          message => 'Please define a constructor in ' . $_[0]
+                         }
+        );
 }
 
 sub push_block {
-    return Template::Liquid::StandardError->(
+    return
+        Template::Liquid::Error->new(
+           {type => 'Subclass',
+            message =>
                 'Please define a push_block method (for conditional tags) in '
-                    . $_[0]);
+                . $_[0]
+           }
+        );
 }
 1;
 
@@ -26,248 +35,15 @@ Template::Liquid::Tag - Documentation for Template::Liquid's Standard Tagsets
 
 =head1 Description
 
-Tags are used for the logic in your L<template|Template::Liquid>. New tags
-are very easy to code, so I hope to get many contributions to the standard tag
-library after releasing this code.
-
-=head1 Standard Tagset
-
-Expanding the list of supported tags is easy but here's the current standard
-set:
-
-=head2 C<comment>
-
-Comment tags are simple blocks that do nothing during the
-L<render|Template::Liquid/"render"> stage. Use these to temporarily disable
-blocks of code or do insert documentation into your source code.
-
-    This is a {% comment %} secret {% endcomment %}line of text.
-
-For more, see L<Template::Liquid::Tag::Comment|Template::Liquid::Tag::Comment>.
-
-=head2 C<raw>
-
-Raw temporarily disables tag processing. This is useful for generating content
-(eg, Mustache, Handlebars) which uses conflicting syntax.
-
-    {% raw %}
-        In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
-    {% endraw %}
-
-For more, see L<Template::Liquid::Tag::Raw|Template::Liquid::Tag::Raw>.
-
-=head2 C<if> / C<elseif> / C<else>
-
-    {% if post.body contains search_string %}
-        <div class="post result" id="p-{{post.id}}">
-            <p class="title">{{ post.title }}</p>
-            ...
-        </div>
-    {% endunless %}
-
-=head2 C<unless> / C<elseif> / C<else>
-
-This is sorta the opposite of C<if>.
-
-    {% unless some.value == 3 %}
-        Well, the value sure ain't three.
-    {% elseif some.value > 1 %}
-        It's greater than one.
-    {% else %}
-       Well, is greater than one but not equal to three.
-       Psst! It's {{some.value}}.
-    {% endunless %}
-
-For more, see L<Template::Liquid::Tag::Unless|Template::Liquid::Tag::Unless>.
-
-=head2 C<case>
-
-If you need more conditions, you can use the case statement:
-
-    {% case condition %}
-        {% when 1 %}
-            hit 1
-        {% when 2 or 3 %}
-            hit 2 or 3
-        {% else %}
-            ... else ...
-    {% endcase %}
-
-For more, see L<Template::Liquid::Tag::Case|Template::Liquid::Tag::Case>.
-
-=head2 C<cycle>
-
-Often you have to alternate between different colors or similar tasks. Liquid
-has built-in support for such operations, using the cycle tag.
-
-    {% cycle 'one', 'two', 'three' %}
-    {% cycle 'one', 'two', 'three' %}
-    {% cycle 'one', 'two', 'three' %}
-    {% cycle 'one', 'two', 'three' %}
-
-...will result in...
-
-    one
-    two
-    three
-    one
-
-If no name is supplied for the cycle group, then it's assumed that multiple
-calls with the same parameters are one group.
-
-If you want to have total control over cycle groups, you can optionally
-specify the name of the group. This can even be a variable.
-
-    {% cycle 'group 1': 'one', 'two', 'three' %}
-    {% cycle 'group 1': 'one', 'two', 'three' %}
-    {% cycle 'group 2': 'one', 'two', 'three' %}
-    {% cycle 'group 2': 'one', 'two', 'three' %}
-
-...will result in...
-
-    one
-    two
-    one
-    two
-
-For more, see L<Template::Liquid::Tag::Cycle|Template::Liquid::Tag::Cycle>.
-
-=head2 C<for>
-
-Liquid allows for loops over collections:
-
-    {% for item in array %}
-        {{ item }}
-    {% endfor %}
-
-During every for loop, the following helper variables are available for extra
-styling needs:
-
-=over
-
-=item C<forloop.length> - length of the entire for loop
-
-=item C<forloop.index> - index of the current iteration
-
-=item C<forloop.index0> - index of the current iteration (zero based)
-
-=item C<forloop.rindex> - how many items are still left?
-
-=item C<forloop.rindex0> - how many items are still left? (zero based)
-
-=item C<forloop.first> - is this the first iteration?
-
-=item C<forloop.last> - is this the last iteration?
-
-=back
-
-There are several attributes you can use to influence which items you receive
-in your loop
-
-C<limit:int> lets you restrict how many items you get. C<offset:int> lets you
-start the collection with the nth item.
-
-    # array = [1,2,3,4,5,6]
-    {% for item in array limit:2 offset:2 %}
-        {{ item }}
-    {% endfor %}
-    # results in 3,4
-
-For more, see L<Template::Liquid::Tag::For|Template::Liquid::Tag::For>.
-
-=head3 Reversing the loop
-
-To iterate in reverse use the obviously named C<reverse> keyword:
-
-    {% for item in collection reversed %} {{item}} {% endfor %}
-
-=head3 Custom, Dynamic Range Options
-
-Instead of looping over an existing collection, you can define a range of
-numbers to loop through. The range can be defined by both literal and variable
-numbers:
-
-    # if item.quantity is 4...
-    {% for i in (1..item.quantity) %}
-        {{ i }}
-    {% endfor %}
-    # results in 1,2,3,4
-
-=head3 C<break>
-
-You can use the C<{% break %}> tag to break out of the enclosing
-L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block. Every for block is
-implicitly ended with a break.
-
-    # if array is [[1, 2], [3, 4], [5, 6]]
-    {% for item in array %}{% for i in item %}{% if i == 1 %}{% break %}{% endif %}{{ i }}{% endfor %}{% endfor %}
-    # results in 3456
-
-For more, see L<Template::Liquid::Tag::Break|Template::Liquid::Tag::Break>.
-
-=head3 C<continue>
-
-You can use the C<{% continue %}> tag to fall through the current iteration
-of the enclosing L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block.
-
-    # if array is {items => [1, 2, 3, 4, 5]}
-    {% for i in array.items %}{% if i == 3 %}{% continue %}{% else %}{{ i }}{% endif %}{% endfor %}
-    # results in 1245
-
-For more, see L<Template::Liquid::Tag::Continue|Template::Liquid::Tag::Continue>.
-
-=head2 C<assign>
-
-You can store data in your own variables, to be used in output or other tags
-as desired. The simplest way to create a variable is with the assign tag,
-which has a pretty straightforward syntax:
-
-    {% assign name = 'freestyle' %}
-
-    {% for t in collections.tags %}{% if t == name %}
-        <p>Freestyle!</p>
-    {% endif %}{% endfor %}
-
-Another way of doing this would be to assign true / false values to the
-variable:
-
-    {% assign freestyle = false %}
-
-    {% for t in collections.tags %}{% if t == 'freestyle' %}
-        {% assign freestyle = true %}
-    {% endif %}{% endfor %}
-
-    {% if freestyle %}
-        <p>Freestyle!</p>
-    {% endif %}
-
-If you want to combine a number of strings into a single string and save it to
-a variable, you can do that with the capture tag.
-
-For more, see L<Template::Liquid::Tag::Assign|Template::Liquid::Tag::Assign>.
-
-=head2 C<capture>
-
-This tag is a block which "captures" whatever is rendered inside it, then
-assigns the captured value to the given variable instead of rendering it to
-the screen.
-
-    {% capture attribute_name %}{{ item.title | handleize }}-{{ i }}-color{% endcapture %}
-
-    <label for="{{ attribute_name }}">Color:</label>
-    <select name="attributes[{{ attribute_name }}]" id="{{ attribute_name }}">
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="blue">Blue</option>
-    </select>
-
-For more, see L<Template::Liquid::Tag::Capture|Template::Liquid::Tag::Capture>.
+Tags are used for the logic in your L<template|Template::Liquid>. For a list
+of standard tags, see the L<Liquid|Template::Liquid/"Standard Tagset">
+documentation.
 
 =head1 Extending Solution with Custom Tags
 
-To create a new tag, simply inherit from L<Template::Liquid::Tag|Template::Liquid::Tag>
-and register your block L<globally|Template::Liquid/"Template::Liquid->register_tag( ... )">
-or locally with L<Template::Liquid|Template::Liquid/"register_tag">.
+To create a new tag, simply inherit from
+L<Template::Liquid::Tag|Template::Liquid::Tag> and register your block
+L<globally|Template::Liquid/"Template::Liquid::register_tag( ... )">.
 
 For a complete example of this, see
 L<Template::Solution::Tag::Include|Template::Solution::Tag::Include>.
@@ -319,11 +95,13 @@ handed to you in C<$args>. For completeness, you should also include a C<name>
 (defined any way you want) and the C<$markup> and C<tag_name> from the
 C<$args> variable.
 
-Enough jibba jabba... here's some functioning code...
+Enough jibba jabba... the next few sections show actual code...
+
+=head2
 
     package Template::Solution::Tag::Random;
-    our @ISA = qw[Template::Liquid::Tag];
-    sub import { Template::Liquid::register_tag('random', __PACKAGE__) }
+    use base 'Template::Liquid::Tag';
+    sub import { Template::Liquid::register_tag('random') }
 
     sub new {
         my ($class, $args) = @_;
@@ -350,58 +128,73 @@ Using this new tag is as simple as...
     use Template::Liquid;
     use Template::Solution::Tag::Random;
 
-    print Template::Liquid->parse('{% random max %}')->render({max => 30});
+    print Template::Liquid->parse('{% random max %}')->render(max => 30);
 
 This will print a random integer between C<0> and C<30>.
 
-=head2 Creating Your Own Tag Blocks
+=head2 User-defined, Balanced (Block-like) Tags
 
 If you just want a quick sample, see C<examples/custom_tag.pl>. There you'll
-find an example C<{^% dump var %}> tag named C<Template::Solution::Tag::Dump>.
+find an example C<{^% dump var %}> tag named C<Solution::Tag::Dump>.
 
 Block-like tags are very similar to
 L<simple|Template::Liquid::Tag/"Create Your Own Tags">. Inherit from
 L<Template::Liquid::Tag|Template::Liquid::Tag> and register your block
-L<globally|Solution/"register_tag"> or locally with
-L<Template::Liquid|Template::Liquid/"register_tag">.
+L<globally|Template::Liquid/"register_tag">.
 
 The only difference is you define an C<end_tag> in your object.
 
 Here's an example...
 
-    package Template::Solution::Tag::Large::Hadron::Collider;
-    our @ISA = qw[Template::Liquid::Tag];
-    sub import { Template::Liquid::register_tag('lhc', __PACKAGE__) }
+    package Template::Solution::Random;
+    use base 'Template::Liquid::Tag';
+    sub import { Template::Liquid::register_tag('random') }
 
     sub new {
         my ($class, $args) = @_;
-        my $s = bless {
-                          odds     => $args->{'attrs'},
-                          name     => 'LHC-' . $args->{'attrs'},
-                          tag_name => $args->{'tag_name'},
-                          parent   => $args->{'parent'},
-                          template => $args->{'template'},
-                          markup   => $args->{'markup'},
-                          end_tag  => 'end' . $args->{'tag_name'}
+        raise Template::Liquid::Error {
+                   type    => 'Syntax',
+                   message => 'Missing argument list in ' . $args->{'markup'},
+                   fatal   => 1
+            }
+            if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$]o;
+        my $s = bless {odds     => $args->{'attrs'},
+                       name     => 'Rand-' . $args->{'attrs'},
+                       tag_name => $args->{'tag_name'},
+                       parent   => $args->{'parent'},
+                       template => $args->{'template'},
+                       markup   => $args->{'markup'},
+                       end_tag  => 'end' . $args->{'tag_name'}
         }, $class;
         return $s;
     }
 
     sub render {
-        my ($s) = @_;
-        return if int rand $s->{template}{context}->{template}{context}->resolve($s->{'odds'});
-        return join '', @{$s->{'nodelist'}};
+        my $s      = shift;
+        my $return = '';
+        if (!int rand $s->{template}{context}->resolve($s->{'odds'})) {
+            for my $node (@{$s->{'nodelist'}}) {
+                my $rendering = ref $node ? $node->render() : $node;
+                $return .= defined $rendering ? $rendering : '';
+            }
+        }
+        $return;
     }
     1;
 
 Using this example tag...
 
     use Template::Liquid;
-    use Template::Solution::Tag::Large::Hadron::Collider;
+    use Template::Solution::Random;
 
-    warn Template::Liquid->parse(q[{% lhc 2 %}Now, that's money well spent!{% endlhc %}])->render();
+    print Template::Liquid->parse(q[{% random 2 %}Now, that's money well spent!{% endrandom %}])->render();
 
-Just like the real thing, our C<lhc> tag works only 50% of the time.
+In this example, we expect a single argument. During the render stage, we
+resolve the variable (this allows for constructs like:
+C<{% random value %}...>) and depending on a call to C<rand($odds)> the tag
+either renders to an empty string or we continue to render the child nodes.
+Here, our C<random> tag prints only 50% of the time, C<{% random 1 %}> would
+work every time.
 
 The biggest changes between this and the
 L<random tag|Solution/"Create Your Own Tags"> we build above are in the

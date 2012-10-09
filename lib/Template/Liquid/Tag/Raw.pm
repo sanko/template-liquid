@@ -1,36 +1,36 @@
 package Template::Liquid::Tag::Raw;
 { $Template::Liquid::Tag::Raw::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
-BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag( 'raw') }
+use base 'Template::Liquid::Tag';
+sub import { Template::Liquid::register_tag('raw') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
     my $s = bless {name     => '?-' . int rand(time),
-                      blocks   => [],
-                      tag_name => $args->{'tag_name'},
-                      template => $args->{'template'},
-                      parent   => $args->{'parent'},
-                      markup   => $args->{'markup'},
-                      end_tag  => 'end' . $args->{'tag_name'}
+                   blocks   => [],
+                   tag_name => $args->{'tag_name'},
+                   template => $args->{'template'},
+                   parent   => $args->{'parent'},
+                   markup   => $args->{'markup'},
+                   end_tag  => 'end' . $args->{'tag_name'}
     }, $class;
     return $s;
 }
 
 sub render {
     my ($s) = @_;
-    my $var    = $s->{'variable_name'};
-    my $val    = '';
+    my $var = $s->{'variable_name'};
+    my $val = '';
     return _dump_nodes(@{$s->{'nodelist'}});
 }
 
@@ -62,7 +62,7 @@ Template::Liquid::Tag::Raw - General Purpose Content Container
 
 =head1 Description
 
-C<raw> is a simplest tag. Child nodes are rendered as they appear in the
+C<raw> is a simple tag. Child nodes are rendered as they appear in the
 template. Code inside a C<raw> tag is dumped as-is during rendering. So,
 this...
 

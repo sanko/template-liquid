@@ -4,24 +4,29 @@ require Template::Liquid::Utility;
 require Template::Liquid::Error;
 
 sub new {
-    my ($class, $assigns, $args) = @_;
-    return bless {
-        scopes   => [$assigns ? $assigns : {}],
-        template => $args->{'template'},    # Required
-        errors   => []
+    my ($class, $template, %assigns) = @_;
+    return bless {scopes   => [\%assigns],
+                  template => $template,     # Required
+                  errors   => []
     }, $class;
 }
 
 sub push {
     my ($s, $context) = @_;
-    return raise Template::Liquid::ContextError 'Cannot push new scope!'
+    return
+        raise Template::Liquid::Error {type    => 'Stack',
+                                       message => 'Cannot push new scope!'
+        }
         if scalar @{$s->{'scopes'}} == 100;
     return push @{$s->{'scopes'}}, (defined $context ? $context : {});
 }
 
 sub pop {
     my ($s) = @_;
-    return raise Template::Liquid::ContextError 'Cannot pop scope!'
+    return
+        raise Template::Liquid::Error {type    => 'Stack',
+                                       message => 'Cannot pop scope!'
+        }
         if scalar @{$s->{'scopes'}} == 1;
     return pop @{$s->{'scopes'}};
 }

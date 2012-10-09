@@ -3,7 +3,6 @@ use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
-
 #
 is( Template::Liquid->parse(
                          <<'INPUT')->render(), <<'EXPECTED', 'Simple syntax');
@@ -30,7 +29,7 @@ one
 two
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({items => [qw[one two three four five]]}), <<'EXPECTED', 'Real world use [A]');
+        <<'INPUT')->render(items => [qw[one two three four five]]), <<'EXPECTED', 'Real world use [A]');
 {% for item in items %}
    <div class="{%cycle 'red', 'green', 'blue' %}"> Item {{ item }} </div>{% endfor %}
 INPUT
@@ -42,7 +41,7 @@ INPUT
    <div class="green"> Item five </div>
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({items => [qw[one two three four five]]}), <<'EXPECTED', 'Real world use [A.2]');
+        <<'INPUT')->render(items => [qw[one two three four five]]), <<'EXPECTED', 'Real world use [A.2]');
 {% for item in items %}
    <div class="{%cycle 'red', 'green', 'blue' %}"> Item {{ item }} </div>{% endfor %}
 INPUT
@@ -54,7 +53,7 @@ INPUT
    <div class="green"> Item five </div>
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({grp_one => 'group 1'}), <<'EXPECTED', 'variable as cycle name');
+        <<'INPUT')->render(grp_one => 'group 1'), <<'EXPECTED', 'variable as cycle name');
 {% cycle  grp_one : 'one', 'two', 'three' %}
 {% cycle 'group 1': 'one', 'two', 'three' %}
 {% cycle 'group 2': 'one', 'two', 'three' %}

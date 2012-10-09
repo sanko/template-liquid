@@ -34,7 +34,6 @@ our $VariableParser = qr[^
                             $]ox;
 our $VariableFilterArgumentParser
     = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))]o;
-
 our $TagMatch = qr[^${Template::Liquid::Utility::TagStart}   # {%
                                 (.+?)                              # etc
                               ${Template::Liquid::Utility::TagEnd} # %}
@@ -44,7 +43,6 @@ our $VarMatch = qr[^
                         (.+?)                           #  stuff + filters?
                     ${Template::Liquid::Utility::VariableEnd}   # }}
                 $]ox;
-
 
 sub tokenize {
     map { $_ ? $_ : () } split $TemplateParser, shift || '';

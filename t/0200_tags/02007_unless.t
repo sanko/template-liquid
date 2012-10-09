@@ -62,67 +62,67 @@ INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({list => [qw[some other value]]}), <<'EXPECTED', q[list contains 'other']);
+        <<'INPUT')->render(list => [qw[some other value]]), <<'EXPECTED', q[list contains 'other']);
 {% unless list contains 'other' %}Yep.{% endunless %}
 INPUT
 
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({list => [qw[some other value]]}), <<'EXPECTED', q[list contains 'missing element']);
+        <<'INPUT')->render(list => [qw[some other value]]), <<'EXPECTED', q[list contains 'missing element']);
 {% unless list contains 'missing element' %}Yep.{% endunless %}
 INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({list_one => [qw[a b c d]], list_two => [qw[a b c d]]}), <<'EXPECTED', q[list_one == list_two [A]]);
+        <<'INPUT')->render(list_one => [qw[a b c d]], list_two => [qw[a b c d]]), <<'EXPECTED', q[list_one == list_two [A]]);
 {% unless list_one == list_two %}Yep.{% endunless %}
 INPUT
 
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({list_one => [qw[a b c d]], list_two => [qw[a b c d e]]}), <<'EXPECTED', q[list_one == list_two [B]]);
+        <<'INPUT')->render(list_one => [qw[a b c d]], list_two => [qw[a b c d e]]), <<'EXPECTED', q[list_one == list_two [B]]);
 {% unless list_one == list_two %}Yep.{% endunless %}
 INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({list_one => [qw[a b c d]], list_two => [qw[a b c e]]}), <<'EXPECTED', q[list_one == list_two [C]]);
+        <<'INPUT')->render(list_one => [qw[a b c d]], list_two => [qw[a b c e]]), <<'EXPECTED', q[list_one == list_two [C]]);
 {% unless list_one == list_two %}Yep.{% endunless %}
 INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({hash_one => {key => 'value'}, hash_two => {key => 'value'}}), <<'EXPECTED', q[hash_one == hash_two [A]]);
+        <<'INPUT')->render(hash_one => {key => 'value'}, hash_two => {key => 'value'}), <<'EXPECTED', q[hash_one == hash_two [A]]);
 {% unless hash_one == hash_two %}Yep.{% endunless %}
 INPUT
 
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({hash_one => {key => 'value'}, hash_two => {key => 'wrong value'}}), <<'EXPECTED', q[hash_one == hash_two [B]]);
+        <<'INPUT')->render(hash_one => {key => 'value'}, hash_two => {key => 'wrong value'}), <<'EXPECTED', q[hash_one == hash_two [B]]);
 {% unless hash_one == hash_two %}Yep.{% endunless %}
 INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({hash_one => {key => 'value'}, hash_two => {other_key => 'value'}}), <<'EXPECTED', q[hash_one == hash_two [C]]);
+        <<'INPUT')->render(hash_one => {key => 'value'}, hash_two => {other_key => 'value'}), <<'EXPECTED', q[hash_one == hash_two [C]]);
 {% unless hash_one == hash_two %}Yep.{% endunless %}
 INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({hash => {key => 'value'}, list => [qw[key value]]}), <<'EXPECTED', q[hash == list]);
+        <<'INPUT')->render(hash => {key => 'value'}, list => [qw[key value]]), <<'EXPECTED', q[hash == list]);
 {% unless hash == list %}Yep.{% endunless %}
 INPUT
 Yep.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({hash => {key => 'value'}}), <<'EXPECTED', q[hash contains 'key']);
+        <<'INPUT')->render(hash => {key => 'value'}), <<'EXPECTED', q[hash contains 'key']);
 {% unless hash contains 'key' %}Yep.{% endunless %}
 INPUT
 
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({hash => {key => 'value'}}), <<'EXPECTED', q[hash contains 'missing key']);
+        <<'INPUT')->render(hash => {key => 'value'}), <<'EXPECTED', q[hash contains 'missing key']);
 {% unless hash contains 'missing key' %}Yep.{% endunless %}
 INPUT
 Yep.

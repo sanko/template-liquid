@@ -3,10 +3,8 @@ use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
-
 #
 my $solution = new_ok('Template::Liquid');
-
 #
 is( Template::Liquid->parse(
           <<'INPUT')->render(), <<'EXPECTED', 'Capture gulps everything [A]');

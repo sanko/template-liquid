@@ -3,7 +3,6 @@ use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
-
 #
 is( Template::Liquid->parse(
                     <<'INPUT')->render(), <<'EXPECTED', 'Falls back to else');
@@ -36,7 +35,7 @@ is( Template::Liquid->parse(
     Two or Three
 {% endcase %}
 TEMPLATE
-{ condition => 12 }
+condition => 12
 ARGS
 
 EXPECTED
@@ -47,7 +46,7 @@ is( Template::Liquid->parse(
         One
 {% endcase %}
 TEMPLATE
-{ condition => 1 }
+condition => 1
 ARGS
 
         One
@@ -62,7 +61,7 @@ is( Template::Liquid->parse(
         Three
 {% endcase %}
 TEMPLATE
-{ condition => 3 }
+condition => 3
 ARGS
 
         Three
@@ -77,7 +76,7 @@ is( Template::Liquid->parse(
         Two or Three
 {% endcase %}
 TEMPLATE
-{ condition => 2 }
+condition => 2
 ARGS
 
         Two or Three
@@ -92,7 +91,7 @@ is( Template::Liquid->parse(
     Two or Three
 {% endcase %}
 TEMPLATE
-{ condition => 100 }
+condition => 100
 ARGS
 
 EXPECTED
@@ -105,7 +104,7 @@ is( Template::Liquid->parse(
     B or C
 {% endcase %}
 TEMPLATE
-{ condition => 'Alpha' }
+condition => 'Alpha'
 ARGS
 
     A

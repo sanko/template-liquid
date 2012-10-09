@@ -2,37 +2,40 @@ package Template::Liquid::Tag::Break;
 { $Template::Liquid::Tag::Break::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
-sub import {Template::Liquid::register_tag('break') }
+BEGIN { use base 'Template::Liquid::Tag'; }
+sub import { Template::Liquid::register_tag('break') }
+
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
     if ($args->{'attrs'}) {
-        raise Template::Liquid::SyntaxError {
+        raise Template::Liquid::Error {
+                       type    => 'Syntax',
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };
     }
     my $s = bless {name     => '#-' . $1,
-                      nodelist => [],
-                      tag_name => $args->{'tag_name'},
-                      template => $args->{'template'},
-                      parent   => $args->{'parent'},
-                      markup   => $args->{'markup'}
+                   nodelist => [],
+                   tag_name => $args->{'tag_name'},
+                   template => $args->{'template'},
+                   parent   => $args->{'parent'},
+                   markup   => $args->{'markup'}
     }, $class;
     return $s;
 }
+
 sub render {
-    my $s   = shift;
+    my $s = shift;
     $s->{template}->{break} = 1;
     return '';
 }
@@ -55,8 +58,8 @@ Template::Liquid::Tag::Break - For-block killing construct
 =head1 Description
 
 You can use the C<{% break %}> tag to break out of the enclosing
-L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block. Every for block is
-implicitly ended with a break.
+L<for|Template::Liquid::Tag::For> block. Every for block is implicitly ended
+with a break.
 
 =head1 See Also
 

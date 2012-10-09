@@ -1,24 +1,30 @@
-package Template::LiquidX::Tag::Include;
-{ $Template::LiquidX::Tag::Include::VERSION = 'v1.0.0' }
+package Solution::Tag::Include;
+{ $Solution::Tag::Include::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use File::Spec;
-BEGIN { our @ISA = qw[Template::Liquid::Tag]  }
-sub import {Template::Liquid::register_tag( 'include') }
+use base 'Template::Liquid::Tag';
+my $base_dir;
+
+sub import {
+    $base_dir = $_[1] ? $_[1] : '_includes/';
+    Template::Liquid::register_tag('include');
+}
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
@@ -36,8 +42,11 @@ sub new {
 sub render {
     my ($s) = @_;
     my $file = $s->{template}{context}->resolve($s->{'file'});
-    raise Template::Liquid::ArgumentError
-        'Error: Missing or undefined argument passed to include' && return
+    raise Template::Liquid::Error {
+           type    => 'Argument',
+           message => 'Error: Missing or undefined argument passed to include'
+        }
+        && return
         if !defined $file;
     if (   $file !~ m[^[\w\\/\.-_]+$]io
         || $file =~ m[\.[\\/]]o
@@ -49,21 +58,31 @@ sub render {
     $file = File::Spec->catdir(
 
         # $s->{template}{context}->registers->{'site'}->source,
-        '_includes',
+        $base_dir,
         $file
     );
-    raise Template::Liquid::FileSystemError sprintf
-        'Error: Included file %s not found', $file
+    raise Template::Liquid::Error {
+                       type    => 'I/O',
+                       message => sprintf 'Error: Included file %s not found',
+                       $file
+        }
         && return
         if !-f $file;
     open(my ($FH), '<', $file)
-        || raise Template::Liquid::FileSystemError sprintf
-        'Error: Cannot include file %s: %s',
-        $file, $! && return;
+        || raise Template::Liquid::FileSystemError {
+                       type    => 'I/O',
+                       message => sprintf 'Error: Cannot include file %s: %s',
+                       $file, $!
+        }
+        && return;
     sysread($FH, my ($DATA), -s $FH) == -s $FH
-        || raise Template::Liquid::FileSystemError sprintf
-        'Error: Cannot include file %s (Failed to read %d bytes): %s',
-        $file, -s $FH, $! && return;
+        || raise Template::Liquid::Error {
+            type    => 'I/O',
+            message => sprintf
+                'Error: Cannot include file %s (Failed to read %d bytes): %s',
+            $file, -s $FH, $!
+        }
+        && return;
     my $partial = Template::Liquid->parse($DATA);
     $partial->{'context'} = $s->{template}{context};
     my $return = $partial->{context}->stack(sub { $partial->render(); });
@@ -75,13 +94,16 @@ sub render {
 
 =head1 NAME
 
-Template::LiquidX::Tag::Include - Include another file
+Solution::Tag::Include - Include another file (Functioning Custom Tag Example)
 
 =head1 Synopsis
 
-    {% include 'somefile.inc %}
+    {% include 'comments.inc' %}
 
 =head1 Description
+
+This is a demonstration of
+L<extending Template::Liquid|Template::Liquid/"Extending Template::Liquid">.
 
 If you find yourself using the same snippet of code or text in several
 templates, you may consider making the snippet an include.
@@ -89,36 +111,35 @@ templates, you may consider making the snippet an include.
 You include static filenames...
 
     use Template::Liquid;
-    use Template::LiquidX::Tag::Include;
+    use Solution::Tag::Include;
     Template::Liquid->parse("{%include 'my.inc'%}")->render();
 
 ...or 'dynamic' filenames (for example, based on a variable)...
 
     use Template::Liquid;
-    use Template::LiquidX::Tag::Include;
-    Template::Liquid->parse('{%include inc%}')->render({inc => 'my.inc'});
+    use Solution::Tag::Include;
+    Template::Liquid->parse('{%include inc%}')->render(inc => 'my.inc');
 
 =head1 Notes
 
-As long as the file is in the C<./_includes/> directory. This location
-restriction may go away in the future but for now, I'll mimic Jekyll (github's
-Liquid-based template system).
+The default directory searched for includes is C<./_includes/> but this can be
+changed in the include statement...
 
-This is a 15m hack and is subject to change ...and may be completly broken.
+    use Solution::Tag::Include '~/my_site/templates/includes';
+
+This mimics Jekyll's include statement and was a 15m hack so it's subject to
+change ...and may be completly broken.
 
 =head1 See Also
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Template::Liquid|Template::Liquid/"Create your own filters">'s docs on
-custom filter creation
+L<Template::Liquid|Template::Liquid/"Extending Template::Liquid">'s section on
+custom tags.
 
 =head1 Author
 
 Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
-
-The original Liquid template system was developed by jadedPixel
-(http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
 
 =head1 License and Legal
 

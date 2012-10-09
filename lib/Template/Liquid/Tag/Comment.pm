@@ -1,23 +1,24 @@
 package Template::Liquid::Tag::Comment;
 { $Template::Liquid::Tag::Capture::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
-BEGIN { our @ISA = qw[Template::Liquid::Tag]; }
+BEGIN { use base 'Template::Liquid::Tag'; }
 sub import { Template::Liquid::register_tag('comment') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
     if ($args->{'attrs'}) {
-        raise Template::Liquid::SyntaxError {
+        raise Template::Liquid::Error {
+                       type    => 'Syntax',
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };

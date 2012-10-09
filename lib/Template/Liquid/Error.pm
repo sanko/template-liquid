@@ -4,16 +4,12 @@ sub message { return $_[0]->{'message'} }
 sub fatal   { return $_[0]->{'fatal'} }
 
 sub new {
-    my ($class, $args, @etc) = @_;
-    $args
-        = {message => (@etc ? sprintf($args, @etc) : $args)
-           || 'Unknown error'}
-        if $args
-        && !(ref $args && ref $args eq 'HASH');
+    my ($class, $args) = @_;
     $args->{'fatal'} = defined $args->{'fatal'} ? $args->{'fatal'} : 0;
     require Carp;
     Carp::longmess() =~ m[^.+?\n\t(.+)]so;
-    $args->{'message'} = sprintf '%s: %s %s', $class, $args->{'message'}, $1;
+    $args->{'message'} = sprintf '%s [%s]: %s %s', $class, $args->{'type'},
+        $args->{'message'}, $1;
     return bless $args, $class;
 }
 
@@ -23,28 +19,7 @@ sub raise {
     die $s->message if $s->fatal;
     warn $s->message;
 }
-sub render { return sprintf '[%s] %s', ref $_[0], $_[0]->message; }
-
-package Template::Liquid::ArgumentError;
-our @ISA = qw'Template::Liquid::Error';
-
-package Template::Liquid::ContextError;
-our @ISA = qw'Template::Liquid::Error';
-
-package Template::Liquid::FilterNotFound;
-our @ISA = qw'Template::Liquid::Error';
-
-package Template::Liquid::FileSystemError;
-our @ISA = qw'Template::Liquid::Error';
-
-package Template::Liquid::StandardError;
-our @ISA = qw'Template::Liquid::Error';
-
-package Template::Liquid::SyntaxError;
-our @ISA = qw'Template::Liquid::Error';
-
-package Template::Liquid::StackLevelError;
-our @ISA = qw'Template::Liquid::Error';
+sub render { $_[0]->{message} }
 1;
 
 =cut

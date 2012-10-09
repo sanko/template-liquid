@@ -1,61 +1,63 @@
 package Template::Liquid::Tag::Case;
 { $Template::Liquid::Tag::Case::VERSION = 'v1.0.0' }
-our @ISA = qw[Template::Liquid::Tag::If];
+use base 'Template::Liquid::Tag::If';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-sub import {Template::Liquid::register_tag( 'case') }
-
+sub import { Template::Liquid::register_tag('case') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
     if ($args->{'attrs'} !~ m[\S$]o) {
-        raise Template::Liquid::SyntaxError {
+        raise Template::Liquid::Error {
+                       type    => 'Syntax',
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };
     }
-    my $s = bless {name   => $args->{'tag_name'} . '-' . $args->{'attrs'},
-                      blocks => [],
-                      tag_name        => $args->{'tag_name'},
-                      template        => $args->{'template'},
-                      parent          => $args->{'parent'},
-                      markup          => $args->{'markup'},
-                      value           => $args->{'attrs'},
-                      first_block     => 0,
-                      end_tag         => 'end' . $args->{'tag_name'},
-                      conditional_tag => qr[^(?:else|when)$]o
+    my $s = bless {name     => $args->{'tag_name'} . '-' . $args->{'attrs'},
+                   blocks   => [],
+                   tag_name => $args->{'tag_name'},
+                   template => $args->{'template'},
+                   parent   => $args->{'parent'},
+                   markup   => $args->{'markup'},
+                   value    => $args->{'attrs'},
+                   first_block     => 0,
+                   end_tag         => 'end' . $args->{'tag_name'},
+                   conditional_tag => qr[^(?:else|when)$]o
     }, $class;
     return $s;
 }
 
 sub push_block {
     my ($s, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+                   type    => 'Syntax',
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }

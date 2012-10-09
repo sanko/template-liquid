@@ -1,21 +1,21 @@
 package Template::Liquid::Condition;
 { $Template::Liquid::Condition::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
-our @ISA = qw[Template::Liquid::Block];
+use base 'Template::Liquid::Block';
 
 # Makes life easy
 use overload 'bool' => \&is_true, fallback => 1;
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
     my ($lval, $condition, $rval)
@@ -46,10 +46,16 @@ sub new {
                        parent    => $args->{'parent'}
                 }, $class;
         }
-        raise Template::Liquid::ContextError 'Unknown operator ' . $condition;
+        raise Template::Liquid::Error {
+                                   type    => 'Context',
+                                   message => 'Unknown operator ' . $condition
+        };
     }
-    return Template::Liquid::ContextError->new(
-                            'Bad conditional statement: ' . $args->{'attrs'});
+    return
+        Template::Liquid::Error->new(
+                   type    => 'Context',
+                   message => 'Bad conditional statement: ' . $args->{'attrs'}
+        );
 }
 sub ne { return !$_[0]->eq }    # hashes
 
@@ -99,7 +105,8 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
 sub gt {
     my ($s) = @_;
     my ($l, $r)
-        = map { $s->{template}{context}->resolve($_) || $_ } ($$s{'lvalue'}, $$s{'rvalue'});
+        = map { $s->{template}{context}->resolve($_) || $_ }
+        ($$s{'lvalue'}, $$s{'rvalue'});
     return !!(grep {defined} $l, $r) ?
         (grep {m[\D]o} $l, $r) ?
         $l gt $r
@@ -158,7 +165,8 @@ sub is_true {
         return !!($s->{template}{context}->resolve($s->{'lvalue'}) ? 1 : 0);
     }
     my $condition = $s->can($s->{'condition'});
-    raise Template::Liquid::ContextError {
+    raise Template::Liquid::Error {
+                              type    => 'Context',
                               message => 'Bad condition ' . $s->{'condition'},
                               fatal   => 1
         }
@@ -352,9 +360,6 @@ None right now. Give it time.
 =head1 Author
 
 Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
-
-The original Liquid template system was developed by jadedPixel
-(http://jadedpixel.com/) and Tobias Lütke (http://blog.leetsoft.com/).
 
 =head1 License and Legal
 

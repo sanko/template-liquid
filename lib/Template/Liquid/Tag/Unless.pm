@@ -2,8 +2,8 @@ package Template::Liquid::Tag::Unless;
 { $Template::Liquid::Tag::Unless::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-our @ISA = qw[Template::Liquid::Tag::If];
-sub import {Template::Liquid::register_tag( 'unless') }
+use base 'Template::Liquid::Tag::If';
+sub import { Template::Liquid::register_tag('unless') }
 
 sub render {
     my ($s) = @_;

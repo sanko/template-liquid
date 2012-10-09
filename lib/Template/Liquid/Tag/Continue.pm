@@ -2,11 +2,11 @@ package Template::Liquid::Tag::Continue;
 { $Template::Liquid::Tag::Continue::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
-BEGIN { our @ISA = qw[Template::Liquid::Tag::Break]; }
-sub import {Template::Liquid::register_tag('continue') }
+use base 'Template::Liquid::Tag::Break';
+sub import { Template::Liquid::register_tag('continue') }
 
 sub render {
-    my $s   = shift;
+    my $s = shift;
     $s->{template}->{continue} = 1;
     return '';
 }
@@ -28,8 +28,8 @@ Template::Liquid::Tag::Continue - For-block jitter construct
 
 =head1 Description
 
-You can use the C<{% continue %}> tag to fall through the current iteration
-of the enclosing L<<C<{% for .. %}> |Template::Liquid::Tag::For>> block.
+You can use the C<{% continue %}> tag to fall through the current iteration of
+the enclosing C<for|Template::Liquid::Tag::For> block.
 
 =head1 See Also
 

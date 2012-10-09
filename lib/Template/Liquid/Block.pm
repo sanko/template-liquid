@@ -1,30 +1,32 @@
 package Template::Liquid::Block;
 { $Template::Liquid::Block::VERSION = 'v1.0.0' }
 require Template::Liquid::Error;
-our @ISA = qw[Template::Liquid::Document];
+use base 'Template::Liquid::Document';
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::ContextError {
-                                         message => 'Missing parent argument',
-                                         fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing parent argument',
+                                   fatal   => 1
         }
         if !defined $args->{'parent'};
-    raise Template::Liquid::SyntaxError {
+    raise Template::Liquid::Error {
+             type    => 'Syntax',
              message => 'else tags are non-conditional: ' . $args->{'markup'},
              fatal   => 1
         }
         if $args->{'tag_name'} eq 'else' && $args->{'attrs'};
     my $s = bless {tag_name   => 'b-' . $args->{'tag_name'},
-                      conditions => undef,
-                      nodelist   => [],
-                      template   => $args->{'template'},
-                      parent     => $args->{'parent'},
+                   conditions => undef,
+                   nodelist   => [],
+                   template   => $args->{'template'},
+                   parent     => $args->{'parent'},
     }, $class;
     $s->{'conditions'} = (
         $args->{'tag_name'} eq 'else' ?

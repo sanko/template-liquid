@@ -5,19 +5,19 @@ use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
 $|++;
 is( Template::Liquid->parse(
-        <<'INPUT')->render({values => [qw[foo bar baz]]}), <<'EXPECTED', q[assign w/ array]);
+        <<'INPUT')->render(values => [qw[foo bar baz]]), <<'EXPECTED', q[assign w/ array]);
 {% assign foo = values %}.{{ foo[0] }}.
 INPUT
 .foo.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({values => [qw[foo bar baz]]}), <<'EXPECTED', q[assign w/ array (part 2)]);
+        <<'INPUT')->render(values => [qw[foo bar baz]]), <<'EXPECTED', q[assign w/ array (part 2)]);
 {% assign foo = values %}.{{ foo[1] }}.
 INPUT
 .bar.
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render({values => 'foo,bar,baz'}), <<'EXPECTED', q[assign w/ filter]);
+        <<'INPUT')->render(values => 'foo,bar,baz'), <<'EXPECTED', q[assign w/ filter]);
 {% assign foo = values | split: ',' %}.{{ foo[1] }}.
 INPUT
 .bar.

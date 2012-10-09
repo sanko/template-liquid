@@ -6,9 +6,9 @@ use strict;
 #
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::ContextError {
-                                       message => 'Missing template argument',
-                                       fatal   => 1
+    raise Template::Liquid::Error {type    => 'Context',
+                                   message => 'Missing template argument',
+                                   fatal   => 1
         }
         if !defined $args->{'template'};
     return
@@ -74,7 +74,10 @@ NODE: while (my $token = shift @{$tokens}) {
                 );
             }
             else {
-                raise Template::Liquid::SyntaxError 'Unknown tag: ' . $token;
+                raise Template::Liquid::Error {
+                                           type    => 'Syntax',
+                                           message => 'Unknown tag: ' . $token
+                };
             }
         }
         elsif ($token =~ $Template::Liquid::Utility::VarMatch) {
