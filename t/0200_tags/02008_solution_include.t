@@ -4,7 +4,7 @@ use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use File::Temp qw[tempfile];
 use Template::Liquid;
-use Template::Solution::Tag::Include;
+use Solution::Tag::Include;
 note 'chdir to ./t/0200_tags '
     . (chdir './t/0200_tags/' ? 'okay' : 'failed ' . $!)
     if !-d '_includes';

@@ -1,8 +1,16 @@
-Version 1.0.0 | Soon | xxxxxxxxxx
+Version 1.0.1 | The morning of of October 10th, 2012 | xxxxxxxx
+
+    Resolved Issues/Bug Fixes:
+     * Dropped an 's' from Template::Liquid::Filters
+
+    Documentation/Sample Code/Test Suite:
+     * Fix another namespace bug (this time in the include test)
+
+Version 1.0.0 | Evening of October 9th, 2012 | 18123a6
 
     API Changes/Compatibility Information:
      * Support {% break %} and {% continue %} tags in for loops (see docs)
-     * New example extention Template::Solution::Tag::Include
+     * New example extentions in lib/Solution/Tag
 
     Notes:
      * Project renamed from Solution to Template::Liquid because... oh, who
