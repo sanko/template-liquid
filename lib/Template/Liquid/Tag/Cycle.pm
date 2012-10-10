@@ -91,8 +91,8 @@ Template::Liquid::Tag::Cycle - Document-level Persistant Lists
 =head1 Description
 
 Often you have to alternate between different colors or similar tasks.
-L<Solution|Solution> has built-in support for such operations, using the
-C<cycle> tag.
+L<Template::Liquid|Template::Liquid> has built-in support for such operations,
+using the C<cycle> tag.
 
 =head1 Synopsis
 
