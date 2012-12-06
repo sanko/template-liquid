@@ -1,5 +1,5 @@
 package Template::Liquid::Condition;
-{ $Template::Liquid::Condition::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Condition::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 use base 'Template::Liquid::Block';
 
@@ -61,9 +61,9 @@ sub ne { return !$_[0]->eq }    # hashes
 
 sub eq {
     my ($s) = @_;
-    my $l = $s->{template}{context}->resolve($s->{'lvalue'})
+    my $l = $s->{template}{context}->get($s->{'lvalue'})
         || $s->{'lvalue'};
-    my $r = $s->{template}{context}->resolve($s->{'rvalue'})
+    my $r = $s->{template}{context}->get($s->{'rvalue'})
         || $s->{'rvalue'};
     return _equal($l, $r);
 }
@@ -105,7 +105,7 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
 sub gt {
     my ($s) = @_;
     my ($l, $r)
-        = map { $s->{template}{context}->resolve($_) || $_ }
+        = map { $s->{template}{context}->get($_) || $_ }
         ($$s{'lvalue'}, $$s{'rvalue'});
     return !!(grep {defined} $l, $r) ?
         (grep {m[\D]o} $l, $r) ?
@@ -117,8 +117,8 @@ sub lt { return !$_[0]->gt }
 
 sub contains {
     my ($s) = @_;
-    my $l   = $s->{template}{context}->resolve($s->{'lvalue'});
-    my $r   = quotemeta $s->{template}{context}->resolve($s->{'rvalue'});
+    my $l   = $s->{template}{context}->get($s->{'lvalue'});
+    my $r   = quotemeta $s->{template}{context}->get($s->{'rvalue'});
     return if defined $r && !defined $l;
     return defined($l->{$r}) ? 1 : !1 if ref $l eq 'HASH';
     return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
@@ -127,18 +127,18 @@ sub contains {
 
 sub _and {
     my ($s) = @_;
-    my $l = $s->{template}{context}->resolve($s->{'lvalue'})
+    my $l = $s->{template}{context}->get($s->{'lvalue'})
         || $s->{'lvalue'};
-    my $r = $s->{template}{context}->resolve($s->{'rvalue'})
+    my $r = $s->{template}{context}->get($s->{'rvalue'})
         || $s->{'rvalue'};
     return !!($l && $r);
 }
 
 sub _or {
     my ($s) = @_;
-    my $l = $s->{template}{context}->resolve($s->{'lvalue'})
+    my $l = $s->{template}{context}->get($s->{'lvalue'})
         || $s->{'lvalue'};
-    my $r = $s->{template}{context}->resolve($s->{'rvalue'})
+    my $r = $s->{template}{context}->get($s->{'rvalue'})
         || $s->{'rvalue'};
     return !!($l || $r);
 }
@@ -162,7 +162,7 @@ sub _or {
 sub is_true {
     my ($s) = @_;
     if (!defined $s->{'condition'} && !defined $s->{'rvalue'}) {
-        return !!($s->{template}{context}->resolve($s->{'lvalue'}) ? 1 : 0);
+        return !!($s->{template}{context}->get($s->{'lvalue'}) ? 1 : 0);
     }
     my $condition = $s->can($s->{'condition'});
     raise Template::Liquid::Error {

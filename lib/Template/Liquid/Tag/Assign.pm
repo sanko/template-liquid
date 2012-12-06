@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Assign;
-{ $Template::Liquid::Tag::Assign::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::Assign::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 BEGIN { use base 'Template::Liquid::Tag'; }
@@ -52,13 +52,13 @@ sub new {
 sub render {
     my $s   = shift;
     my $var = $s->{'variable'};
-    my $val = $s->{template}{context}->resolve($s->{'value'});
+    my $val = $s->{template}{context}->get($s->{'value'});
     {    # XXX - Duplicated in Template::Liquid::Variable::render
         if (scalar @{$s->{filters}}) {
             my %_filters = $s->{template}->filters;
         FILTER: for my $filter (@{$s->{filters}}) {
                 my ($name, $args) = @$filter;
-                map { $_ = $s->{template}{context}->resolve($_) || $_ }
+                map { $_ = $s->{template}{context}->get($_) || $_ }
                     @$args;
                 my $package = $_filters{$name};
                 my $call = $package ? $package->can($name) : ();
@@ -70,7 +70,7 @@ sub render {
             }
         }
     }
-    $s->{template}{context}->resolve($var, $val);
+    $s->{template}{context}->set($var, $val);
     return '';
 }
 1;

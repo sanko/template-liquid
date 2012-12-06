@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Cycle;
-{ $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag';
@@ -68,14 +68,14 @@ sub new {
 
 sub render {
     my ($s) = @_;
-    my $name = $s->{template}{context}->resolve($s->{'name'})
+    my $name = $s->{template}{context}->get($s->{'name'})
         || $s->{'name'};
     $s = $s->{template}{document}->{'_CYCLES'}{$name} || $s;
     my $node = $s->{'list'}[$s->{'position'}++];
     my $return
         = ref $node ?
         $node->render()
-        : $s->{template}{context}->resolve($node);
+        : $s->{template}{context}->get($node);
     $s->{'position'} = 0
         if $s->{'position'} >= scalar @{$s->{'list'}};
     return $return;

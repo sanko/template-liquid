@@ -1,5 +1,5 @@
 package Solution::Tag::Include;
-{ $Solution::Tag::Include::VERSION = 'v1.0.0' }
+{ $Solution::Tag::Include::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use File::Spec;
@@ -41,7 +41,7 @@ sub new {
 
 sub render {
     my ($s) = @_;
-    my $file = $s->{template}{context}->resolve($s->{'file'});
+    my $file = $s->{template}{context}->get($s->{'file'});
     raise Template::Liquid::Error {
            type    => 'Argument',
            message => 'Error: Missing or undefined argument passed to include'
@@ -51,9 +51,11 @@ sub render {
     if (   $file !~ m[^[\w\\/\.-_]+$]io
         || $file =~ m[\.[\\/]]o
         || $file =~ m[[//\\]\.]o)
-    {   raise Template::Liquid::ArgumentError sprintf
+    {   raise Template::Liquid::Error {
+        type => 'Argument',
+        message => sprintf
             q[Error: Include file '%s' contains invalid characters or sequiences],
-            $file && return;
+            $file} && return;
     }
     $file = File::Spec->catdir(
 
@@ -69,7 +71,7 @@ sub render {
         && return
         if !-f $file;
     open(my ($FH), '<', $file)
-        || raise Template::Liquid::FileSystemError {
+        || raise Template::Liquid::Error {
                        type    => 'I/O',
                        message => sprintf 'Error: Cannot include file %s: %s',
                        $file, $!

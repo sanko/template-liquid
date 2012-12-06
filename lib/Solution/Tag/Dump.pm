@@ -1,5 +1,5 @@
 package Solution::Tag::Dump;
-{ $Solution::Tag::Dump::VERSION = 'v1.0.0' }
+{ $Solution::Tag::Dump::VERSION = 'v1.0.2' }
 use Carp qw[confess];
 use base 'Template::Liquid::Tag';
 sub import { Template::Liquid::register_tag('dump') }
@@ -23,7 +23,7 @@ sub render {
     $var
         = $var eq '.'  ? $s->{template}{context}{scopes}
         : $var eq '.*' ? [$s->{template}{context}{scopes}]
-        :                $s->{template}{context}->resolve($var);
+        :                $s->{template}{context}->get($var);
     if (eval { require Data::Dump }) {
         return Data::Dump::pp($var);
     }

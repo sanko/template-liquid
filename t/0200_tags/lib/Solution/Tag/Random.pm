@@ -24,7 +24,7 @@
     sub render {
         my $s      = shift;
         my $return = '';
-        if (!int rand $s->{template}{context}->resolve($s->{'odds'})) {
+        if (!int rand $s->{template}{context}->get($s->{'odds'})) {
             for my $node (@{$s->{'nodelist'}}) {
                 my $rendering = ref $node ? $node->render() : $node;
                 $return .= defined $rendering ? $rendering : '';

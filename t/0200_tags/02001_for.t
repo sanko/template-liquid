@@ -3,6 +3,7 @@ use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
+$|++;
 #
 is(Template::Liquid->parse(<<'TEMPLATE')->render(), <<'EXPECTED', '(1..5)');
 {%for x in (1..5) %}X{%endfor%}

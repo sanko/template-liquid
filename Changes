@@ -1,4 +1,12 @@
-Version 1.0.1 | The morning of of October 10th, 2012 | xxxxxxxx
+Version 1.0.2 | Around ten on December 6th, 2012 | xxxxxxxx
+
+    Internal/Behavioral Changes:
+     * Context resolve(...[, ...]) split in to get(...) and set(..., ...)
+
+    Documentation/Sample Code/Test Suite:
+     * New context tests
+
+Version 1.0.1 | The morning of of October 10th, 2012 | cd33aa8
 
     Resolved Issues/Bug Fixes:
      * Dropped an 's' from Template::Liquid::Filters
@@ -86,7 +94,7 @@ Version 0.000000001 | 2010-09-19 00:52:32Z (Sun, 19 Sep 2010) | 92a1cb0
 
 _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
-    http://github.com/sanko/solution/commits/
+    http://github.com/sanko/template-liquid/commits/
 
 $Ver$ from git $Rev$
 $Date$

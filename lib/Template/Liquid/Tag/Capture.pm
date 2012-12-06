@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Capture;
-{ $Template::Liquid::Tag::Capture::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::Capture::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 BEGIN { use base 'Template::Liquid::Tag'; }
@@ -50,7 +50,7 @@ sub render {
         my $rendering = ref $node ? $node->render() : $node;
         $val .= defined $rendering ? $rendering : '';
     }
-    $s->{template}{context}->resolve($var, $val);
+    $s->{template}{context}->set($var, $val);
     return '';
 }
 1;

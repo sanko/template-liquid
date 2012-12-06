@@ -1,12 +1,14 @@
 package Template::Liquid::Context;
-{ $Template::Liquid::Context::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Context::VERSION = 'v1.0.2' }
 require Template::Liquid::Utility;
 require Template::Liquid::Error;
+use strict;
+use warnings;
 
 sub new {
-    my ($class, $template, %assigns) = @_;
-    return bless {scopes   => [\%assigns],
-                  template => $template,     # Required
+    my ($class, %args) = @_;
+    return bless {scopes   => [$args{assigns}],
+                  template => $args{template},    # Required
                   errors   => []
     }, $class;
 }
@@ -99,59 +101,114 @@ sub __merge {    # unless right is more interesting, this is a left-
     return $return;
 }
 
-sub resolve {
-    my ($s, $path, $val) = @_;
-    return if !defined $path;
-    return if $path eq '';
-    return if $path eq 'null';
-    return if $path eq 'nil';
-    return if $path eq 'blank';
-    return if $path eq 'empty';
-    return !1  if $path eq 'false';
-    return !!1 if $path eq 'true';
-    return $2 if $path =~ m[^(['"])(.+)\1$];
-    return [int $s->resolve($1) .. int $s->resolve($2)]
-        if $path =~ m[^\((\S+)\.\.(\S+)\)$]o;    # range
-    return $1 if $path =~ m[^(\d+(?:[\d\.]+)?)$]o;    # int or bad float
-    return $s->resolve($1)->[$2] if $path =~ m'^(.+)\[(.+)\]$'o;
+sub get {
+    my ($s, $var) = @_;
+    return if !defined $var;
+    return $2 if $var =~ m[^(["'])(.+)\1$]o;
     my @path = split $Template::Liquid::Utility::VariableAttributeSeparator,
-        $path;
+        $var;
     my $cursor = \$s->{scopes}[-1];
-
-    while (local $_ = shift @path) {
-        my $type = ref $$cursor;
-        if ($type eq 'ARRAY') {
-            if (scalar @path == 1) {
-                return scalar @{$$cursor}    if $path->[0] eq 'size';
-                return scalar $$cursor->[0]  if $path->[0] eq 'first';
-                return scalar $$cursor->[-1] if $path->[0] eq 'last';
+    return $var
+        if $var =~ m[^-?\d+(\.\d+)?$]o
+        && !exists $$cursor->{$path[0]};
+    return     if $var eq '';
+    return     if $var eq 'null';
+    return     if $var eq 'nil';
+    return     if $var eq 'blank';
+    return     if $var eq 'empty';
+    return !1  if $var eq 'false';
+    return !!1 if $var eq 'true';
+    return [$s->get($1) .. $s->get($2)]
+        if $var =~ m[^\((\S+)\.\.(\S+)\)$]o;    # range
+    return $s->get($1)->[$2] if $var =~ m'^(.+)\[(\d+)\]$'o;
+    return $s->get($1)->{$2} if $var =~ m'^(.+)\[(.+)\]$'o;
+STEP: while (@path) {
+        my $crumb   = shift @path;
+        my $reftype = ref $$cursor;
+        if ($reftype eq 'HASH') {
+            if (exists $$cursor->{$crumb}) {
+                return $$cursor->{$crumb} if !@path;
+                $cursor = \$$cursor->{$crumb};
+                next STEP;
             }
-            return unless /^(?:0|[0-9]\d*)\z/o;
-            if (scalar @path) { $cursor = \$$cursor->[$_]; next; }
-            return defined $val ?
-                $$cursor->[$_]
-                = $val
-                : $$cursor->[$_];
+            return ();
         }
-        if (@path && $type) { $cursor = \$$cursor->{$_}; next; }
-
-        #warn $$cursor->{$_} if ref  $$cursor->{$_};
-        return defined $val ?
-            $$cursor->{$_}
-            = $val
-            : $type ?
-            $type eq 'HASH' ?
-            $$cursor->{$_}
-            : $type eq 'ARRAY' ?
-                $$cursor->[$_]
-            : $$cursor->can($_) ?
-                $$cursor->$_()
-            : do { warn 'Cannot call ' . $_; () }
-            : defined $$cursor ?
-            $$cursor    # die $path . ' is not a hash/array reference'
-            : '';
-        return $$cursor->{$_};
+        elsif ($reftype eq 'ARRAY') {
+            return scalar @{$$cursor} if $crumb eq 'size';
+            $crumb = 0          if $crumb eq 'first';
+            $crumb = $#$$cursor if $crumb eq 'last';
+            return () if $crumb =~ m[\D]o;
+            return () if scalar @$$cursor < $crumb;
+            return $$cursor->[$crumb] if !scalar @path;
+            $cursor = \$$cursor->[$crumb];
+            next STEP;
+        }
+        return ();
     }
+}
+
+sub set {
+    my ($s, $var, $val) = @_;
+    my $var_reftype = ref $val;
+    my @path = split $Template::Liquid::Utility::VariableAttributeSeparator,
+        $var;
+    my $cursor = \$s->{scopes}[-1];
+    $cursor = \$$cursor->{shift @path} if (exists $$cursor->{$path[0]});
+STEP: while (@path) {
+        my $crumb   = shift @path;
+        my $reftype = ref $$cursor;
+        if ($reftype eq 'HASH') {
+            if (!@path) {
+                if (exists $$cursor->{$crumb}) {
+
+                    # TODO: If the reftype is different, mention it
+                }
+                return $$cursor->{$crumb} = $val;
+            }
+            else {
+                $$cursor->{$crumb} = $path[0] =~ m[\D] ? {} : []
+                    if !exists $$cursor->{$crumb};
+                $cursor = \$$cursor->{$crumb};
+                next STEP;
+            }
+        }
+        elsif ($reftype eq 'ARRAY') {
+            if ($crumb =~ m[\D]) {
+
+                # TODO: Let the user know
+            }
+            if (!@path) {
+                if (exists $$cursor->[$crumb]) {
+
+                    # TODO: If the reftype is different, mention it
+                }
+                return $$cursor->[$crumb] = $val;
+            }
+            else {
+                $$cursor->[$crumb] = $path[0] =~ m[\D] ? {} : []
+                    if !exists $$cursor->[$crumb];
+                $cursor = \$$cursor->[$crumb];
+                next STEP;
+            }
+        }
+        else {
+            if (!@path) {
+                if ($crumb =~ m[\D]) {
+                    $$cursor = {};
+                    return $$cursor->{$crumb} = $val;
+                }
+                $$cursor = [];
+                return $$cursor->[$crumb] = $val;
+            }
+            else {
+                $$cursor->{$crumb} = $path[0] =~ m[\D] ? {} : []
+                    if !exists $$cursor->[$crumb];
+                $cursor = \$$cursor->{$crumb};
+                next STEP;
+            }
+        }
+    }
+    return $$cursor = $val;
 }
 1;
 

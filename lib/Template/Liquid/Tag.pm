@@ -1,5 +1,5 @@
 package Template::Liquid::Tag;
-{ $Template::Liquid::Tag::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::VERSION = 'v1.0.2' }
 use base 'Template::Liquid::Document';
 sub tag             { return $_[0]->{'tag_name'}; }
 sub end_tag         { return $_[0]->{'end_tag'} || undef; }
@@ -119,7 +119,7 @@ Enough jibba jabba... the next few sections show actual code...
 
     sub render {
         my ($s) = @_;
-        return int rand $s->{template}{context}->resolve($s->{'max'});
+        return int rand $s->{template}{context}->get($s->{'max'});
     }
     1;
 
@@ -172,7 +172,7 @@ Here's an example...
     sub render {
         my $s      = shift;
         my $return = '';
-        if (!int rand $s->{template}{context}->resolve($s->{'odds'})) {
+        if (!int rand $s->{template}{context}->get($s->{'odds'})) {
             for my $node (@{$s->{'nodelist'}}) {
                 my $rendering = ref $node ? $node->render() : $node;
                 $return .= defined $rendering ? $rendering : '';

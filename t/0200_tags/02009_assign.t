@@ -26,7 +26,7 @@ EXPECTED
 # Various condition types
 is( Template::Liquid->parse(
                     <<'INPUT')->render(), <<'EXPECTED', q[assign five = '5']);
-{% assign five = '5' %}{% for t in (0...10) %}{% if t == five %}Five{% endif %}{% endfor %}
+{% assign five = '5' %}{% for t in (0..10) %}{% if t == five %}Five{% endif %}{% endfor %}
 INPUT
 Five
 EXPECTED

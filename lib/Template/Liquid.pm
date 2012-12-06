@@ -1,5 +1,5 @@
 package Template::Liquid;
-{ $Template::Liquid::VERSION = 'v1.0.1' }
+{ $Template::Liquid::VERSION = 'v1.0.2' }
 our (%tags, %filters);
 #
 use Template::Liquid::Document;
@@ -47,7 +47,7 @@ sub parse {
 
 sub render {
     my ($s, %assigns) = @_;
-    $s->{'context'} = Template::Liquid::Context->new($s, %assigns);
+    $s->{context} = Template::Liquid::Context->new(template => $s, assigns => \%assigns);
     return $s->{document}->render();
 }
 1;

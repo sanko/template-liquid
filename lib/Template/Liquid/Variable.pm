@@ -1,5 +1,5 @@
 package Template::Liquid::Variable;
-{ $Template::Liquid::Variable::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Variable::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 use base 'Template::Liquid::Document';
 
@@ -27,13 +27,13 @@ sub new {
 
 sub render {
     my ($s) = @_;
-    my $val = $s->{template}{context}->resolve($s->{variable});
+    my $val = $s->{template}{context}->get($s->{variable});
     {    # XXX - Duplicated in Template::Liquid::Assign::render
         if (scalar @{$s->{filters}}) {
             my %_filters = $s->{template}->filters;
         FILTER: for my $filter (@{$s->{filters}}) {
                 my ($name, $args) = @$filter;
-                map { $_ = $s->{template}{context}->resolve($_) || $_ }
+                map { $_ = $s->{template}{context}->get($_) || $_ }
                     @$args;
                 my $package = $_filters{$name};
                 my $call = $package ? $package->can($name) : ();
@@ -41,7 +41,7 @@ sub render {
                     $val = $call->($val, @$args);
                     next FILTER;
                 }
-                raise Template::Liquid::FilterNotFound $name;
+                raise Template::Liquid::Error { type => 'UnknownFilter', message => $name, fatal => 0};
             }
         }
     }

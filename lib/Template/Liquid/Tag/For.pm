@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::For;
-{ $Template::Liquid::Tag::For::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::For::VERSION = 'v1.0.2' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag::If';
@@ -65,7 +65,7 @@ sub render {
     my $sorted
         = exists $attr->{'sorted'}
         ?
-        $s->{template}{context}->resolve($attr->{'sorted'})
+        $s->{template}{context}->get($attr->{'sorted'})
         || $attr->{'sorted'} || 'key'
         : ();
     $sorted = 'key'
@@ -74,14 +74,14 @@ sub render {
     my $offset
         = defined $attr->{'offset'}
         ?
-        $s->{template}{context}->resolve($attr->{'offset'})
+        $s->{template}{context}->get($attr->{'offset'})
         : ();
     my $limit
         = defined $attr->{'limit'}
         ?
-        $s->{template}{context}->resolve($attr->{'limit'})
+        $s->{template}{context}->get($attr->{'limit'})
         : ();
-    my $list = $s->{template}{context}->resolve($range);
+    my $list = $s->{template}{context}->get($range);
     my $type = 'ARRAY';
     #
     my $_undef_list = 0;
@@ -124,11 +124,12 @@ sub render {
             my $steps  = $#$list;
             $_undef_list = 1 if $steps == -1;
             my $nodes = $s->{'blocks'}[$_undef_list]{'nodelist'};
-        STEP: for my $index (0 .. $steps) {
-                $s->{template}{context}{scopes}[-1]->{$s->{'variable_name'}}
-                    = $list->[$index];
-                $s->{template}{context}{scopes}[-1]->{'forloop'} = {
-                                        length => $steps + 1,
+        FOR: for my $index (0 .. $steps) {
+                $s->{template}{context}
+                    ->set($s->{'variable_name'}, $list->[$index]);
+                $s->{template}{context}->set(
+                                       'forloop',
+                                       {length => $steps + 1,
                                         limit  => $limit,
                                         offset => $offset,
                                         name   => $s->{'name'},
@@ -140,17 +141,18 @@ sub render {
                                         rindex0 => $steps - $index,
                                         type    => $type,
                                         sorted  => $sorted
-                };
+                                       }
+                );
                 for my $node (@$nodes) {
                     my $rendering = ref $node ? $node->render() : $node;
                     $return .= defined $rendering ? $rendering : '';
                     if ($s->{template}{break}) {
                         $s->{template}{break} = 0;
-                        last STEP;
+                        last FOR;
                     }
                     if ($s->{template}{continue}) {
                         $s->{template}{continue} = 0;
-                        next STEP;
+                        next FOR;
                     }
                 }
             }
