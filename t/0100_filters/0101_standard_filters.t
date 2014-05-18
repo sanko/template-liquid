@@ -208,6 +208,10 @@ is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(baz => ''),
     'bar',
     q[ {{ 'bar' | prepend:baz }} => 'bar']
 );
+is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(xxx => ''),
+    'bazbar',
+    q[ {{ 'bar' | prepend:baz }} => 'bazbar']
+);
 
 =head2 C<truncate>
 
