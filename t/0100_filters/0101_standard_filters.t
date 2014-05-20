@@ -200,6 +200,19 @@ is( Template::Liquid->parse(q[{{ 'bar' | prepend:'foo' }}])->render(),
     q[ {{ 'bar' | prepend:'foo' }} => 'foobar']
 );
 
+is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(baz => 'foo'),
+    'foobar',
+    q[ {{ 'bar' | prepend:baz }} => 'foobar']
+);
+is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(baz => ''),
+    'bar',
+    q[ {{ 'bar' | prepend:baz }} => 'bar']
+);
+is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(xxx => ''),
+    'bazbar',
+    q[ {{ 'bar' | prepend:baz }} => 'bazbar']
+);
+
 =head2 C<truncate>
 
 Truncate a string down to C<x> characters.

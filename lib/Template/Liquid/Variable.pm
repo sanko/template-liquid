@@ -33,8 +33,10 @@ sub render {
             my %_filters = $s->{template}->filters;
         FILTER: for my $filter (@{$s->{filters}}) {
                 my ($name, $args) = @$filter;
-                map { $_ = $s->{template}{context}->get($_) || $_ }
-                    @$args;
+                map { 
+                    my $arg_val = $s->{template}{context}->get($_);
+                    $_ = $arg_val if defined $arg_val;
+                } @$args;
                 my $package = $_filters{$name};
                 my $call = $package ? $package->can($name) : ();
                 if ($call) {
