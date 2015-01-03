@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Continue;
-{ $Template::Liquid::Tag::Continue::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::Continue::VERSION = 'v1.0.3' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag::Break';

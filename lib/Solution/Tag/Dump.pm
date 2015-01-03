@@ -1,5 +1,5 @@
 package Solution::Tag::Dump;
-{ $Solution::Tag::Dump::VERSION = 'v1.0.2' }
+{ $Solution::Tag::Dump::VERSION = 'v1.0.3' }
 use Carp qw[confess];
 use base 'Template::Liquid::Tag';
 sub import { Template::Liquid::register_tag('dump') }

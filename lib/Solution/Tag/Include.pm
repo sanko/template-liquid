@@ -1,5 +1,5 @@
 package Solution::Tag::Include;
-{ $Solution::Tag::Include::VERSION = 'v1.0.2' }
+{ $Solution::Tag::Include::VERSION = 'v1.0.3' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use File::Spec;

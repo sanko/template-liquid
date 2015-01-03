@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::If;
-{ $Template::Liquid::Tag::If::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::If::VERSION = 'v1.0.3' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag';

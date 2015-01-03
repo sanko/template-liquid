@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Case;
-{ $Template::Liquid::Tag::Case::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Tag::Case::VERSION = 'v1.0.3' }
 use base 'Template::Liquid::Tag::If';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;

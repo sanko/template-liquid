@@ -1,5 +1,5 @@
 package Template::Liquid::Block;
-{ $Template::Liquid::Block::VERSION = 'v1.0.0' }
+{ $Template::Liquid::Block::VERSION = 'v1.0.3' }
 require Template::Liquid::Error;
 use base 'Template::Liquid::Document';
 

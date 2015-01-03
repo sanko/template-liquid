@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Assign;
-{ $Template::Liquid::Tag::Assign::VERSION = 'v1.0.2' }
+{ $Template::Liquid::Tag::Assign::VERSION = 'v1.0.3' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 BEGIN { use base 'Template::Liquid::Tag'; }

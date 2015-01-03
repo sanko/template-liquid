@@ -26,8 +26,6 @@ lib/Template/Liquid/Utility.pm
 lib/Template/Liquid/Variable.pm
 LICENSE
 MANIFEST			This list of files
-META.json
-META.yml
 README
 t/0100_filters/0101_standard_filters.t
 t/0200_tags/02001_for.t
@@ -46,3 +44,5 @@ t/0200_tags/02080_user_defined.t
 t/0200_tags/_includes/testing.inc
 t/0200_tags/lib/Solution/Tag/Random.pm
 t/0400_classes/04001_context.t
+META.yml
+META.json

@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Cycle;
-{ $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.2' }
+{ $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.3' }
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag';
