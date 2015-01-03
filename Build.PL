@@ -8,8 +8,7 @@ my $automated_testing = $ENV{'AUTOMATED_TESTING'}
     || $ENV{'PERL_MM_USE_DEFAULT'};
 my @tests;
 my $is_developer = ((-d '.git') ? 1 : 0) or ($ENV{'RELEASE_TESTING'} ? 1 : 0);
-find \&find_cb, qw[t/0100_filters t/0200_tags t/0400_classes],
-    ($is_developer ? 't/9000_author' : ());
+find \&find_cb, qw[t/0100_filters t/0200_tags t/0400_classes];
 my $mb = Module::Build->new(
               module_name    => 'Template::Liquid',
               license        => 'artistic_2',
