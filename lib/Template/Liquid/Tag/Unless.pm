@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Unless;
-{ $Template::Liquid::Tag::Unless::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag::If';
@@ -19,6 +19,8 @@ sub render {
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 

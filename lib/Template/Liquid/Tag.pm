@@ -1,5 +1,5 @@
 package Template::Liquid::Tag;
-{ $Template::Liquid::Tag::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 use base 'Template::Liquid::Document';
 sub tag             { return $_[0]->{'tag_name'}; }
 sub end_tag         { return $_[0]->{'end_tag'} || undef; }
@@ -29,6 +29,8 @@ sub push_block {
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Template::Liquid::Tag - Documentation for Template::Liquid's Standard Tagsets
@@ -39,14 +41,15 @@ Tags are used for the logic in your L<template|Template::Liquid>. For a list
 of standard tags, see the L<Liquid|Template::Liquid/"Standard Tagset">
 documentation.
 
-=head1 Extending Solution with Custom Tags
+=head1 Extending the Basic Liquid Syntax with Custom Tags
 
 To create a new tag, simply inherit from
 L<Template::Liquid::Tag|Template::Liquid::Tag> and register your block
 L<globally|Template::Liquid/"Template::Liquid::register_tag( ... )">.
 
-For a complete example of this, see
-L<Template::Solution::Tag::Include|Template::Solution::Tag::Include>.
+For a complete example of this, keep reading. To see real world examples,
+check out L<Template::LiquidX::Tag::Include> and
+L<Template::LiquidX::Tag::Dump> on CPAN.
 
 Your constructor should expect the following arguments:
 
@@ -99,7 +102,7 @@ Enough jibba jabba... the next few sections show actual code...
 
 =head2
 
-    package Template::Solution::Tag::Random;
+    package Template::LiquidX::Tag::Random;
     use base 'Template::Liquid::Tag';
     sub import { Template::Liquid::register_tag('random') }
 
@@ -126,7 +129,7 @@ Enough jibba jabba... the next few sections show actual code...
 Using this new tag is as simple as...
 
     use Template::Liquid;
-    use Template::Solution::Tag::Random;
+    use Template::LiquidX::Tag::Random;
 
     print Template::Liquid->parse('{% random max %}')->render(max => 30);
 
@@ -134,8 +137,8 @@ This will print a random integer between C<0> and C<30>.
 
 =head2 User-defined, Balanced (Block-like) Tags
 
-If you just want a quick sample, see C<examples/custom_tag.pl>. There you'll
-find an example C<{^% dump var %}> tag named C<Solution::Tag::Dump>.
+If you just want a quick sample, you'll find an example C<{^% dump var %}> tag
+bundled as a separate dist named C<Template::LiquidX::Tag::Dump> on CPAN.
 
 Block-like tags are very similar to
 L<simple|Template::Liquid::Tag/"Create Your Own Tags">. Inherit from
@@ -146,7 +149,7 @@ The only difference is you define an C<end_tag> in your object.
 
 Here's an example...
 
-    package Template::Solution::Random;
+    package Template::LiquidX::Tag::Random;
     use base 'Template::Liquid::Tag';
     sub import { Template::Liquid::register_tag('random') }
 
@@ -185,7 +188,7 @@ Here's an example...
 Using this example tag...
 
     use Template::Liquid;
-    use Template::Solution::Random;
+    use Template::LiquidX::Tag::Random;
 
     print Template::Liquid->parse(q[{% random 2 %}Now, that's money well spent!{% endrandom %}])->render();
 
@@ -197,8 +200,8 @@ Here, our C<random> tag prints only 50% of the time, C<{% random 1 %}> would
 work every time.
 
 The biggest changes between this and the
-L<random tag|Solution/"Create Your Own Tags"> we build above are in the
-constructor.
+L<random tag|Template::Liquid/"Create Your Own Tags"> we build above are in
+the constructor.
 
 The extra C<end_tag> attribute in the object's reference lets the parser know
 that this is a block that will slurp until the end tag is found. In our

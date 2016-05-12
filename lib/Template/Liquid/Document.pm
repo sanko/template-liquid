@@ -1,5 +1,5 @@
 package Template::Liquid::Document;
-{ $Template::Liquid::Document::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Variable;
 require Template::Liquid::Utility;
 use strict;
@@ -128,7 +128,9 @@ sub render {
 sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
 1;
 
-=cut
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 

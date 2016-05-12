@@ -1,5 +1,5 @@
 package Template::Liquid::Block;
-{ $Template::Liquid::Block::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Document';
 
@@ -73,6 +73,8 @@ sub new {
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 

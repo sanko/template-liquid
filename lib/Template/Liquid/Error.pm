@@ -1,5 +1,5 @@
 package Template::Liquid::Error;
-{ $Template::Liquid::Error::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 sub message { return $_[0]->{'message'} }
 sub fatal   { return $_[0]->{'fatal'} }
 
@@ -22,7 +22,9 @@ sub raise {
 sub render { $_[0]->{message} }
 1;
 
-=cut
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 

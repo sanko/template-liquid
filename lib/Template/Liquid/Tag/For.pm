@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::For;
-{ $Template::Liquid::Tag::For::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag::If';
@@ -164,6 +164,8 @@ sub render {
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Template::Liquid::Tag::For - Simple loop construct
@@ -281,8 +283,8 @@ numbers:
 
 =head2 Hashes
 
-To deal with the possibility of looping through hash references, Solution
-extends the Liquid Engine's functionality. When looping through a hash, each
+To deal with the possibility of looping through hash references, I have chosen
+to extend the Liquid Engine's functionality. When looping through a hash, each
 item is made a single key/value pair. The item's actual key and value are in
 the C<item.key> and C<item.value> variables. ...here's an example:
 

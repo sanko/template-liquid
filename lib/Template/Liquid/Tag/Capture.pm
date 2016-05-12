@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Capture;
-{ $Template::Liquid::Tag::Capture::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 BEGIN { use base 'Template::Liquid::Tag'; }
@@ -56,6 +56,8 @@ sub render {
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 

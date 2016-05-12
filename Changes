@@ -1,3 +1,10 @@
+ Changelog for Perl dist Template-Liquid
+
+{{NEXT}}
+
+  - Moved example extentions to Template::LiquidX::Tag::Dump and
+    Template::LiquidX::Tag::Include
+
 Version 1.0.3 | Late afternoon on January 3rd, 2015 | xxxxxxxx
 
     Resolved Issues/Bug Fixes:
@@ -102,7 +109,3 @@ Version 0.000000001 | 2010-09-19 00:52:32Z (Sun, 19 Sep 2010) | 92a1cb0
 _ -.-. .... .- -. --. . ... _________________________________________
 For more information, see the commit log:
     http://github.com/sanko/template-liquid/commits/
-
-$Ver$ from git $Rev$
-$Date$
-$Url$

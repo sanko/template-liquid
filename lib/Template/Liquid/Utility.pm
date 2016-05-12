@@ -1,5 +1,5 @@
 package Template::Liquid::Utility;
-{ $Template::Liquid::Utility::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 our $FilterSeparator = qr[\s*\|\s*]o;
 my $ArgumentSeparator = qr[,]o;
 our $FilterArgumentSeparator    = qr[\s*:\s*]o;
@@ -51,6 +51,8 @@ sub tokenize {
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Template::Liquid::Utility - Utility stuff. Watch your step.
@@ -63,7 +65,8 @@ It's best to just forget this package exists. It's messy but seems to work.
 
 Liquid for Designers: http://wiki.github.com/tobi/liquid/liquid-for-designers
 
-L<Template::Solution|Template::Solution/"Create your own filters">'s docs on custom filter creation
+L<Template::Liquid|Template::Liquid/"Create your own filters">'s docs on
+custom filter creation
 
 =head1 Author
 

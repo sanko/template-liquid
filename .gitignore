@@ -40,7 +40,7 @@ pod2htmi.tmp
 MANIFEST.SKIP
 
 # Avoid archives of this distribution
-Solution-*
+Template-Liquid-*
 
 # Avoid files used in testing
 examples/redux.pl

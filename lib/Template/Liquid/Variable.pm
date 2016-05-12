@@ -1,5 +1,5 @@
 package Template::Liquid::Variable;
-{ $Template::Liquid::Variable::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Document';
 
@@ -33,7 +33,7 @@ sub render {
             my %_filters = $s->{template}->filters;
         FILTER: for my $filter (@{$s->{filters}}) {
                 my ($name, $args) = @$filter;
-                map { 
+                map {
                     my $arg_val = $s->{template}{context}->get($_);
                     $_ = $arg_val if defined $arg_val;
                 } @$args;

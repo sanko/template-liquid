@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Cycle;
-{ $Template::Liquid::Tag::Cycle::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag';
@@ -83,6 +83,8 @@ sub render {
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 

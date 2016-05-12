@@ -1,5 +1,5 @@
 package Template::Liquid::Context;
-{ $Template::Liquid::Context::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Utility;
 require Template::Liquid::Error;
 use strict;
@@ -212,7 +212,9 @@ STEP: while (@path) {
 }
 1;
 
-=cut
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 

@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::If;
-{ $Template::Liquid::Tag::If::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag';
@@ -64,6 +64,8 @@ sub render {
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Template::Liquid::Tag::If - Basic If/Elsif/Else Construct
@@ -77,7 +79,7 @@ same pattern until we find a true condition or a fallback C<else> tag.
 
 =head2 Compound Inequalities
 
-Solution supports compund inequalities. Try these...
+Liquid supports compound inequalities. Try these...
 
     {% if some.value == 3 and some.string contains 'find me' %}
         Wow! It's a match...

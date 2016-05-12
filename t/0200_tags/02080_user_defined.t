@@ -4,7 +4,7 @@ use lib qw[../../lib ../../blib/lib lib blib/lib ./t/0200_tags/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
 #
-use Solution::Tag::Random;
+use Template::LiquidX::Tag::Random;
 is( Template::Liquid->parse(
                            <<'INPUT')->render(), <<'EXPECTED', 'always true');
 {% random 1 %}Now, that's time{%comment%} well{%endcomment%} spent!{% endrandom %}

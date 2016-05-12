@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Comment;
-{ $Template::Liquid::Tag::Comment::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 BEGIN { use base 'Template::Liquid::Tag'; }
 sub import { Template::Liquid::register_tag('comment') }
@@ -37,6 +37,8 @@ sub render { }
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 

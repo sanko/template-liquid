@@ -1,5 +1,5 @@
 package Template::Liquid::Filters;
-{ $Template::Liquid::Filters::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 
 sub import {
     Template::Liquid::register_filter(
@@ -127,6 +127,8 @@ sub modulo {
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Template::Liquid::Filters - Default Filters Based on Liquid's Standard Set
@@ -176,7 +178,7 @@ function and then the C<ucfirst> function.
 
 Convert an input string to lowercase using Perl's C<lc> function.
 
-    {{ 'This is HUGE!' | downcase }} => This is huge!
+    {{ 'This is HUGE!' | downcase }} => this is huge!
 
 =head2 C<upcase>
 
@@ -209,7 +211,7 @@ Joins elements of the array with a certain character between them.
 Split input string into an array of substrings separated by given pattern.
 
     # Where values is 'foo,bar,baz'
-    {{ values | split ',' | last }} => baz
+    {{ values | split: ',' | last }} => baz
 
 =head2 C<sort>
 
@@ -370,7 +372,7 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009-2012 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009-2016 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of

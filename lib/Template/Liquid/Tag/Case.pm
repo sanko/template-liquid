@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Case;
-{ $Template::Liquid::Tag::Case::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 use base 'Template::Liquid::Tag::If';
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
@@ -94,6 +94,8 @@ sub push_block {
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 

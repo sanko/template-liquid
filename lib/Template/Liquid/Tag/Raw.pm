@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Raw;
-{ $Template::Liquid::Tag::Raw::VERSION = 'v1.0.3' }
+our $VERSION = '1.0.5';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Tag';
 sub import { Template::Liquid::register_tag('raw') }
@@ -49,6 +49,8 @@ sub _dump_nodes {
 1;
 
 =pod
+
+=encoding UTF-8
 
 =head1 NAME
 
