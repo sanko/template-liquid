@@ -1,72 +1,31 @@
-# Avoid Module::Build generated and utility files.
-Build
-_build/
-Build.bat
-Build.COM
-BUILD.COM
-build.com
+/.build/
+/_build/
+/Build
+/Build.bat
+/blib
+/Makefile
+/pm_to_blib
 
-# Avoid temp and backup files.
-~$
-*.old
-#$
-*.#
-*.bak
-*.tmp
-*.#
-*.rej
-*.tidy
+/carton.lock
+/.carton/
+/local/
 
-# Avoid Devel::Cover and Devel::CoverX::Covered files.
-cover_db
-covered
-
-# Avoid meta files
-MYMETA.yml
-META.yml
-
-# Avoid Module::Build generated and utility files.
-Makefile
-Makefile.old
-pm_to_blib
-PM_to_blib
-cover_db/*
-Build
-Build.bat
-_build/*
-blib/*
-pod2htmd.tmp
-pod2htmi.tmp
-MANIFEST.SKIP
-
-# Avoid archives of this distribution
-Template-Liquid-*
-
-# Avoid files used in testing
-examples/redux.pl
-examples/redux.2.pl
-examples/testing.pl
-examples/tinker.pl
-examples/lib/*
-
-# Avoid old versions of this module
-*.lib/
-
-# NYTProf
-nytprof/
 nytprof.out
+nytprof/
 
-# Delete
-SciTE.session
+cover_db/
 
-# Random stuff
-META.json
-examples/_config.yml
-examples/_site/
-examples/bruce/
-examples/example_site/
-examples/site_generator.pl
-~compile.pl
-~dist.pl
-MYMETA.json
-examples/~*
+*.bak
+*.old
+*~
+*.swp
+*.o
+*.obj
+
+!LICENSE
+
+/_build_params
+
+MYMETA.*
+
+/Template-Liquid-*
