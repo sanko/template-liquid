@@ -1,6 +1,8 @@
  Changelog for Perl dist Template-Liquid
 
-{{NEXT}}
+{{$NEXT}}
+
+1.0.5 2016-05-12T18:25:13Z
 
   - Moved example extentions to Template::LiquidX::Tag::Dump and
     Template::LiquidX::Tag::Include
