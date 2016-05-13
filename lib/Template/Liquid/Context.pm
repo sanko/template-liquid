@@ -1,5 +1,5 @@
 package Template::Liquid::Context;
-our $VERSION = '1.0.5';
+our $VERSION = '1.0.6';
 require Template::Liquid::Utility;
 require Template::Liquid::Error;
 use strict;

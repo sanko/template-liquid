@@ -1,5 +1,5 @@
 package Template::Liquid::Tag;
-our $VERSION = '1.0.5';
+our $VERSION = '1.0.6';
 use base 'Template::Liquid::Document';
 sub tag             { return $_[0]->{'tag_name'}; }
 sub end_tag         { return $_[0]->{'end_tag'} || undef; }

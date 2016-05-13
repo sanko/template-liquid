@@ -1,5 +1,5 @@
 package Template::Liquid::Error;
-our $VERSION = '1.0.5';
+our $VERSION = '1.0.6';
 sub message { return $_[0]->{'message'} }
 sub fatal   { return $_[0]->{'fatal'} }
 

@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Raw;
-our $VERSION = '1.0.5';
+our $VERSION = '1.0.6';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Tag';
 sub import { Template::Liquid::register_tag('raw') }
