@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Built-in size filter returns 0 (zero) for undefined vars
+
 1.0.5 2016-05-12T18:25:13Z
 
   - Moved example extentions to Template::LiquidX::Tag::Dump and

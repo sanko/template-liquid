@@ -89,6 +89,10 @@ is( Template::Liquid->parse(q[{{hash | size}}])
     '2',
     q[{{hash | size}} => 2 (counts keys)]
 );
+is( Template::Liquid->parse(q[{{nope | size}}])->render(),
+    '0',
+    q[{{nope | size}} => 0 (undef)]
+);
 
 # split
 is( Template::Liquid->parse(q[{{ values | split: ',' | last }}])

@@ -39,7 +39,8 @@ sub sort {
 }
 
 sub size {
-    return scalar @{$_[0]} if ref $_[0] eq 'ARRAY';
+    return 0                    if !defined $_[0];
+    return scalar @{$_[0]}      if ref $_[0] eq 'ARRAY';
     return scalar keys %{$_[0]} if ref $_[0] eq 'HASH';
     return length $_[0];
 }
@@ -223,12 +224,13 @@ Sort elements of the array.
 =head2 C<size>
 
 Return the size of an array, the length of a string, or the number of keys in
-a hash.
+a hash. Undefined values return C<0>.
 
     # Where array is [1..6] and hash is { child => 'blarg'}
     {{ array     | size }} => 6
     {{ 'Testing' | size }} => 7
     {{ hash      | size }} => 1
+    {{ undefined | size }} => 0
 
 =head2 C<strip_html>
 
