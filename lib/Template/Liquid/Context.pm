@@ -120,7 +120,7 @@ sub get {
     return !1  if $var eq 'false';
     return !!1 if $var eq 'true';
     return [$s->get($1) .. $s->get($2)]
-        if $var =~ m[^\((\S+)\.\.(\S+)\)$]o;    # range
+        if $var =~ m[^\((\S+)\s*\.\.\s*(\S+)\)$]o;    # range
     return $s->get($1)->[$2] if $var =~ m'^(.+)\[(\d+)\]$'o;
     return $s->get($1)->{$2} if $var =~ m'^(.+)\[(.+)\]$'o;
 STEP: while (@path) {
@@ -145,12 +145,13 @@ STEP: while (@path) {
             return scalar @{$$cursor} if $crumb eq 'size';
             $crumb = 0          if $crumb eq 'first';
             $crumb = $#$$cursor if $crumb eq 'last';
-            return () if $crumb =~ m[\D]o;
-            return () if scalar @$$cursor < $crumb;
+            return ()                 if $crumb =~ m[\D]o;
+            return ()                 if scalar @$$cursor < $crumb;
             return $$cursor->[$crumb] if !scalar @path;
             $cursor = \$$cursor->[$crumb];
             next STEP;
         }
+        die $var;
         return ();
     }
 }
