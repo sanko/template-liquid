@@ -4,6 +4,7 @@ require Template::Liquid::Utility;
 require Template::Liquid::Error;
 use strict;
 use warnings;
+use Scalar::Util;
 
 sub new {
     my ($class, %args) = @_;
@@ -125,7 +126,14 @@ sub get {
 STEP: while (@path) {
         my $crumb   = shift @path;
         my $reftype = ref $$cursor;
-        if ($reftype eq 'HASH') {
+        if (Scalar::Util::blessed($$cursor) && $$cursor->can($crumb)) {
+            my $can = $$cursor->can($crumb);
+            my $val = $can->($$cursor);
+            return $val if !scalar @path;
+            $cursor = \$val;
+            next STEP;
+        }
+        elsif ($reftype eq 'HASH') {
             if (exists $$cursor->{$crumb}) {
                 return $$cursor->{$crumb} if !@path;
                 $cursor = \$$cursor->{$crumb};

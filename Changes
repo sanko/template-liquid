@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Crumb trails can map to bject methods during render
+
 1.0.6 2016-05-13T14:46:52Z
 
   - Built-in size filter returns 0 (zero) for undefined vars
