@@ -346,7 +346,7 @@ Template::Liquid.
 
 # Author
 
-Sanko Robinson &lt;sanko@cpan.org> - http://sankorobinson.com/
+Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
 
 CPAN ID: SANKO
 
@@ -356,7 +356,7 @@ The original Liquid template system was developed by
 
 # License and Legal
 
-Copyright (C) 2009-2016 by Sanko Robinson &lt;sanko@cpan.org>
+Copyright (C) 2009-2016 by Sanko Robinson <sanko@cpan.org>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of

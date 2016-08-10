@@ -1,5 +1,5 @@
 package Template::Liquid::Filters;
-our $VERSION = '1.0.6';
+our $VERSION = '1.0.7';
 
 sub import {
     Template::Liquid::register_filter(
