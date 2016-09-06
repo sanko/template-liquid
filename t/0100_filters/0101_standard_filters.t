@@ -55,6 +55,10 @@ is( Template::Liquid->parse(q[{{'This is a QUICK test.'|upcase }}])->render(),
     q[{{'This is a QUICK test.'|upcase }} => THIS IS A QUICK TEST.]
 );
 
+# string last
+is(Template::Liquid->parse(q[{{ str | last}}])->render(str => 'string'),
+    'g', '{{ str | last }} => g');
+
 # array/lists
 note 'For these next few tests, C<array> is defined as C<[1 .. 6]>';
 is( Template::Liquid->parse(q[{{array | first}}])->render(array => [1 .. 6]),

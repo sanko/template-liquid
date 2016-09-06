@@ -22,7 +22,12 @@ sub capitalize { return ucfirst lc $_[0]; }
 sub upcase     { return uc $_[0] }
 sub downcase   { return lc $_[0] }
 sub first      { return @{$_[0]}[0] if ref $_[0] eq 'ARRAY'; }
-sub last       { return @{$_[0]}[-1] if ref $_[0] eq 'ARRAY'; }
+
+sub last {
+    my $ref = ref $_[0];
+    return substr $_[0], -1 if !$ref;
+    return @{$_[0]}[-1] if $ref eq 'ARRAY';
+}
 
 sub join {
     $_[1] = defined $_[1] ? $_[1] : ' ';
@@ -136,6 +141,67 @@ sub modulo {
 
 Template::Liquid::Filters - Default Filters Based on Liquid's Standard Set
 
+=head1 Synopsis
+
+Filters are simple methods that modify the output of numbers, strings,
+variables and objects. They are placed within an output tag C<{{ }}> and are
+denoted by a pipe character C<|>.
+
+    # product.title = "Awesome Shoes"
+    {{ product.title | upcase }}
+    # Output: AWESOME SHOES
+
+In the example above, C<product> is the object, C<title> is its attribute, and
+C<upcase> is the filter being applied.
+
+Some filters require a parameter to be passed.
+
+    {{ product.title | remove: "Awesome" }}
+    # Output: Shoes
+
+Multiple filters can be used on one output. They are applied from left to
+right.
+
+    {{ product.title | upcase | remove: "AWESOME"  }}
+    # SHOES
+
+=head1 Array Filters
+
+Array filters change the output of arrays.
+
+=head2 C<join>
+
+Joins elements of the array with a certain character between them.
+
+    # Where array is [1..6]
+    {{ array | join }}      => 1 2 3 4 5 6
+    {{ array | join:', ' }} => 1, 2, 3, 4, 5, 6
+
+=head2 C<first>
+
+Get the first element of the passed in array
+
+    # Where array is [1..6]
+    {{ array | first }} => 1
+
+=head2 C<last>
+
+Get the last element of the passed in array.
+
+    # Where array is [1..6]
+    {{ array | last }} => 6
+
+You can use last with dot notation when you need to use the filter inside a
+tag.
+
+    {% if product.tags.last == "sale"%}
+        This product is on sale!
+    {% endif %}
+
+Using last on a string returns the last character in the string.
+
+    {{ product.title | last }}
+
 =head1 Standard Filters
 
 These are the current default filters. They have been written to behave
@@ -187,27 +253,6 @@ Convert an input string to lowercase using Perl's C<lc> function.
 
 Convert a input string to uppercase using Perl's C<uc> function.
 
-=head2 C<first>
-
-Get the first element of the passed in array
-
-    # Where array is [1..6]
-    {{ array | first }} => 1
-
-=head2 C<last>
-
-Get the last element of the passed in array.
-
-    # Where array is [1..6]
-    {{ array | last }} => 6
-
-=head2 C<join>
-
-Joins elements of the array with a certain character between them.
-
-    # Where array is [1..6]
-    {{ array | join }}      => 1 2 3 4 5 6
-    {{ array | join:', ' }} => 1, 2, 3, 4, 5, 6
 
 =head2 C<split>
 

@@ -3,6 +3,7 @@
 {{$NEXT}}
 
   - Fix filters clobbering recursive values inside {%for ...%} loops
+  - Fix last filter for strings
 
 1.0.8 2016-09-06T13:08:49Z
 
