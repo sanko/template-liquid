@@ -132,12 +132,17 @@ sub modulo {
 
 sub money {
     return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
-    return (($_[0] < 0 ? '-' : '') . '$' . sprintf '%.2f', abs($_[0]));
+    return (  ($_[0] < 0     ? '-'   : '')
+            . (defined $_[1] ? $_[1] : '$')
+                . sprintf '%.2f',
+            abs($_[0])
+    );
 }
 
 sub stock_price {
     return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
-    return (($_[0] < 0 ? '-' : '') . '$'
+    return (  ($_[0] < 0     ? '-'   : '')
+            . (defined $_[1] ? $_[1] : '$')
                 . sprintf '%.'
                 . (int(abs($_[0])) > 0 ? 2 : 4) . 'f',
             abs($_[0])
@@ -444,9 +449,13 @@ Rounds the output to the nearest integer or specified number of decimals.
 
 Formats floats and integers as if they were money.
 
-    {{ 4.6 | money }}    => $4.60
-    {{ -4.3 | money }}   => -$4.30
-    {{ 4.5612 | money }} => $4.56
+    {{  4.6    | money }} => $4.60
+    {{ -4.3    | money }} => -$4.30
+    {{  4.5612 | money }} => $4.56
+
+You may pass a currency symbol to override the default dollar sign (C<$>).
+
+    {{  4.6    | money:'€' }} => € 4.60
 
 =head2 C<stock_price>
 
@@ -455,6 +464,10 @@ Formats floats and integers as if they were stock prices.
     {{ 4.6    | stock_price }} => $4.60
     {{ 0.30   | stock_price }} => $0.3000
     {{ 4.5612 | stock_price }} => $4.56
+
+You may pass a currency symbol to override the default dollar sign (C<$>).
+
+    {{  4.6    | stock_price:'€' }} => € 4.60
 
 =head1 Author
 

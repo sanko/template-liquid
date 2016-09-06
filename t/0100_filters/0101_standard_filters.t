@@ -330,18 +330,18 @@ is( Template::Liquid->parse(
 
 # money
 is( Template::Liquid->parse(
-                 q[{{ 4.6 | money }} {{ -4.3 | money }} {{ 4.5612 | money }}])
-        ->render(),
-    '$4.60 -$4.30 $4.56',
-    q[{{ 4.6 | money }} {{ -4.3 | money }} {{ 4.5612 | money }} => $4.60 -$4.30 $4.56]
+        q[{{ 4.6 | money }} {{ -4.3 | money }} {{ 4.5612 | money }} {{ 4.6 | money:'€' }}]
+        )->render(),
+    '$4.60 -$4.30 $4.56 €4.60',
+    q[{{ 4.6 | money }} {{ -4.3 | money }} {{ 4.5612 | money }} {{ 4.6 | money:'€' }} => $4.60 -$4.30 $4.56 €4.60]
 );
 
 # stock_price
 is( Template::Liquid->parse(
-        q[{{ 4.6 | stock_price }} {{ .30 | stock_price }} {{ 4.5612 | stock_price }}]
+        q[{{ 4.6 | stock_price }} {{ .30 | stock_price }} {{ 4.5612 | stock_price }} {{ 4.6 | stock_price:'€' }}]
         )->render(),
-    '$4.60 $0.3000 $4.56',
-    q[{{ 4.6 | stock_price }} {{ .30 | stock_price }} {{ 4.5612 | stock_price }} => $4.60 $0.3000 $4.56]
+    '$4.60 $0.3000 $4.56 €4.60',
+    q[{{ 4.6 | stock_price }} {{ .30 | stock_price }} {{ 4.5612 | stock_price }} {{ 4.6 | stock_price:'€' }} => $4.60 $0.3000 $4.56 €4.60]
 );
 #
 # I'm finished
