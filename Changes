@@ -4,7 +4,7 @@
 
   - Fix filters clobbering recursive values inside {%for ...%} loops
   - Fix last filter for strings
-  - Add round, money, and stock_price filters
+  - Add round, money, stock_price, abs, ceil, and floor filters
   - Fix handling of bare float values at the top of our context stack
 
 1.0.8 2016-09-06T13:08:49Z

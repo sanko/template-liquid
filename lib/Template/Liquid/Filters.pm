@@ -6,7 +6,7 @@ sub import {
         qw[ date capitalize upcase downcase first last join split sort size
             strip_html strip_newlines newline_to_br replace replace_first remove
             remove_first truncate truncatewords prepend append minus plus times
-            divided_by modulo round money stock_price]
+            divided_by modulo round ceil floor abs money stock_price]
     );
 }
 
@@ -129,13 +129,19 @@ sub modulo {
                         && $_[1] =~ m[[\+-]?[^\d\.]]o) ? $_[0] : $_[0] % $_[1]
     );
 }
+sub floor { int $_[0] }
+sub ceil  { int($_[0] + 1) }
+
+sub abs {
+    return CORE::abs($_[0]);
+}
 
 sub money {
     return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
     return (  ($_[0] < 0     ? '-'   : '')
             . (defined $_[1] ? $_[1] : '$')
                 . sprintf '%.2f',
-            abs($_[0])
+            CORE::abs($_[0])
     );
 }
 
@@ -144,8 +150,8 @@ sub stock_price {
     return (  ($_[0] < 0     ? '-'   : '')
             . (defined $_[1] ? $_[1] : '$')
                 . sprintf '%.'
-                . (int(abs($_[0])) > 0 ? 2 : 4) . 'f',
-            abs($_[0])
+                . (int(CORE::abs($_[0])) > 0 ? 2 : 4) . 'f',
+            CORE::abs($_[0])
     );
 }
 #
@@ -455,7 +461,7 @@ Formats floats and integers as if they were money.
 
 You may pass a currency symbol to override the default dollar sign (C<$>).
 
-    {{  4.6    | money:'€' }} => € 4.60
+    {{  4.6    | money:'€' }} => €4.60
 
 =head2 C<stock_price>
 
@@ -467,7 +473,28 @@ Formats floats and integers as if they were stock prices.
 
 You may pass a currency symbol to override the default dollar sign (C<$>).
 
-    {{  4.6    | stock_price:'€' }} => € 4.60
+    {{  4.6    | stock_price:'€' }} => €4.60
+
+=head2 C<abs>
+
+Returns the absolute value of a number.
+
+    {{  4 | abs }} => 4
+    {{ -4 | abs }} => 4
+
+=head2 C<ceil>
+
+Rounds an integer up to the nearest integer.
+
+    {{ 4.6 | ceil }} => 5
+    {{ 4.3 | ceil }} => 5
+
+=head2 C<floor>
+
+Rounds an integer down to the nearest integer.
+
+    {{ 4.6 | floor }} => 4
+    {{ 4.3 | floor }} => 4
 
 =head1 Author
 

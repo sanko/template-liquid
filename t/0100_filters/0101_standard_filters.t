@@ -343,6 +343,20 @@ is( Template::Liquid->parse(
     '$4.60 $0.3000 $4.56 €4.60',
     q[{{ 4.6 | stock_price }} {{ .30 | stock_price }} {{ 4.5612 | stock_price }} {{ 4.6 | stock_price:'€' }} => $4.60 $0.3000 $4.56 €4.60]
 );
+
+# abs
+is(Template::Liquid->parse(q[{{ 4 | abs }} {{ -4 | abs }}])->render(),
+    '4 4', q[{{ 4 | abs }} {{ -4 | abs }} => 4 4]);
+
+# ceil
+is(Template::Liquid->parse(q[{{ 4.6 | ceil }} {{ 4.3 | ceil }}])->render(),
+    '5 5', q[{{ 4.6 | ceil }} {{ 4.3 | ceil }} => 5 5]);
+
+# floor
+is( Template::Liquid->parse(q[{{ 4.6 | floor }} {{ 4.3 | floor }}])->render(),
+    '4 4',
+    q[{{ 4.6 | floor }} {{ 4.3 | floor }} => 4 4]
+);
 #
 # I'm finished
 done_testing();
