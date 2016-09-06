@@ -1,5 +1,5 @@
 package Template::Liquid::Context;
-our $VERSION = '1.0.7';
+our $VERSION = '1.0.8';
 require Template::Liquid::Utility;
 require Template::Liquid::Error;
 use strict;
@@ -151,7 +151,7 @@ STEP: while (@path) {
             $cursor = \$$cursor->[$crumb];
             next STEP;
         }
-        die $var;
+        #die $var;
         return ();
     }
 }

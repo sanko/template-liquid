@@ -1,5 +1,5 @@
 package Template::Liquid;
-our $VERSION = '1.0.7';
+our $VERSION = '1.0.8';
 our (%tags, %filters);
 #
 use Template::Liquid::Document;
