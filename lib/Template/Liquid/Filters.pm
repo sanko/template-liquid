@@ -6,8 +6,13 @@ sub import {
         qw[ date capitalize upcase downcase first last join split sort size
             strip_html strip_newlines newline_to_br replace replace_first remove
             remove_first truncate truncatewords prepend append minus plus times
-            divided_by modulo]
+            divided_by modulo round]
     );
+}
+
+sub round {
+    return if $_[0] !~ m[^(\d+\.)?\d+?$]o;
+    return sprintf '%.' . int($_[1] || 0) . 'f', $_[0];
 }
 
 sub date {
@@ -412,6 +417,14 @@ Simple division.
 Simple modulo operation.
 
     {{ 10 | modulo:3 }} => 1
+
+=head2 C<round>
+
+Rounds the output to the nearest integer or specified number of decimals.
+
+    {{ 4.6 | round }}       => 5
+    {{ 4.3 | round }}       => 4
+    {{ 4.5612 | round: 2 }} => 4.56
 
 =head1 Author
 

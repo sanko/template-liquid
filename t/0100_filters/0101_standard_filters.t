@@ -319,6 +319,14 @@ is( Template::Liquid->parse(
     '3 1 -99 25 97 ',
     q[Bug in ::Variable clobbered filter values]
 );
+
+# round
+is( Template::Liquid->parse(
+               q[{{ 4.6 | round }} {{ 4.3 | round }} {{ 4.5612 | round: 2 }}])
+        ->render(),
+    '5 4 4.56',
+    q[{{ 4.6 | round }} {{ 4.3 | round }} {{ 4.5612 | round: 2 }} => 5 4 4.56]
+);
 #
 # I'm finished
 done_testing();
