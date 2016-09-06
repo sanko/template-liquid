@@ -110,7 +110,7 @@ sub get {
         $var;
     my $cursor = \$s->{scopes}[-1];
     return $var
-        if $var =~ m[^-?\d+(\.\d+)?$]o
+        if $var =~ m[^[-\+]?(\d*\.)?\d+$]o
         && !exists $$cursor->{$path[0]};
     return     if $var eq '';
     return     if $var eq 'null';

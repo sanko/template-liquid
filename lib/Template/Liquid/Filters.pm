@@ -6,12 +6,12 @@ sub import {
         qw[ date capitalize upcase downcase first last join split sort size
             strip_html strip_newlines newline_to_br replace replace_first remove
             remove_first truncate truncatewords prepend append minus plus times
-            divided_by modulo round]
+            divided_by modulo round money stock_price]
     );
 }
 
 sub round {
-    return if $_[0] !~ m[^(\d+\.)?\d+?$]o;
+    return if $_[0] !~ m[^(\d*\.)?\d+?$]o;
     return sprintf '%.' . int($_[1] || 0) . 'f', $_[0];
 }
 
@@ -19,7 +19,7 @@ sub date {
     $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
     $_[1] = defined $_[1] ? $_[1] : '%c';
     return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
-    return if $_[0] !~ m[^(\d+\.)?\d+?$]o;
+    return if $_[0] !~ m[^(\d*\.)?\d+?$]o;
     require POSIX;
     return POSIX::strftime($_[1], gmtime($_[0]));
 }
@@ -107,18 +107,18 @@ sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
 sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
 
 sub minus {
-    return $_[0] =~ m[^[\+-]?(\d+\.)?\d+?$]o
-        && $_[1] =~ m[^[\+-]?(\d+\.)?\d+?$]o ? $_[0] - $_[1] : ();
+    return $_[0] =~ m[^[\+-]?(\d*\.)?\d+?$]o
+        && $_[1] =~ m[^[\+-]?(\d*\.)?\d+?$]o ? $_[0] - $_[1] : ();
 }
 
 sub plus {
-    return $_[0] =~ m[^[\+-]?(\d+\.)?\d+?$]o
-        && $_[1] =~ m[^[\+-]?(\d+\.)?\d+?$]o ? $_[0] + $_[1] : $_[0] . $_[1];
+    return $_[0] =~ m[^[\+-]?(\d*\.)?\d+?$]o
+        && $_[1] =~ m[^[\+-]?(\d*\.)?\d+?$]o ? $_[0] + $_[1] : $_[0] . $_[1];
 }
 
 sub times {
-    return $_[0] if $_[1] !~ m[^[\+-]?(\d+\.)?\d+?$]o;
-    return $_[0] x $_[1] if $_[0] !~ m[^[\+-]?(\d+\.)?\d+?$]o;
+    return $_[0] if $_[1] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return $_[0] x $_[1] if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
     return $_[0] * $_[1];
 }
 sub divided_by { return $_[0] / $_[1]; }
@@ -127,6 +127,20 @@ sub modulo {
     return (
          (!defined $_[0] && $_[0] =~ m[[\+-]?[^\d\.]]o) ? '' : (!defined $_[1]
                         && $_[1] =~ m[[\+-]?[^\d\.]]o) ? $_[0] : $_[0] % $_[1]
+    );
+}
+
+sub money {
+    return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return (($_[0] < 0 ? '-' : '') . '$' . sprintf '%.2f', abs($_[0]));
+}
+
+sub stock_price {
+    return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return (($_[0] < 0 ? '-' : '') . '$'
+                . sprintf '%.'
+                . (int(abs($_[0])) > 0 ? 2 : 4) . 'f',
+            abs($_[0])
     );
 }
 #
@@ -425,6 +439,22 @@ Rounds the output to the nearest integer or specified number of decimals.
     {{ 4.6 | round }}       => 5
     {{ 4.3 | round }}       => 4
     {{ 4.5612 | round: 2 }} => 4.56
+
+=head2 C<money>
+
+Formats floats and integers as if they were money.
+
+    {{ 4.6 | money }}    => $4.60
+    {{ -4.3 | money }}   => -$4.30
+    {{ 4.5612 | money }} => $4.56
+
+=head2 C<stock_price>
+
+Formats floats and integers as if they were stock prices.
+
+    {{ 4.6    | stock_price }} => $4.60
+    {{ 0.30   | stock_price }} => $0.3000
+    {{ 4.5612 | stock_price }} => $4.56
 
 =head1 Author
 
