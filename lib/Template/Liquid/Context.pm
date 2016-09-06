@@ -151,7 +151,6 @@ STEP: while (@path) {
             $cursor = \$$cursor->[$crumb];
             next STEP;
         }
-        #die $var;
         return ();
     }
 }

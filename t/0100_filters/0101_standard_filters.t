@@ -89,10 +89,8 @@ is( Template::Liquid->parse(q[{{hash | size}}])
     '2',
     q[{{hash | size}} => 2 (counts keys)]
 );
-is( Template::Liquid->parse(q[{{nope | size}}])->render(),
-    '0',
-    q[{{nope | size}} => 0 (undef)]
-);
+is(Template::Liquid->parse(q[{{nope | size}}])->render(),
+    '0', q[{{nope | size}} => 0 (undef)]);
 
 # split
 is( Template::Liquid->parse(q[{{ values | split: ',' | last }}])
@@ -203,8 +201,8 @@ is( Template::Liquid->parse(q[{{ 'bar' | prepend:'foo' }}])->render(),
     'foobar',
     q[ {{ 'bar' | prepend:'foo' }} => 'foobar']
 );
-
-is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(baz => 'foo'),
+is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])
+        ->render(baz => 'foo'),
     'foobar',
     q[ {{ 'bar' | prepend:baz }} => 'foobar']
 );
@@ -213,8 +211,13 @@ is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(baz => ''),
     q[ {{ 'bar' | prepend:baz }} => 'bar']
 );
 is( Template::Liquid->parse(q[{{ 'bar' | prepend:baz }}])->render(xxx => ''),
+    'bar',
+    q[ {{ 'bar' | prepend:baz }} => 'bar']
+);
+is( Template::Liquid->parse(q[{{ 'bar' | prepend:'baz' }}])
+        ->render(baz => 'fun'),
     'bazbar',
-    q[ {{ 'bar' | prepend:baz }} => 'bazbar']
+    q[ {{ 'bar' | prepend:'baz' }} => 'bazbar']
 );
 
 =head2 C<truncate>
@@ -267,6 +270,7 @@ is(Template::Liquid->parse(q[{{ 4.3|minus:2.5 }}])->render(),
     '1.8', q[{{ 4.3|minus:2.5 }} => 1.8]);
 is(Template::Liquid->parse(q[{{ -4|minus:2 }}])->render(),
     '-6', q[{{ -4|minus:2 }} => -6]);
+
 # concatenation or simple addition
 is(Template::Liquid->parse(q[{{ 154| plus:1183 }}])->render(),
     '1337', q[{{ 154| plus:1183 }} => 1337]);
@@ -297,5 +301,20 @@ is(Template::Liquid->parse(q[{{ 95 | modulo:6.4 }}])->render(),
 is(Template::Liquid->parse(q[{{ 95.6 | modulo:6 }}])->render(),
     '5', q[{{ 95.6 | modulo:6 }} => 5]);
 
+# Bug in ::Variable clobbered filter values
+is( Template::Liquid->parse(
+           q[{%for row in rows%}{{row.a | minus: row.b}} {%endfor%}])->render(
+                                                  rows => [
+                                                          {a => 5,  b => 2},
+                                                          {a => 13, b => 12},
+                                                          {a => 13, b => 112},
+                                                          {a => 13, b => -12},
+                                                          {a => 115, b => 18}
+                                                  ]
+           ),
+    '3 1 -99 25 97 ',
+    q[Bug in ::Variable clobbered filter values]
+);
+#
 # I'm finished
 done_testing();

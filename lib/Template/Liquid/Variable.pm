@@ -1,7 +1,8 @@
 package Template::Liquid::Variable;
 our $VERSION = '1.0.8';
 require Template::Liquid::Error;
-use strict;use warnings;
+use strict;
+use warnings;
 use base 'Template::Liquid::Document';
 
 sub new {
@@ -34,25 +35,28 @@ sub render {
             my %_filters = $s->{template}->filters;
         FILTER: for my $filter (@{$s->{filters}}) {
                 my ($name, $args) = @$filter;
-                #warn join ', ', @$args;
-
-                map {
-                    my $arg_val = $s->{template}{context}->get($_);
-                    $_ = $arg_val if defined $arg_val;
-                } @$args;
                 my $package = $_filters{$name};
                 my $call = $package ? $package->can($name) : ();
                 if ($call) {
-                    #use Data::Dump qw[dump];
-                    #warn sprintf 'Before %s(%s): %s', $name, dump($args), dump($val);
-                    $val = $call->($val, @$args);
-                    #warn sprintf 'After  %s(%s): %s', $name, dump($args), dump($val);
+
+            #use Data::Dump qw[dump];
+            #warn sprintf 'Before %s(%s): %s', $name, dump($args), dump($val);
+                    $val = $call->(
+                              $val,
+                              map { $s->{template}{context}->get($_); } @$args
+                    );
+
+            #warn sprintf 'After  %s(%s): %s', $name, dump($args), dump($val);
                     next FILTER;
                 }
-                raise Template::Liquid::Error { type => 'UnknownFilter', message => $name, fatal => 0};
+                raise Template::Liquid::Error {type    => 'UnknownFilter',
+                                               message => $name,
+                                               fatal   => 0
+                };
             }
         }
     }
+
     #warn '---> ' . $s->{variable} . ' ===> ' .$val;
     return join '', @$val      if ref $val eq 'ARRAY';
     return join '', keys %$val if ref $val eq 'HASH';
