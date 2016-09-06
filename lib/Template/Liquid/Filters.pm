@@ -1,5 +1,5 @@
 package Template::Liquid::Filters;
-our $VERSION = '1.0.8';
+our $VERSION = '1.0.9';
 
 sub import {
     Template::Liquid::register_filter(
@@ -161,6 +161,19 @@ sub stock_price {
 #    ...;
 #} # returns an escaped version of html without affecting existing escaped entities
 #sub map {...}    # map/collect on a given property
+#url_encode
+#url_escape
+#url_param_escape
+#camelcase
+#handle/handleize
+#md5
+#sha1
+#sha256
+#hmac_sha1
+#hmac_sha256
+#newline_to_br
+#pluralize
+#   See https://help.shopify.com/themes/liquid/filters/string-filters
 1;
 
 =pod
