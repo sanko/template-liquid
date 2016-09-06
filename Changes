@@ -2,6 +2,9 @@
 
 {{$NEXT}}
 
+  - plus and minus filters support floating point and negative values
+  - We no longer die() when met with an undefined var
+
 1.0.7 2016-08-10T21:19:10Z
 
   - Crumb trails can map to bject methods during render

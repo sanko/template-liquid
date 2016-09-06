@@ -263,10 +263,17 @@ is(Template::Liquid->parse(q[{{ 4|minus:2 }}])->render(),
     '2', q[{{ 4|minus:2 }} => 2]);
 is(Template::Liquid->parse(q[{{ 'Test'|minus:2 }}])->render(),
     '', q[{{ 'Test'|minus:2 }} => ]);
-
+is(Template::Liquid->parse(q[{{ 4.3|minus:2.5 }}])->render(),
+    '1.8', q[{{ 4.3|minus:2.5 }} => 1.8]);
+is(Template::Liquid->parse(q[{{ -4|minus:2 }}])->render(),
+    '-6', q[{{ -4|minus:2 }} => -6]);
 # concatenation or simple addition
 is(Template::Liquid->parse(q[{{ 154| plus:1183 }}])->render(),
     '1337', q[{{ 154| plus:1183 }} => 1337]);
+is(Template::Liquid->parse(q[{{ 15.4| plus:11.83 }}])->render(),
+    '27.23', q[{{ 15.4| plus:11.83 }} => 27.23]);
+is(Template::Liquid->parse(q[{{ 15| plus:-11 }}])->render(),
+    '4', q[{{ 15| plus:-11 }} => 4]);
 is(Template::Liquid->parse(q[{{ 'W'| plus:'TF' }}])->render(),
     'WTF', q[{{ 'W'| plus:'TF' }} => WTF]);
 

@@ -14,7 +14,7 @@ sub date {
     $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
     $_[1] = defined $_[1] ? $_[1] : '%c';
     return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
-    return if $_[0] !~ m[^\d+$]o;
+    return if $_[0] !~ m[^(\d+\.)?\d+?$]o;
     require POSIX;
     return POSIX::strftime($_[1], gmtime($_[0]));
 }
@@ -97,24 +97,26 @@ sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
 sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
 
 sub minus {
-    return $_[0] =~ m[^\d+$]o && $_[1] =~ m[^\d+$]o ? $_[0] - $_[1] : ();
+    return $_[0] =~ m[^[\+-]?(\d+\.)?\d+?$]o
+        && $_[1] =~ m[^[\+-]?(\d+\.)?\d+?$]o ? $_[0] - $_[1] : ();
 }
 
 sub plus {
-    return $_[0] =~ m[^\d+$]o
-        && $_[1] =~ m[^\d+$]o ? $_[0] + $_[1] : $_[0] . $_[1];
+    return $_[0] =~ m[^[\+-]?(\d+\.)?\d+?$]o
+        && $_[1] =~ m[^[\+-]?(\d+\.)?\d+?$]o ? $_[0] + $_[1] : $_[0] . $_[1];
 }
 
 sub times {
-    return $_[0] if $_[1] !~ m[^\d+$]o;
-    return $_[0] x $_[1] if $_[0] !~ m[^\d+$]o;
+    return $_[0] if $_[1] !~ m[^[\+-]?(\d+\.)?\d+?$]o;
+    return $_[0] x $_[1] if $_[0] !~ m[^[\+-]?(\d+\.)?\d+?$]o;
     return $_[0] * $_[1];
 }
 sub divided_by { return $_[0] / $_[1]; }
 
 sub modulo {
-    return ((!defined $_[0] && $_[0] =~ m[[^\d\.]]o) ? '' : (!defined $_[1]
-                              && $_[1] =~ m[[^\d\.]]o) ? $_[0] : $_[0] % $_[1]
+    return (
+         (!defined $_[0] && $_[0] =~ m[[\+-]?[^\d\.]]o) ? '' : (!defined $_[1]
+                        && $_[1] =~ m[[\+-]?[^\d\.]]o) ? $_[0] : $_[0] % $_[1]
     );
 }
 #
