@@ -357,6 +357,17 @@ is( Template::Liquid->parse(q[{{ 4.6 | floor }} {{ 4.3 | floor }}])->render(),
     '4 4',
     q[{{ 4.6 | floor }} {{ 4.3 | floor }} => 4 4]
 );
+
+# default
+is( Template::Liquid->parse(
+        q[{{ fun | default:"wow!" }} {{ Key | default:"wow!" }} {{ Zero | default:"empty" }} {{ One | default:"another one" }}]
+        )->render(Key  => 'Value',
+                  Zero => '',
+                  One  => ' '
+        ),
+    'wow! Value empty  ',
+    q[{{ fun | default:"wow!" }} {{ Key | default:"wow!" }} {{ Zero | default:"empty" }} {{ One | default:"another one" }} => wow! Value empty  ]
+);
 #
 # I'm finished
 done_testing();

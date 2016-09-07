@@ -6,7 +6,7 @@ sub import {
         qw[ date capitalize upcase downcase first last join split sort size
             strip_html strip_newlines newline_to_br replace replace_first remove
             remove_first truncate truncatewords prepend append minus plus times
-            divided_by modulo round ceil floor abs money stock_price]
+            divided_by modulo round ceil floor abs money stock_price default]
     );
 }
 
@@ -131,10 +131,7 @@ sub modulo {
 }
 sub floor { int $_[0] }
 sub ceil  { int($_[0] + 1) }
-
-sub abs {
-    return CORE::abs($_[0]);
-}
+sub abs   { CORE::abs($_[0]) }
 
 sub money {
     return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
@@ -153,6 +150,11 @@ sub stock_price {
                 . (int(CORE::abs($_[0])) > 0 ? 2 : 4) . 'f',
             CORE::abs($_[0])
     );
+}
+
+sub default {
+    return length $_[0] ? $_[0] : $_[1] if !ref $_[0];
+    return defined $_[0] ? $_[0] : $_[1];
 }
 #
 # TODO
@@ -508,6 +510,17 @@ Rounds an integer down to the nearest integer.
 
     {{ 4.6 | floor }} => 4
     {{ 4.3 | floor }} => 4
+
+=head2 C<default>
+
+Sets a default avlue for any variable with no assigned value. Can be used with
+strings, arrays, and hashes.
+
+The default value is returne if the cariable resolves to C<undef> or an empty
+string (C<''>). A string containing whitespace characters will not resolve to
+the default value.
+
+    {{ customer.name | default: "customer" }} => "customer"
 
 =head1 Author
 
