@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Comment;
-our $VERSION = '1.0.9';
+our $VERSION = '1.0.10';
 require Template::Liquid::Error;
 BEGIN { use base 'Template::Liquid::Tag'; }
 sub import { Template::Liquid::register_tag('comment') }

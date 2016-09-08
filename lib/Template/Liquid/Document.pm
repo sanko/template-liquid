@@ -1,5 +1,5 @@
 package Template::Liquid::Document;
-our $VERSION = '1.0.9';
+our $VERSION = '1.0.10';
 require Template::Liquid::Variable;
 require Template::Liquid::Utility;
 use strict;
