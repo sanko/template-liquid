@@ -31,7 +31,7 @@ sub new {
                        parent    => $args->{'parent'}
                 }, $class;
         }
-        elsif ($condition =~ m[^(?:==|!=|<|>|contains|&&|\|\|)$]o) {
+        elsif ($condition =~ m[^(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)$]o) {
             $condition = 'eq'   if $condition eq '==';
             $condition = 'ne'   if $condition eq '!=';
             $condition = 'gt'   if $condition eq '>';

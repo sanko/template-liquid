@@ -102,7 +102,7 @@ documentation.
 
     This is a line of text.
 
-For more, see [Template::Liquid::Tag::Comment](https://metacpan.org/pod/Template::Liquid::Tag::Comment).
+For more, see [Template::Liquid::Tag::Comment](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3AComment).
 
 ## `raw`
 
@@ -117,7 +117,7 @@ Raw temporarily disables tag processing. This is useful for generating content
 
     In Handlebars, {{ this }} will be HTML-escaped, but {{{ that }}} will not.
 
-For more, see [Template::Liquid::Tag::Raw](https://metacpan.org/pod/Template::Liquid::Tag::Raw).
+For more, see [Template::Liquid::Tag::Raw](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3ARaw).
 
 ## `if` / `elseif` / `else`
 
@@ -128,8 +128,8 @@ For more, see [Template::Liquid::Tag::Raw](https://metacpan.org/pod/Template::Li
         </div>
     {% endunless %}
 
-For more, see [Template::Liquid::Tag::If](https://metacpan.org/pod/Template::Liquid::Tag::If) and
-[Template::Liquid::Condition](https://metacpan.org/pod/Template::Liquid::Condition).
+For more, see [Template::Liquid::Tag::If](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3AIf) and
+[Template::Liquid::Condition](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ACondition).
 .
 
 ## `unless` / `elseif` / `else`
@@ -145,8 +145,8 @@ This is sorta the opposite of `if`.
        Psst! It's {{some.value}}.
     {% endunless %}
 
-For more, see [Template::Liquid::Tag::Unless](https://metacpan.org/pod/Template::Liquid::Tag::Unless)
-and [Template::Liquid::Condition](https://metacpan.org/pod/Template::Liquid::Condition).
+For more, see [Template::Liquid::Tag::Unless](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3AUnless)
+and [Template::Liquid::Condition](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ACondition).
 
 ## `case`
 
@@ -161,7 +161,7 @@ If you need more conditions, you can use the case statement:
             ... else ...
     {% endcase %}
 
-For more, see [Template::Liquid::Tag::Case](https://metacpan.org/pod/Template::Liquid::Tag::Case).
+For more, see [Template::Liquid::Tag::Case](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3ACase).
 
 ## `cycle`
 
@@ -198,7 +198,7 @@ specify the name of the group. This can even be a variable.
     one
     two
 
-For more, see [Template::Liquid::Tag::Cycle](https://metacpan.org/pod/Template::Liquid::Tag::Cycle).
+For more, see [Template::Liquid::Tag::Cycle](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3ACycle).
 
 ## `for`
 
@@ -208,7 +208,7 @@ Liquid allows for loops over collections:
         {{ item }}
     {% endfor %}
 
-Please see see [Template::Liquid::Tag::For](https://metacpan.org/pod/Template::Liquid::Tag::For).
+Please see see [Template::Liquid::Tag::For](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3AFor).
 
 ## `assign`
 
@@ -238,7 +238,7 @@ variable:
 If you want to combine a number of strings into a single string and save it to
 a variable, you can do that with the capture tag.
 
-For more, see [Template::Liquid::Tag::Assign](https://metacpan.org/pod/Template::Liquid::Tag::Assign).
+For more, see [Template::Liquid::Tag::Assign](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3AAssign).
 
 ## `capture`
 
@@ -255,12 +255,12 @@ the screen.
         <option value="blue">Blue</option>
     </select>
 
-For more, see [Template::Liquid::Tag::Capture](https://metacpan.org/pod/Template::Liquid::Tag::Capture).
+For more, see [Template::Liquid::Tag::Capture](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag%3A%3ACapture).
 
 # Standard Liquid Filters
 
 Please see
-[Template::Liquid::Filters::Standard](https://metacpan.org/pod/Template::Liquid::Filters::Standard).
+[Template::Liquid::Filters::Standard](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3AFilters%3A%3AStandard).
 
 # Extending Template::Liquid
 
@@ -270,11 +270,11 @@ simple. Keep reading.
 ## Custom Tags
 
 See the section entitled
-[Extending Template::Liquid with Custom Tags](https://metacpan.org/pod/Template::Liquid::Tag#Extending-Template::Liquid-with-Custom-Tags)
-in [Template::Liquid::Tag](https://metacpan.org/pod/Template::Liquid::Tag) for more information.
+[Extending Template::Liquid with Custom Tags](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag#Extending-Template::Liquid-with-Custom-Tags)
+in [Template::Liquid::Tag](https://metacpan.org/pod/Template%3A%3ALiquid%3A%3ATag) for more information.
 
-Also check out the examples of [Template::LiquidX::Tag::Dump](https://metacpan.org/pod/Template::LiquidX::Tag::Dump) and
-[Template::LiquidX::Tag::Include](https://metacpan.org/pod/Template::LiquidX::Tag::Include) now on CPAN.
+Also check out the examples of [Template::LiquidX::Tag::Dump](https://metacpan.org/pod/Template%3A%3ALiquidX%3A%3ATag%3A%3ADump) and
+[Template::LiquidX::Tag::Include](https://metacpan.org/pod/Template%3A%3ALiquidX%3A%3ATag%3A%3AInclude) now on CPAN.
 
 To assist with custom tag creation, Template::Liquid provides several basic tag types
 for subclassing and exposes the following methods:
