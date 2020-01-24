@@ -352,7 +352,7 @@ CPAN ID: SANKO
 
 The original Liquid template system was developed by
 [jadedPixel](http://jadedpixel.com/) and
-[Tobias Lütke](http://blog.leetsoft.com/).
+[Tobias LÃ¼tke](http://blog.leetsoft.com/).
 
 # License and Legal
 
