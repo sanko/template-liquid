@@ -320,8 +320,7 @@ For more, see L<Template::Liquid::Tag::Capture|Template::Liquid::Tag::Capture>.
 
 =head1 Standard Liquid Filters
 
-Please see
-L<Template::Liquid::Filters::Standard|Template::Liquid::Filters::Standard>.
+Please see L<Template::Liquid::Filters|Template::Liquid::Filters>.
 
 =head1 Extending Template::Liquid
 

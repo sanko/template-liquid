@@ -81,8 +81,8 @@ handling echo statements:
 Internally, a variable is the basic container for everything; lists, scalars,
 hashes, and even objects.
 
-L<Filters|Template::Liquid::Filters::Standard> are applied to variables during
-the render stage.
+L<Filters|Template::Liquid::Filters> are applied to variables during the render
+stage.
 
 =head1 Author
 
