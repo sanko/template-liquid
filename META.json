@@ -64,6 +64,7 @@
       }
    },
    "version" : "1.0.10",
+   "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Michal Wojciechowski <odyniec@odyniec.net>"
    ],
