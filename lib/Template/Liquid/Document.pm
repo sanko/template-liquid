@@ -3,6 +3,7 @@ our $VERSION = '1.0.11';
 require Template::Liquid::Variable;
 require Template::Liquid::Utility;
 use strict;
+use warnings;
 #
 sub new {
     my ($class, $args) = @_;

@@ -2,6 +2,8 @@ package Template::Liquid::Block;
 our $VERSION = '1.0.11';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Document';
+use strict;
+use warnings;
 
 sub new {
     my ($class, $args) = @_;
