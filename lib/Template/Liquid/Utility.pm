@@ -10,9 +10,9 @@ our $TagStart                   = qr[(?:\s*{%-\s*|{%\s*)]o;
 our $TagEnd                     = qr[(?:\s*-%}\s+?|\s*%})]o;
 our $VariableSignature          = qr{\(?[\w\-\.\[\]]\)?}o;
 my $VariableSegment = qr[[\w\-]\??]ox;
-our $VariableStart = qr[\{\{\s*]o;
-our $VariableEnd   = qr[\s*}}]o;
-my $VariableIncompleteEnd = qr[}}?];
+our $VariableStart = qr[(?:\s*\{\{-\s*|\{\{-?\s*)]o;
+our $VariableEnd   = qr[(?:\s*-?}}\s*?|\s*}})]o;
+my $VariableIncompleteEnd = qr[(?:\s*-}}?\s*|}})];
 my $QuotedString          = qr/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/o;
 my $QuotedFragment = qr/${QuotedString}|(?:[^\s,\|'"]|${QuotedString})+/o;
 my $StrictQuotedFragment = qr/"[^"]+"|'[^']+'|[^\s,\|,\:,\,]+/o;
@@ -26,22 +26,17 @@ our $Expression    = qr/(?:${QuotedFragment}(?:${SpacelessFilter})*)/o;
 our $TagAttributes = qr[(\w+)(?:\s*\:\s*(${QuotedFragment}))?]o;
 my $AnyStartingTag = qr[\{\{|\{\%]o;
 my $PartialTemplateParser
-    = qr[${TagStart}.+?${TagEnd}|${VariableStart}.*?${VariableIncompleteEnd}]os;
-my $TemplateParser = qr[(${PartialTemplateParser}|${AnyStartingTag})]o;
-our $VariableParser = qr[^
-                            ${VariableStart}                        # {{
-                                ([\w\.]+)    #   name
-                                (?:\s*\|\s*(.+)\s*)?                 #   filters
-                            ${VariableEnd}                          # }}
-                            $]sox;
+    = qr[${TagStart}.+?${TagEnd}|${VariableStart}.+?${VariableIncompleteEnd}]os;
+my $TemplateParser = qr[(${PartialTemplateParser}|${AnyStartingTag})]os;
+our $VariableParser
+    = qr[${VariableStart}([\w\.]+)(?:\s*\|\s*(.+)\s*)?${VariableEnd}$]so;
 our $VariableFilterArgumentParser
-    = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))]o;
+    = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))]os;
 our $TagMatch = qr[^${Template::Liquid::Utility::TagStart}   # {%
                                 (.+?)                              # etc
                               ${Template::Liquid::Utility::TagEnd} # %}
                              $]sox;
-our $VarMatch = qr[^
-                    ${Template::Liquid::Utility::VariableStart} # {{
+our $VarMatch = qr[^${Template::Liquid::Utility::VariableStart} # {{
                         (.+?)                           #  stuff + filters?
                     ${Template::Liquid::Utility::VariableEnd}   # }}
                 $]sox;

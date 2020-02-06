@@ -320,6 +320,13 @@ For more, see L<Template::Liquid::Tag::Capture|Template::Liquid::Tag::Capture>.
 
 Please see L<Template::Liquid::Filters|Template::Liquid::Filters>.
 
+=head1 Whitespace Control
+
+In Liquid, you can include a hyphen in your tag syntax C<{{->, C<-}}>, C<{%->,
+and C<-%}> to strip whitespace from the left or right side of a rendered tag.
+
+See https://shopify.github.io/liquid/basics/whitespace/
+
 =head1 Extending Template::Liquid
 
 Extending the Template::Liquid template engine for your needs is almost too
