@@ -1,5 +1,7 @@
 package Template::Liquid::Filters;
-our $VERSION = '1.0.10';
+our $VERSION = '1.0.13';
+use strict;
+use warnings;
 
 sub import {
     Template::Liquid::register_filter(
@@ -11,72 +13,85 @@ sub import {
 }
 
 sub round {
-    return if $_[0] !~ m[^(\d*\.)?\d+?$]o;
-    return sprintf '%.' . int($_[1] || 0) . 'f', $_[0];
+    my ($x, $y) = @_;
+    return if $x !~ m[^(\d*\.)?\d+?$]o;
+    return sprintf '%.' . int($y || 0) . 'f', $x;
 }
 
 sub date {
-    $_[0] = time() if lc $_[0] eq 'now' || lc $_[0] eq 'today';
-    $_[1] = defined $_[1] ? $_[1] : '%c';
-    return $_[0]->strftime($_[1]) if ref $_[0] && $_[0]->can('strftime');
-    return if $_[0] !~ m[^(\d*\.)?\d+?$]o;
+    my ($x, $y) = @_;
+    $x = time() if lc $x eq 'now' || lc $x eq 'today';
+    $y = defined $y ? $y : '%c';
+    return $x->strftime($y) if ref $x && $x->can('strftime');
+    return                  if $x !~ m[^(\d*\.)?\d+?$]o;
     require POSIX;
-    return POSIX::strftime($_[1], gmtime($_[0]));
+    return POSIX::strftime($y, gmtime($x));
 }
-sub capitalize { return ucfirst lc $_[0]; }
-sub upcase     { return uc $_[0] }
-sub downcase   { return lc $_[0] }
-sub first      { return @{$_[0]}[0] if ref $_[0] eq 'ARRAY'; }
+sub capitalize { my ($x) = @_; return ucfirst lc $x; }
+sub upcase     { my ($x) = @_; return uc $x }
+sub downcase   { my ($x) = @_; return lc $x }
+
+sub first {
+    my ($x) = @_;
+    return ref $x eq 'ARRAY' ? @{$x}[0] : substr($x, 0, 1);
+}
 
 sub last {
-    my $ref = ref $_[0];
-    return substr $_[0], -1 if !$ref;
-    return @{$_[0]}[-1] if $ref eq 'ARRAY';
+    my ($x, $y) = @_;
+    my $ref = ref $x;
+    return substr $x, -1 if !$ref;
+    return @{$x}[-1] if $ref eq 'ARRAY';
 }
 
 sub join {
-    $_[1] = defined $_[1] ? $_[1] : ' ';
-    return CORE::join($_[1], @{$_[0]})      if ref $_[0] eq 'ARRAY';
-    return CORE::join($_[1], keys %{$_[0]}) if ref $_[0] eq 'HASH';
-    return $_[0];
+    my ($x, $y) = @_;
+    $y = defined $y ? $y : ' ';
+    return CORE::join($y, @{$x})      if ref $x eq 'ARRAY';
+    return CORE::join($y, keys %{$x}) if ref $x eq 'HASH';
+    return $x;
 }
-sub split { [split $_[1], $_[0]] }
+sub split { my ($x, $y) = @_; [split $y, $x] }
 
 sub sort {
-    return [sort { $a <=> $b } @{$_[0]}] if ref $_[0] eq 'ARRAY';
-    return sort keys %{$_[0]} if ref $_[0] eq 'HASH';
-    return $_[0];
+    my ($x, $y) = @_;
+    return [sort { $a <=> $b } @{$x}] if ref $x eq 'ARRAY';
+    return sort keys %{$x}            if ref $x eq 'HASH';
+    return $x;
 }
 
 sub size {
-    return 0                    if !defined $_[0];
-    return scalar @{$_[0]}      if ref $_[0] eq 'ARRAY';
-    return scalar keys %{$_[0]} if ref $_[0] eq 'HASH';
-    return length $_[0];
+    my ($x, $y) = @_;
+    return 0                 if !defined $x;
+    return scalar @{$x}      if ref $x eq 'ARRAY';
+    return scalar keys %{$x} if ref $x eq 'HASH';
+    return length $x;
 }
 
 sub strip_html {
-    $_[0] =~ s[<.*?>][]go;
-    $_[0] =~ s[<!--.*?-->][]go;
-    $_[0] =~ s[<script.*?<\/script>][]go;
-    return $_[0];
+    my ($x, $y) = @_;
+    $x =~ s[<.*?>][]go;
+    $x =~ s[<!--.*?-->][]go;
+    $x =~ s[<script.*?<\/script>][]go;
+    return $x;
 }
-sub strip_newlines { $_[0] =~ s[\n][]go;         return $_[0]; }
-sub newline_to_br  { $_[0] =~ s[\n][<br />\n]go; return $_[0]; }
+sub strip_newlines { my ($x, $y) = @_; $x =~ s[\n][]go;         return $x; }
+sub newline_to_br  { my ($x, $y) = @_; $x =~ s[\n][<br />\n]go; return $x; }
 
 sub replace {
-    $_[2] = defined $_[2] ? $_[2] : '';
-    $_[0] =~ s{$_[1]}{$_[2]}g if $_[1];
-    return $_[0];
+    my ($x, $y, $z) = @_;
+    $z = defined $z ? $z : '';
+    $x =~ s{$y}{$z}g if $y;
+    return $x;
 }
 
 sub replace_first {
-    $_[2] = defined $_[2] ? $_[2] : '';
-    $_[0] =~ s{$_[1]}{$_[2]};
-    return $_[0];
+    my ($x, $y, $z) = @_;
+    $z = defined $z ? $z : '';
+    $x =~ s{$y}{$z};
+    return $x;
 }
-sub remove       { $_[0] =~ s{$_[1]}{}g; return $_[0] }
-sub remove_first { $_[0] =~ s{$_[1]}{};  return $_[0] }
+sub remove       { my ($x, $y) = @_; $x =~ s{$y}{}g; return $x }
+sub remove_first { my ($x, $y) = @_; $x =~ s{$y}{};  return $x }
 
 sub truncate {
     my ($data, $length, $truncate_string) = @_;
@@ -85,8 +100,9 @@ sub truncate {
     return if !$data;
     my $l = $length - length($truncate_string);
     $l = 0 if $l < 0;
-    return length($data) > $length ?
-        substr($data, 0, $l) . $truncate_string
+    return
+        length($data) > $length
+        ? substr($data, 0, $l) . $truncate_string
         : $data;
 }
 
@@ -96,65 +112,68 @@ sub truncatewords {
     $truncate_string = defined $truncate_string ? $truncate_string : '...';
     return if !$data;
     my @wordlist = split ' ', $data;
-    my $l = $words - 1;
+    my $l        = $words - 1;
     $l = 0 if $l < 0;
     return $#wordlist > $l
-        ?
-        CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
+        ? CORE::join(' ', @wordlist[0 .. $l]) . $truncate_string
         : $data;
 }
-sub prepend { return (defined $_[1] ? $_[1] : '') . $_[0]; }
-sub append { return $_[0] . (defined $_[1] ? $_[1] : ''); }
+sub prepend { my ($x, $y) = @_; return (defined $y      ? $y : '') . $x; }
+sub append  { my ($x, $y) = @_; return $x . (defined $y ? $y : ''); }
 
 sub minus {
-    return $_[0] =~ m[^[\+-]?(\d*\.)?\d+?$]o
-        && $_[1] =~ m[^[\+-]?(\d*\.)?\d+?$]o ? $_[0] - $_[1] : ();
+    my ($x, $y) = @_;
+    $x ||= 0;
+    return $x =~ m[^[\+-]?(\d*\.)?\d+?$]o &&
+        $y =~ m[^[\+-]?(\d*\.)?\d+?$]o ? $x - $y : ();
 }
 
 sub plus {
-    return $_[0] =~ m[^[\+-]?(\d*\.)?\d+?$]o
-        && $_[1] =~ m[^[\+-]?(\d*\.)?\d+?$]o ? $_[0] + $_[1] : $_[0] . $_[1];
+    my ($x, $y) = @_;
+    $x ||= 0;
+    return $x =~ m[^[\+-]?(\d*\.)?\d+?$]o &&
+        $y =~ m[^[\+-]?(\d*\.)?\d+?$]o ? $x + $y : $x . $y;
 }
 
 sub times {
-    return $_[0] if $_[1] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
-    return $_[0] x $_[1] if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
-    return $_[0] * $_[1];
+    my ($x, $y) = @_;
+    return unless $y;
+    return $x      if $y !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return $x x $y if $x !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return $x * $y;
 }
-sub divided_by { return $_[0] / $_[1]; }
+sub divided_by { my ($x, $y) = @_; return $x / $y; }
 
 sub modulo {
-    return (
-         (!defined $_[0] && $_[0] =~ m[[\+-]?[^\d\.]]o) ? '' : (!defined $_[1]
-                        && $_[1] =~ m[[\+-]?[^\d\.]]o) ? $_[0] : $_[0] % $_[1]
-    );
+    my ($x, $y) = @_;
+    return (  (!defined $x && $x =~ m[[\+-]?[^\d\.]]o) ? ''
+            : (!defined $y && $y =~ m[[\+-]?[^\d\.]]o) ? $x
+            :                                            $x % $y);
 }
 sub floor { int $_[0] }
 sub ceil  { int($_[0] + 1) }
 sub abs   { CORE::abs($_[0]) }
 
 sub money {
-    return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
-    return (  ($_[0] < 0     ? '-'   : '')
-            . (defined $_[1] ? $_[1] : '$')
-                . sprintf '%.2f',
-            CORE::abs($_[0])
-    );
+    my ($x, $y) = @_;
+    return if $x !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return (($x < 0 ? '-' : '') . (defined $y ? $y : '$') . sprintf '%.2f',
+            CORE::abs($x));
 }
 
 sub stock_price {
-    return if $_[0] !~ m[^[\+-]?(\d*\.)?\d+?$]o;
-    return (  ($_[0] < 0     ? '-'   : '')
-            . (defined $_[1] ? $_[1] : '$')
-                . sprintf '%.'
-                . (int(CORE::abs($_[0])) > 0 ? 2 : 4) . 'f',
-            CORE::abs($_[0])
+    my ($x, $y) = @_;
+    return if $x !~ m[^[\+-]?(\d*\.)?\d+?$]o;
+    return (($x < 0 ? '-' : '') . (defined $y ? $y : '$') .
+                sprintf '%.' . (int(CORE::abs($x)) > 0 ? 2 : 4) . 'f',
+            CORE::abs($x)
     );
 }
 
 sub default {
-    return length $_[0] ? $_[0] : $_[1] if !ref $_[0];
-    return defined $_[0] ? $_[0] : $_[1];
+    my ($x, $y) = @_;
+    return length $x  ? $x : $y if !ref $x;
+    return defined $x ? $x : $y;
 }
 #
 # TODO
@@ -249,8 +268,8 @@ Using last on a string returns the last character in the string.
 
 =head1 Standard Filters
 
-These are the current default filters. They have been written to behave
-exactly like their Ruby Liquid counterparts accept where Perl makes improvment
+These are the current default filters. They have been written to behave exactly
+like their Ruby Liquid counterparts accept where Perl makes improvment
 irresistable.
 
 =head2 C<date>
@@ -274,8 +293,8 @@ This is the last resort and flags may differ by system so... Buyer beware.
 
 =back
 
-The C<date> filter also supports simple replacements of C<'now'> and
-C<'today'> with the current time. For example:
+The C<date> filter also supports simple replacements of C<'now'> and C<'today'>
+with the current time. For example:
 
     {{ 'now' | date :'%Y' }}
 
@@ -315,8 +334,8 @@ Sort elements of the array.
 
 =head2 C<size>
 
-Return the size of an array, the length of a string, or the number of keys in
-a hash. Undefined values return C<0>.
+Return the size of an array, the length of a string, or the number of keys in a
+hash. Undefined values return C<0>.
 
     # Where array is [1..6] and hash is { child => 'blarg'}
     {{ array     | size }} => 6
@@ -326,9 +345,9 @@ a hash. Undefined values return C<0>.
 
 =head2 C<strip_html>
 
-Strip html from string. Note that this filter uses C<s[<.*?>][]g> in
-emmulation of the Ruby Liquid library's strip_html function. ...so don't email
-me if you (correcly) think this is a braindead way of stripping html.
+Strip html from string. Note that this filter uses C<s[<.*?>][]g> in emmulation
+of the Ruby Liquid library's strip_html function. ...so don't email me if you
+(correcly) think this is a braindead way of stripping html.
 
     {{ '<div>Hello, <em id="whom">world!</em></div>' | strip_html }}  => Hello, world!
     '{{ '<IMG SRC = "foo.gif" ALT = "A > B">'        | strip_html }}' => ' B">'
@@ -432,8 +451,7 @@ Simple addition or string contatenation.
 
 =head3 MATHFAIL!
 
-Please note that integer behavior differs with Perl vs. Ruby
-so...
+Please note that integer behavior differs with Perl vs. Ruby so...
 
     {{ '1' | plus:'1' }}
 
@@ -533,16 +551,15 @@ CPAN ID: SANKO
 Copyright (C) 2009-2016 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
-the terms of
-L<The Artistic License 2.0|http://www.perlfoundation.org/artistic_license_2_0>.
-See the F<LICENSE> file included with this distribution or
-L<notes on the Artistic License 2.0|http://www.perlfoundation.org/artistic_2_0_notes>
-for clarification.
+the terms of L<The Artistic License
+2.0|http://www.perlfoundation.org/artistic_license_2_0>. See the F<LICENSE>
+file included with this distribution or L<notes on the Artistic License
+2.0|http://www.perlfoundation.org/artistic_2_0_notes> for clarification.
 
-When separated from the distribution, all original POD documentation is
-covered by the
-L<Creative Commons Attribution-Share Alike 3.0 License|http://creativecommons.org/licenses/by-sa/3.0/us/legalcode>.
-See the
-L<clarification of the CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
+When separated from the distribution, all original POD documentation is covered
+by the L<Creative Commons Attribution-Share Alike 3.0
+License|http://creativecommons.org/licenses/by-sa/3.0/us/legalcode>. See the
+L<clarification of the
+CCA-SA3.0|http://creativecommons.org/licenses/by-sa/3.0/us/>.
 
 =cut
