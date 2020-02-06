@@ -63,7 +63,11 @@ sub render {
                     $val = $call->($val, @$args);
                     next FILTER;
                 }
-                raise Template::Liquid::FilterNotFound $name;
+                raise Template::Liquid::Error {
+                                        type    => 'Filter',
+                                        message => "Filter '$name' not found",
+                                        fatal   => 1
+                };
             }
         }
     }

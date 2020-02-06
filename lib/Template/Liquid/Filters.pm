@@ -8,7 +8,9 @@ sub import {
         qw[ date capitalize upcase downcase first last join split sort size
             strip_html strip_newlines newline_to_br replace replace_first remove
             remove_first truncate truncatewords prepend append minus plus times
-            divided_by modulo round ceil floor abs money stock_price default]
+            divided_by modulo round ceil floor abs money stock_price default
+            map
+            ]
     );
 }
 
@@ -181,7 +183,6 @@ sub default {
 #sub escape_once {
 #    ...;
 #} # returns an escaped version of html without affecting existing escaped entities
-#sub map {...}    # map/collect on a given property
 #url_encode
 #url_escape
 #url_param_escape
@@ -540,6 +541,37 @@ the default value.
 
     {{ customer.name | default: "customer" }} => "customer"
 
+=head2 C<map>
+
+Creates an array of values by extracting the values of a named property from
+another object.
+
+In this example, assume the object C<site.pages> contains all the metadata for
+a website. Using assign with the map filter creates a variable that contains
+only the values of the category properties of everything in the site.pages
+object.
+
+    {% assign all_categories = site.pages | map: "category" %}
+
+    {% for item in all_categories %}
+    - {{ item }}
+    {% endfor %}
+
+The output of this template would look like this:
+
+    - business
+    - celebrities
+    - lifestyle
+    - sports
+    - technology
+
+=cut
+
+sub map {
+    my ($list, $key) = @_;
+    [map { $_->{$key} } @$list];
+}
+
 =head1 Author
 
 Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/
@@ -548,7 +580,7 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009-2016 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009-2020 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of L<The Artistic License
