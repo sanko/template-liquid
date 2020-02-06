@@ -63,7 +63,7 @@
          "web" : "https://github.com/sanko/template-liquid"
       }
    },
-   "version" : "1.0.13",
+   "version" : "1.0.14",
    "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Ailin Nemui <ailin@z30a.localdomain>",

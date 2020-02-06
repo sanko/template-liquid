@@ -1,5 +1,5 @@
 package Template::Liquid::Filters;
-our $VERSION = '1.0.13';
+our $VERSION = '1.0.14';
 use strict;
 use warnings;
 
