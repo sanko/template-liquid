@@ -63,7 +63,7 @@
          "web" : "https://github.com/sanko/template-liquid"
       }
    },
-   "version" : "1.0.12",
+   "version" : "1.0.13",
    "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Michal Wojciechowski <odyniec@odyniec.net>"

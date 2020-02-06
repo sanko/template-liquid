@@ -1,5 +1,5 @@
 package Template::Liquid;
-our $VERSION = '1.0.12';
+our $VERSION = '1.0.13';
 use strict;
 use warnings;
 our (%tags, %filters);
