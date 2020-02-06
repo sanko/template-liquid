@@ -44,7 +44,7 @@ our $VarMatch = qr[^
                     ${Template::Liquid::Utility::VariableStart} # {{
                         (.+?)                           #  stuff + filters?
                     ${Template::Liquid::Utility::VariableEnd}   # }}
-                $]ox;
+                $]sox;
 
 sub tokenize {
     map { $_ ? $_ : () } split $TemplateParser, shift || '';
