@@ -6,8 +6,8 @@ our $FilterSeparator = qr[\s*\|\s*]o;
 my $ArgumentSeparator = qr[,]o;
 our $FilterArgumentSeparator    = qr[\s*:\s*]o;
 our $VariableAttributeSeparator = qr[\.]o;
-our $TagStart                   = qr[{%\s*]o;
-our $TagEnd                     = qr[\s*%}]o;
+our $TagStart                   = qr[(?:\s*{%-\s*|{%\s*)]o;
+our $TagEnd                     = qr[(?:\s*-%}\s+?|\s*%})]o;
 our $VariableSignature          = qr{\(?[\w\-\.\[\]]\)?}o;
 my $VariableSegment = qr[[\w\-]\??]ox;
 our $VariableStart = qr[\{\{\s*]o;
@@ -26,20 +26,20 @@ our $Expression    = qr/(?:${QuotedFragment}(?:${SpacelessFilter})*)/o;
 our $TagAttributes = qr[(\w+)(?:\s*\:\s*(${QuotedFragment}))?]o;
 my $AnyStartingTag = qr[\{\{|\{\%]o;
 my $PartialTemplateParser
-    = qr[${TagStart}.*?${TagEnd}|${VariableStart}.*?${VariableIncompleteEnd}]o;
+    = qr[${TagStart}.+?${TagEnd}|${VariableStart}.*?${VariableIncompleteEnd}]os;
 my $TemplateParser = qr[(${PartialTemplateParser}|${AnyStartingTag})]o;
 our $VariableParser = qr[^
                             ${VariableStart}                        # {{
                                 ([\w\.]+)    #   name
                                 (?:\s*\|\s*(.+)\s*)?                 #   filters
                             ${VariableEnd}                          # }}
-                            $]ox;
+                            $]sox;
 our $VariableFilterArgumentParser
     = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))]o;
 our $TagMatch = qr[^${Template::Liquid::Utility::TagStart}   # {%
                                 (.+?)                              # etc
                               ${Template::Liquid::Utility::TagEnd} # %}
-                             $]ox;
+                             $]sox;
 our $VarMatch = qr[^
                     ${Template::Liquid::Utility::VariableStart} # {{
                         (.+?)                           #  stuff + filters?

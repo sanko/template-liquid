@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Whitespace control (See https://shopify.github.io/liquid/basics/whitespace/)
+
 1.0.13 2020-02-06T01:34:45Z
 
   - Cheap fix for shallow context->get(...) in conditions
