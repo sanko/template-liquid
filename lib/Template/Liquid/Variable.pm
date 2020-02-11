@@ -39,6 +39,7 @@ sub render {
 
             #use Data::Dump qw[dump];
             #warn sprintf 'Before %s(%s): %s', $name, dump($args), dump($val);
+            #warn $s->{template}{context}->get($args->[0]) if ref $args;
                     $val = $call->(
                               $val,
                               map { $s->{template}{context}->get($_); } @$args

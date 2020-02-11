@@ -50,8 +50,9 @@ sub new {
     }
     else {
         my @list
-            = split $Template::Liquid::Utility::VariableFilterArgumentParser,
-            $args->{'attrs'};
+            = grep { defined $_ }
+            $args->{'attrs'}
+            =~ m[$Template::Liquid::Utility::VariableFilterArgumentParser]g;
         $s = bless {name     => $name,
                     blocks   => [],
                     tag_name => $args->{'tag_name'},

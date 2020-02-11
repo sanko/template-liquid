@@ -36,11 +36,9 @@ sub new {
             $filter =~ s[\s*$][]o;    # XXX - the splitter should clean...
             $filter =~ s[^\s*][]o;    # XXX -  ...this up for us.
             my @f_args
-                = $f_args
-                ? split
-                $Template::Liquid::Utility::VariableFilterArgumentParser,
+                = !defined $f_args ? () : grep { defined $_ }
                 $f_args
-                : ();
+                =~ m[$Template::Liquid::Utility::VariableFilterArgumentParser]g;
             push @{$args->{'filters'}}, [$filter, \@f_args];
         }
     }

@@ -34,9 +34,15 @@ sub new {
     my ($var, $range, $attr) = ($1, $2, $3 || '');
     my $reversed = $attr =~ s[^reversed\b][]o ? 1 : 0;
     my %attr     = map {
-        my ($k, $v)
-            = split($Template::Liquid::Utility::FilterArgumentSeparator, $_,
-                    2);
+
+        #my $blah = $_;
+        #my ($k, $v)
+        #    = grep { defined $_ }
+        #    $_
+        #    =~ m[$Template::Liquid::Utility::VariableFilterArgumentParser]g;
+        #use Data::Dump;
+        ##ddx [$k, $v];
+        my ($k, $v) = $_ =~ m[$Template::Liquid::Utility::TagAttributes]g;
         { $k => $v };
     } grep { defined && length } split qr[\s+]o, $attr || '';
     my $s = bless {attributes      => \%attr,
@@ -78,6 +84,8 @@ sub render {
         : ();
     my $list = $s->{template}{context}->get($range);
     my $type = 'ARRAY';
+
+    #warn $list;
     #
     my $_undef_list = 0;
     if (ref $list eq 'HASH') {

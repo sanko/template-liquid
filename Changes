@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Fix filter param parsing
+
 1.0.14 2020-02-06T06:14:55Z
 
   - Whitespace control (See https://shopify.github.io/liquid/basics/whitespace/)

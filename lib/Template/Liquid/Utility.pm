@@ -30,8 +30,15 @@ my $PartialTemplateParser
 my $TemplateParser = qr[(${PartialTemplateParser}|${AnyStartingTag})]os;
 our $VariableParser
     = qr[${VariableStart}([\w\.]+)(?:\s*\|\s*(.+)\s*)?${VariableEnd}$]so;
-our $VariableFilterArgumentParser
-    = qr[\s*,\s*(?=(?:[^\']*\'[^\']*\')*(?![^\']*\'))]os;
+our $VariableFilterArgumentParser = qr[
+ (?:
+	(?:\s*,\s*)?
+	(?:
+	   ((?:\")(?:[^\\\"]*(?:\\.[^\\\"]*)*)(?:\"))
+	  |((?:\')(?:[^\\\']*(?:\\.[^\\\']*)*)(?:\'))
+	  |(?:([^,]+)(?:\s*,\s*)?)
+	)
+)]smx;
 our $TagMatch = qr[^${Template::Liquid::Utility::TagStart}   # {%
                                 (.+?)                              # etc
                               ${Template::Liquid::Utility::TagEnd} # %}
