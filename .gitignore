@@ -31,3 +31,5 @@ MYMETA.*
 /Template-Liquid-*
 
 /.tidyall.d
+
+examples/

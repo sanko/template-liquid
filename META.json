@@ -44,7 +44,7 @@
          "requires" : {
             "DateTime" : "0",
             "DateTime::Format::Natural" : "0",
-            "perl" : "5.008001"
+            "perl" : "5.010000"
          }
       },
       "test" : {
@@ -65,7 +65,7 @@
          "web" : "https://github.com/sanko/template-liquid"
       }
    },
-   "version" : "1.0.14",
+   "version" : "1.0.15",
    "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Ailin Nemui <ailin@z30a.localdomain>",
