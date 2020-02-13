@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+1.0.16 2020-02-13T20:39:23Z
+
   - Make Template::Liquid->render() respect a preexisting context (PR #4, Corion)
   - For limit modified (PR #5, Corion)
   - Platform related test fixes

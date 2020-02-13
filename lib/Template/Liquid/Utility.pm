@@ -1,7 +1,7 @@
 package Template::Liquid::Utility;
 use strict;
 use warnings;
-our $VERSION         = '1.0.15';
+our $VERSION         = '1.0.16';
 our $FilterSeparator = qr[\s*\|\s*]o;
 my $ArgumentSeparator = qr[,]o;
 our $FilterArgumentSeparator    = qr[\s*:\s*]o;

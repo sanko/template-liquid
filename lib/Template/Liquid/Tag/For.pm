@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::For;
-our $VERSION = '1.0.15';
+our $VERSION = '1.0.16';
 use strict;
 use warnings;
 require Template::Liquid::Error;
@@ -116,8 +116,9 @@ sub render {
             = (defined $limit
                ? $limit + (defined $offset ? $offset : 0) - 1
                : $#$list);
-        $max    = $#$list if $max > $#$list;
-        $list  = [@{$list}[$min .. $max]]; # make a copy so we can use the list again
+        $max  = $#$list if $max > $#$list;
+        $list = [@{$list}[$min .. $max]]
+            ;    # make a copy so we can use the list again
         @$list  = reverse @$list if $reversed;
         $limit  = defined $limit ? $limit : scalar @$list;
         $offset = defined $offset ? $offset : 0;
