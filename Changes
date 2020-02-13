@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Localization in tests is a fools errand
+
 1.0.15 2020-02-13T17:41:29Z
 
   - Add filters: at_least, at_most, compact, concat, date, escape, lstrip, map, reverse, rstrip,
