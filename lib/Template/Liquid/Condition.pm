@@ -1,7 +1,9 @@
 package Template::Liquid::Condition;
-our $VERSION = '1.0.10';
+our $VERSION = '1.0.15';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Block';
+use strict;
+use warnings;
 
 # Makes life easy
 use overload 'bool' => \&is_true, fallback => 1;
@@ -13,10 +15,8 @@ sub new {
                                    fatal   => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::Error {type    => 'Context',
-                                   message => 'Missing parent argument',
-                                   fatal   => 1
-        }
+    raise Template::Liquid::Error {type => 'Context',
+                             message => 'Missing parent argument', fatal => 1}
         if !defined $args->{'parent'};
     my ($lval, $condition, $rval)
         = ((defined $args->{'attrs'} ? $args->{'attrs'} : '')
@@ -31,8 +31,8 @@ sub new {
                        parent    => $args->{'parent'}
                 }, $class;
         }
-        elsif ($condition =~ m[^(?:==|!=|<|>|contains|&&|\|\|)$]o) {
-            $condition = 'eq'   if $condition eq '==';
+        elsif ($condition =~ m[^(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)$]o)
+        {   $condition = 'eq'   if $condition eq '==';
             $condition = 'ne'   if $condition eq '!=';
             $condition = 'gt'   if $condition eq '>';
             $condition = 'lt'   if $condition eq '<';
@@ -46,10 +46,8 @@ sub new {
                        parent    => $args->{'parent'}
                 }, $class;
         }
-        raise Template::Liquid::Error {
-                                   type    => 'Context',
-                                   message => 'Unknown operator ' . $condition
-        };
+        raise Template::Liquid::Error {type => 'Context',
+                                 message => 'Unknown operator ' . $condition};
     }
     return
         Template::Liquid::Error->new(
@@ -61,10 +59,14 @@ sub ne { return !$_[0]->eq }    # hashes
 
 sub eq {
     my ($s) = @_;
-    my $l = $s->{template}{context}->get($s->{'lvalue'})
-        || $s->{'lvalue'};
-    my $r = $s->{template}{context}->get($s->{'rvalue'})
-        || $s->{'rvalue'};
+    my $l = $s->{template}{context}->get($s->{'lvalue'}) || $s->{'lvalue'};
+    my $r = $s->{template}{context}->get($s->{'rvalue'}) || $s->{'rvalue'};
+
+    # Might need to render these again
+    my $_l = $s->{template}{context}->get($l);
+    my $_r = $s->{template}{context}->get($r);
+    $l = $_l if defined $_l;
+    $r = $_r if defined $_r;
     return _equal($l, $r);
 }
 
@@ -73,10 +75,11 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
     my $ref_l = ref $l;
     return !1 if $ref_l ne ref $r;
     if (!$ref_l) {
-        return !!(grep {defined} $l, $r) ?
-            (grep {m[\D]o} $l, $r) ?
-            $l eq $r
-            : $l == $r
+        return
+              !!(grep {defined} $l, $r)
+            ? (grep {m[\D]o} $l, $r)
+                ? $l eq $r
+                : $l == $r
             : !1;
     }
     elsif ($ref_l eq 'ARRAY') {
@@ -90,12 +93,9 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
         my %temp = %$r;
         for my $key (keys %$l) {
             return 0
-                unless exists $temp{$key}
-                and defined($l->{$key}) eq defined($temp{$key})
-                and (defined $temp{$key} ?
-                     _equal($temp{$key}, $l->{$key})
-                     : !!1
-                );
+                unless exists $temp{$key} and
+                defined($l->{$key}) eq defined($temp{$key}) and
+                (defined $temp{$key} ? _equal($temp{$key}, $l->{$key}) : !!1);
             delete $temp{$key};
         }
         return !keys(%temp);
@@ -107,10 +107,17 @@ sub gt {
     my ($l, $r)
         = map { $s->{template}{context}->get($_) || $_ }
         ($$s{'lvalue'}, $$s{'rvalue'});
-    return !!(grep {defined} $l, $r) ?
-        (grep {m[\D]o} $l, $r) ?
-        $l gt $r
-        : $l > $r
+
+    # Might need to render these again
+    my $_l = $s->{template}{context}->get($l);
+    my $_r = $s->{template}{context}->get($r);
+    $l = $_l if defined $_l;
+    $r = $_r if defined $_r;
+    return
+          !!(grep {defined} $l, $r)
+        ? (grep {m[\D]o} $l, $r)
+            ? $l gt $r
+            : $l > $r
         : 0;
 }
 sub lt { return !$_[0]->gt }
@@ -118,28 +125,43 @@ sub lt { return !$_[0]->gt }
 sub contains {
     my ($s) = @_;
     my $l   = $s->{template}{context}->get($s->{'lvalue'});
-    my $r   = quotemeta $s->{template}{context}->get($s->{'rvalue'});
+    my $r   = $s->{template}{context}->get($s->{'rvalue'});
+
+    # Might need to render these again
+    my $_l = $s->{template}{context}->get($l);
+    my $_r = $s->{template}{context}->get($r);
+    $l = $_l if defined $_l;
+    $r = $_r if defined $_r;
+    $r = quotemeta $r;
     return if defined $r && !defined $l;
-    return defined($l->{$r}) ? 1 : !1 if ref $l eq 'HASH';
+    return defined($l->{$r})       ? 1 : !1 if ref $l eq 'HASH';
     return (grep { $_ eq $r } @$l) ? 1 : !1 if ref $l eq 'ARRAY';
     return $l =~ qr[${r}] ? 1 : !1;
 }
 
 sub _and {
     my ($s) = @_;
-    my $l = $s->{template}{context}->get($s->{'lvalue'})
-        || $s->{'lvalue'};
-    my $r = $s->{template}{context}->get($s->{'rvalue'})
-        || $s->{'rvalue'};
+    my $l = $s->{template}{context}->get($s->{'lvalue'}) || $s->{'lvalue'};
+    my $r = $s->{template}{context}->get($s->{'rvalue'}) || $s->{'rvalue'};
+
+    # Might need to render these again
+    my $_l = $s->{template}{context}->get($l);
+    my $_r = $s->{template}{context}->get($r);
+    $l = $_l if defined $_l;
+    $r = $_r if defined $_r;
     return !!($l && $r);
 }
 
 sub _or {
     my ($s) = @_;
-    my $l = $s->{template}{context}->get($s->{'lvalue'})
-        || $s->{'lvalue'};
-    my $r = $s->{template}{context}->get($s->{'rvalue'})
-        || $s->{'rvalue'};
+    my $l = $s->{template}{context}->get($s->{'lvalue'}) || $s->{'lvalue'};
+    my $r = $s->{template}{context}->get($s->{'rvalue'}) || $s->{'rvalue'};
+
+    # Might need to render these again
+    my $_l = $s->{template}{context}->get($l);
+    my $_r = $s->{template}{context}->get($r);
+    $l = $_l if defined $_l;
+    $r = $_r if defined $_r;
     return !!($l || $r);
 }
 {    # Compound inequalities support
@@ -162,7 +184,12 @@ sub _or {
 sub is_true {
     my ($s) = @_;
     if (!defined $s->{'condition'} && !defined $s->{'rvalue'}) {
-        return !!($s->{template}{context}->get($s->{'lvalue'}) ? 1 : 0);
+
+        # Might need to render these again
+        my $l  = $s->{template}{context}->get($s->{'lvalue'});
+        my $_l = $s->{template}{context}->get($l);
+        $l = $_l if defined $_l;
+        return !!($l) ? 1 : 0;
     }
     my $condition = $s->can($s->{'condition'});
     raise Template::Liquid::Error {
@@ -238,8 +265,8 @@ Given...
 
 =head2 C<==>
 
-Binary operator which returns true if the left argument is numerically equal
-to the right argument.
+Binary operator which returns true if the left argument is numerically equal to
+the right argument.
 
     # where x == 10 and y == 12
     x == y   # false
@@ -270,8 +297,8 @@ the right argument.
 
 =head2 C<ne>
 
-Binary operator which returns true if the left argument is stringwise not
-equal to the right argument.
+Binary operator which returns true if the left argument is stringwise not equal
+to the right argument.
 
     'test' ne 'test'   # false
     'test' ne 'reset'  # true
@@ -283,8 +310,8 @@ equal to the right argument.
 
 =head2 C<lt>
 
-Binary operator which returns true if the left argument is stringwise less
-than the right argument.
+Binary operator which returns true if the left argument is stringwise less than
+the right argument.
 
     'a' lt 'c'  # true
     'A' lt 'a'  # true
@@ -315,9 +342,9 @@ The C<contains> operator is context sensitive.
 
 =head3 Strings
 
-If the variable on the left is a string, this operator searches the string
-for a pattern match, and (as if in scalar context) returns true if it
-succeeds, false if it fails.
+If the variable on the left is a string, this operator searches the string for
+a pattern match, and (as if in scalar context) returns true if it succeeds,
+false if it fails.
 
 Note that this is a simple C<$x =~ qr[${y}]> match. Case matters.
 
@@ -344,9 +371,9 @@ Given...
 
 =head3 Hashes
 
-If the variable is a hash reference, the operator returns true if the
-specified element in the hash has ever been initialized, even if the
-corresponding value is undefined.
+If the variable is a hash reference, the operator returns true if the specified
+element in the hash has ever been initialized, even if the corresponding value
+is undefined.
 
 Given...
 
@@ -372,9 +399,9 @@ the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
 this distribution or http://www.perlfoundation.org/artistic_license_2_0.  For
 clarification, see http://www.perlfoundation.org/artistic_2_0_notes.
 
-When separated from the distribution, all original POD documentation is
-covered by the Creative Commons Attribution-Share Alike 3.0 License.  See
-http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For
-clarification, see http://creativecommons.org/licenses/by-sa/3.0/us/.
+When separated from the distribution, all original POD documentation is covered
+by the Creative Commons Attribution-Share Alike 3.0 License.  See
+http://creativecommons.org/licenses/by-sa/3.0/us/legalcode.  For clarification,
+see http://creativecommons.org/licenses/by-sa/3.0/us/.
 
 =cut

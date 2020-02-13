@@ -2,6 +2,31 @@
 
 {{$NEXT}}
 
+  - Localization in tests is a fools errand
+
+1.0.15 2020-02-13T17:41:29Z
+
+  - Add filters: at_least, at_most, compact, concat, date, escape, lstrip, map, reverse, rstrip,
+      slice, sort_natural, strip, uniq, url_decode, url_encode, where
+  - Fix filters: ceil, modulo, sort
+  - Fix filter param parsing
+
+1.0.14 2020-02-06T06:14:55Z
+
+  - Whitespace control (See https://shopify.github.io/liquid/basics/whitespace/)
+
+1.0.13 2020-02-06T01:34:45Z
+
+  - Cheap fix for shallow context->get(...) in conditions
+
+1.0.12 2020-01-29T18:51:46Z
+
+  - Fix spurious warnings on filters
+
+1.0.11 2020-01-24T23:55:47Z
+
+  - Fix old missing conditions bug
+
 1.0.10 2016-09-07T12:02:20Z
 
   - Add default filter
@@ -20,7 +45,7 @@
 
 1.0.7 2016-08-10T21:19:10Z
 
-  - Crumb trails can map to bject methods during render
+  - Crumb trails can map to object methods during render
   - Improve range parser
 
 1.0.6 2016-05-13T14:46:52Z

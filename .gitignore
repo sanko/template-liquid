@@ -29,3 +29,7 @@ cover_db/
 MYMETA.*
 
 /Template-Liquid-*
+
+/.tidyall.d
+
+examples/
