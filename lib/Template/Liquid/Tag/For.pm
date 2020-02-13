@@ -117,7 +117,7 @@ sub render {
                ? $limit + (defined $offset ? $offset : 0) - 1
                : $#$list);
         $max    = $#$list if $max > $#$list;
-        @$list  = @{$list}[$min .. $max];
+        $list  = [@{$list}[$min .. $max]]; # make a copy so we can use the list again
         @$list  = reverse @$list if $reversed;
         $limit  = defined $limit ? $limit : scalar @$list;
         $offset = defined $offset ? $offset : 0;
