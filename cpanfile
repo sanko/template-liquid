@@ -1,4 +1,4 @@
-requires 'perl', '5.010000';
+requires 'perl', '5.22.0';
 requires 'DateTime';
 requires 'DateTime::Format::Natural';
 

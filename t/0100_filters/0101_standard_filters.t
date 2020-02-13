@@ -3,6 +3,7 @@ use warnings;
 use lib qw[../../lib ../../blib/lib];
 use Test::More;    # Requires 0.94 as noted in Build.PL
 use Template::Liquid;
+use Config;        # issue #9
 $|++;
 
 # abs
@@ -194,8 +195,10 @@ is(Template::Liquid->parse(q[{{ 5 | divided_by: 3 }}])->render(),
     1, q[{{ 5 | divided_by: 3 }} => 1]);
 is(Template::Liquid->parse(q[{{ 20 | divided_by: 7 }}])->render(),
     2, q[{{ 20 | divided_by: 7 }} => 2]);
-is(Template::Liquid->parse(q[{{ 20 | divided_by: 7.0 }}])->render(),
-    2.85714285714286, q[{{ 20 | divided_by: 7.0 }} => 2.85714285714286]);
+is( Template::Liquid->parse(q[{{ 20 | divided_by: 7.0 }}])->render(),
+    ($Config{uselongdouble} ? '2.85714285714285714' : 2.85714285714286),
+    q[{{ 20 | divided_by: 7.0 }} => 2.85714285714286...]
+);
 is( Template::Liquid->parse(
               q[{% assign my_integer = 7 %}{{ 20 | divided_by: my_integer }}])
         ->render(),
@@ -205,8 +208,8 @@ is( Template::Liquid->parse(
 is( Template::Liquid->parse(
         q[{% assign my_integer = 7 %}{% assign my_float = my_integer | times: 1.0 %}{{ 20 | divided_by: my_float }}]
     )->render(),
-    2.85714285714286,
-    q[{{ 20 | divided_by: my_float }} => 2.85714285714286]
+    ($Config{uselongdouble} ? '2.85714285714285714' : 2.85714285714286),
+    q[{{ 20 | divided_by: my_float }} => 2.85714285714286...]
 );
 
 # downcase
