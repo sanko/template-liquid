@@ -104,6 +104,8 @@ sub get {
     return $var
         if $var =~ m[^[-\+]?(\d*\.)?\d+$]o && !exists $$cursor->{$path[0]};
     return     if $var eq '';
+    return ''  if $var eq '""';
+    return ""  if $var eq "''";
     return     if $var eq 'null';
     return     if $var eq 'nil';
     return     if $var eq 'blank';

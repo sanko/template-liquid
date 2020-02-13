@@ -2,6 +2,9 @@
 
 {{$NEXT}}
 
+  - Add filters: at_least, at_most, compact, concat, date, escape, lstrip, map, reverse, rstrip,
+      slice, sort_natural, strip, uniq, url_decode, url_encode, where
+  - Fix filters: ceil, modulo, sort
   - Fix filter param parsing
 
 1.0.14 2020-02-06T06:14:55Z

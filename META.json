@@ -42,6 +42,8 @@
       },
       "runtime" : {
          "requires" : {
+            "DateTime" : "0",
+            "DateTime::Format::Natural" : "0",
             "perl" : "5.008001"
          }
       },
