@@ -44,7 +44,7 @@
          "requires" : {
             "DateTime" : "0",
             "DateTime::Format::Natural" : "0",
-            "perl" : "5.010000"
+            "perl" : "v5.22.0"
          }
       },
       "test" : {
@@ -69,6 +69,7 @@
    "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Ailin Nemui <ailin@z30a.localdomain>",
+      "Max Maischein <corion@corion.net>",
       "Michal Wojciechowski <odyniec@odyniec.net>"
    ],
    "x_serialization_backend" : "JSON::PP version 4.04",

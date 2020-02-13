@@ -2,7 +2,9 @@
 
 {{$NEXT}}
 
-  - Localization in tests is a fools errand
+  - Make Template::Liquid->render() respect a preexisting context (PR #4, Corion)
+  - For limit modified (PR #5, Corion)
+  - Platform related test fixes
 
 1.0.15 2020-02-13T17:41:29Z
 

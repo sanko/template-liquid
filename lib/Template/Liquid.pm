@@ -46,6 +46,7 @@ sub parse {
 
 sub render {
     my ($s, %assigns) = @_;
+	my $result;
     if( ! $s->{context}) {
         $s->{context} = Template::Liquid::Context->new(template => $s, assigns => \%assigns);
         $result = $s->{document}->render();
