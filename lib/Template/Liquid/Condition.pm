@@ -46,8 +46,11 @@ sub new {
                        parent    => $args->{'parent'}
                 }, $class;
         }
-        raise Template::Liquid::Error {type => 'Context',
-                                 message => 'Unknown operator ' . $condition};
+        raise Template::Liquid::Error {
+             type    => 'Context',
+             message => 'Unknown operator "' . $condition . '" in ' .
+                 $lval . ' ' . $condition . ' ' . (defined $rval ? $rval : '')
+        };
     }
     return
         Template::Liquid::Error->new(
