@@ -9,7 +9,7 @@ perl:
   - "dev"
   - "blead"
 os: linux
-matrix:
+jobs:
   allow_failures:
     - perl: blead       # ignore failures for blead perl
 before_install:
