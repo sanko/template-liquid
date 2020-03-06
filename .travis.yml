@@ -8,6 +8,7 @@ perl:
   - "5.30-ld" # -Duselongdouble
   - "dev"
   - "blead"
+os: linux
 matrix:
   allow_failures:
     - perl: blead       # ignore failures for blead perl
