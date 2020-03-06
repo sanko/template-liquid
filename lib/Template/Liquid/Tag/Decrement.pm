@@ -1,17 +1,15 @@
 package Template::Liquid::Tag::Decrement;
-our $VERSION = '1.0.17';
+our $VERSION = '1.0.18';
 use strict;
 use warnings;
 require Template::Liquid::Error;
 require Template::Liquid::Utility;
 use base 'Template::Liquid::Tag::Increment';
-sub import   { Template::Liquid::register_tag('decrement') }
-sub _initial {-1}
-
-sub _direction {
-    -1;
-}
-sub _me {'decrement'}
+sub import { Template::Liquid::register_tag('decrement') }
+#
+sub _initial   {-1}
+sub _direction {-1}
+sub _me        {'decrement'}
 1;
 
 =pod
@@ -24,7 +22,7 @@ Template::Liquid::Tag::Decrement - Document-level Persistant Number
 
 =head1 Description
 
-Creates a new number variable, and increases its value by one every time it is
+Creates a new number variable, and decreases its value by one every time it is
 called. The initial value is C<-1>.
 
 =head1 Synopsis

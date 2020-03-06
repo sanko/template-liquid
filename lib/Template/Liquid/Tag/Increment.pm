@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Increment;
-our $VERSION = '1.0.17';
+our $VERSION = '1.0.18';
 use strict;
 use warnings;
 require Template::Liquid::Error;
@@ -18,11 +18,11 @@ sub new {
                              message => 'Missing parent argument', fatal => 1}
         if !defined $args->{'parent'};
     raise Template::Liquid::Error {
-                   type    => 'Syntax',
-                   message => 'Missing argument list in ' . $args->{'markup'},
-                   fatal   => 1
+                    type    => 'Syntax',
+                    message => 'Unused argument list in ' . $args->{'markup'},
+                    fatal   => 1
         }
-        if !defined $args->{'attrs'} || $args->{'attrs'} !~ m[\S$]o;
+        if defined $args->{'attrs'} && $args->{'attrs'} !~ m[\S$]o;
     my ($name, $s);
     if ($args->{'attrs'} =~ m[^\s*(.+?)\s*\:\s*(.*)$]o) {    # Named syntax
         ($name, $args->{'attrs'}) = ($1, $2);
