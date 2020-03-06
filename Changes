@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Add tags: increment and decrement (See https://shopify.github.io/liquid/tags/variable/)
+
 1.0.17 2020-02-24T22:44:25Z
 
   - Minor fix for whitespace control
