@@ -56,7 +56,7 @@ sub push_block {
 sub render {
     my ($s) = @_;
     for my $block (@{$s->{'blocks'}}) {
-        return $block->render() if grep { $_ || 0 } @{$block->{'conditions'}};
+        return $block->render() if grep { $_ } @{$block->{'conditions'}};
     }
 }
 1;
