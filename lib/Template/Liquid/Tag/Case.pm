@@ -62,12 +62,10 @@ sub push_block {
         if !defined $args->{'attrs'} && $args->{'tag_name'} eq 'when';
     if ($args->{'tag_name'} eq 'when') {
         $args->{'attrs'} = join ' or ',
-            map  { sprintf '%s == %s', $_, $args->{'parent'}{'value'} }
+            map  { sprintf '%s == %s', $args->{'parent'}{'value'}, $_ }
             grep { defined $_ }
             $args->{'attrs'} =~ m[(${Template::Liquid::Utility::Expression})
-                        (?:(?:\s+or\s+|\s*\,\s*)
-                           (${Template::Liquid::Utility::Expression}.*)
-                        )?]ox;
+                        (?:\s+or\s+|\s*\,\s*)?]oxmg;
     }
     my $block =
         Template::Liquid::Block->new({tag_name => $args->{'tag_name'},
