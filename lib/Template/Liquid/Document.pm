@@ -107,6 +107,14 @@ NODE: while (my $token = shift @{$tokens}) {
         else {
             push @{$s->{'nodelist'}}, $token;
         }
+
+	 {    # Move the cursor
+            my $x  = ( $token =~ m[(\n)]g );
+            my $nl = $token =~ tr/\n//;
+
+            $s->{template}{line}+= $nl;
+			$s->{template}{column} = $nl ? rindex $token, "\n" : $s->{template}{column} + length $token;
+        }
     }
     return $s;
 }
