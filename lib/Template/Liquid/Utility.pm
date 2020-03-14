@@ -15,7 +15,7 @@ our $VariableStart = qr[(?:\s*\{\{-\s*|\{\{-?\s*)]o;
 our $VariableEnd   = qr[(?:\s*-?}}\s*?|\s*}})]o;
 my $VariableIncompleteEnd = qr[(?:\s*-}}?\s*|}})];
 my $QuotedString          = qr/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'/o;
-my $QuotedFragment = qr/${QuotedString}|(?:[^\s,\|'"]|${QuotedString})+/o;
+our $QuotedFragment = qr/${QuotedString}|(?:[^\s,\|'"]|${QuotedString})+/o;
 my $StrictQuotedFragment = qr/"[^"]+"|'[^']+'|[^\s,\|,\:,\,]+/o;
 my $FirstFilterArgument
     = qr/${FilterArgumentSeparator}(?:${StrictQuotedFragment})/o;

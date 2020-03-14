@@ -10,8 +10,15 @@ sub new {
     $args->{'fatal'} = defined $args->{'fatal'} ? $args->{'fatal'} : 0;
     require Carp;
     Carp::longmess() =~ m[^.+?\n\t(.+)]so;
-    $args->{'message'} = sprintf '%s [%s]: %s %s', $class, $args->{'type'},
-        $args->{'message'}, $1;
+    $args->{'message'} = sprintf '%s [%s]: %s %s%s', $class, $args->{'type'},
+        $args->{'message'}, $1,
+        (defined $args->{template}
+         ? sprintf(' (at line %d, column %d)',
+                   $args->{template}{line},
+                   $args->{template}{column})
+         : ''
+        );
+    die unless defined $args->{template};
     return bless $args, $class;
 }
 

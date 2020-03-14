@@ -8,13 +8,17 @@ sub import { Template::Liquid::register_tag('raw') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::Error {type    => 'Context',
-                                   message => 'Missing template argument',
-                                   fatal   => 1
+    raise Template::Liquid::Error {type     => 'Context',
+                                   template => $args->{template},
+                                   message  => 'Missing template argument',
+                                   fatal    => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::Error {type => 'Context',
-                             message => 'Missing parent argument', fatal => 1}
+    raise Template::Liquid::Error {type     => 'Context',
+                                   template => $args->{template},
+                                   message  => 'Missing parent argument',
+                                   fatal    => 1
+        }
         if !defined $args->{'parent'};
     my $s = bless {name     => '?-' . int rand(time),
                    blocks   => [],

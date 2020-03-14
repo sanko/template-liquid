@@ -9,23 +9,29 @@ sub import { Template::Liquid::register_tag('case') }
 
 sub new {
     my ($class, $args) = @_;
-    raise Template::Liquid::Error {type    => 'Context',
-                                   message => 'Missing template argument',
-                                   fatal   => 1
+    raise Template::Liquid::Error {type     => 'Context',
+                                   template => $args->{template},
+                                   message  => 'Missing template argument',
+                                   fatal    => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::Error {type => 'Context',
-                             message => 'Missing parent argument', fatal => 1}
+    raise Template::Liquid::Error {type     => 'Context',
+                                   template => $args->{template},
+                                   message  => 'Missing parent argument',
+                                   fatal    => 1
+        }
         if !defined $args->{'parent'};
     raise Template::Liquid::Error {
-                   type    => 'Syntax',
+                   type     => 'Syntax',
+                   template => $args->{template},
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
         if !defined $args->{'attrs'};
     if ($args->{'attrs'} !~ m[\S$]o) {
         raise Template::Liquid::Error {
-                       type    => 'Syntax',
+                       type     => 'Syntax',
+                       template => $args->{template},
                        message => 'Bad argument list in ' . $args->{'markup'},
                        fatal   => 1
         };
@@ -46,16 +52,21 @@ sub new {
 
 sub push_block {
     my ($s, $args) = @_;
-    raise Template::Liquid::Error {type    => 'Context',
-                                   message => 'Missing template argument',
-                                   fatal   => 1
+    raise Template::Liquid::Error {type     => 'Context',
+                                   template => $s->{template},
+                                   message  => 'Missing template argument',
+                                   fatal    => 1
         }
         if !defined $args->{'template'};
-    raise Template::Liquid::Error {type => 'Context',
-                             message => 'Missing parent argument', fatal => 1}
+    raise Template::Liquid::Error {type     => 'Context',
+                                   template => $s->{template},
+                                   message  => 'Missing parent argument',
+                                   fatal    => 1
+        }
         if !defined $args->{'parent'};
     raise Template::Liquid::Error {
-                   type    => 'Syntax',
+                   type     => 'Syntax',
+                   template => $s->{template},
                    message => 'Missing argument list in ' . $args->{'markup'},
                    fatal   => 1
         }
