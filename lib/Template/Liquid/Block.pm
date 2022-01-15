@@ -4,7 +4,6 @@ require Template::Liquid::Error;
 use base 'Template::Liquid::Document';
 use strict;
 use warnings;
-use Data::Dumper;
 
 sub new {
     my ($class, $args) = @_;
