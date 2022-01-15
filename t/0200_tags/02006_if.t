@@ -210,6 +210,18 @@ is( Template::Liquid->parse(
 INPUT
 
 EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(), <<'EXPECTED', 'compound condition with and/or in quotes if [A] (myvar == "foo and bar")');
+{% assign myvar = "foo and bar" %}{% if myvar == "foo and bar" %}
+    foo and bar
+{% else %}
+    Not foo and bar
+{% endif %}
+INPUT
+
+    foo and bar
+
+EXPECTED
 
 # I'm finished
 done_testing();
