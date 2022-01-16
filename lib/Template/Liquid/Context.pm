@@ -108,7 +108,7 @@ sub get {
         $var;
     my $cursor = \$s->{scopes}[-1];
     return $var
-        if $var =~ m[^[-\+]?(\d*\.)?\d+$]o && !exists $$cursor->{$path[0]};
+	    if $var =~ m[^[-\+]?(\d*\.)?\d+$]o && !exists $$cursor->{$path[0]};
     return     if $var eq '';
     return ''  if $var eq '""';
     return ""  if $var eq "''";
@@ -118,44 +118,62 @@ sub get {
     return     if $var eq 'empty';
     return !1  if $var eq 'false';
     return !!1 if $var eq 'true';
-    return [$s->get($1) .. $s->get($2)]
-        if $var =~ m[^\((\S+)\s*\.\.\s*(\S+)\)$]o;    # range
-    return $s->get($1)->[$2] if $var =~ m'^(.+)\[(\d+)\]$'o;
-    return $s->get($1)->{$2} if $var =~ m'^(.+)\[(.+)\]$'o;
-STEP: while (@path) {
-        my $crumb   = shift @path;
-        my $reftype = ref $$cursor;
-        if (Scalar::Util::blessed($$cursor) && $$cursor->can($crumb)) {
-            my $can = $$cursor->can($crumb);
-            my $val = $can->($$cursor);
-            return $val if !scalar @path;
-            $cursor = \$val;
-            next STEP;
-        }
-        elsif ($reftype eq 'HASH') {
-            if (exists $$cursor->{$crumb}) {
-                return $$cursor->{$crumb} if !@path;
-                $cursor = \$$cursor->{$crumb};
-                next STEP;
-            }
-            return ();
-        }
-        elsif ($reftype eq 'ARRAY') {
-            return scalar @{$$cursor} if $crumb eq 'size';
-            $crumb = 0          if $crumb eq 'first';
-            $crumb = $#$$cursor if $crumb eq 'last';
-            return ()                 if $crumb =~ m[\D]o;
-            return ()                 if scalar @$$cursor < $crumb;
-            return $$cursor->[$crumb] if !scalar @path;
-            $cursor = \$$cursor->[$crumb];
-            next STEP;
-        }
-        return ();
+    if ($var =~ m[^\((\S+)\s*\.\.\s*(\S+)\)$]o) {
+	return [$s->get($1) .. $s->get($2)] ;# range
     }
+
+#    print STDERR "DEBUG:var=$var. about to get 1 and 2 from regex";
+# return $s->get($1)->[$2] if $var =~ m'^(.+)\[(\d+)\]$'o; # array index  myvar[2]
+    if($var =~  m'^(.+)\[(\d+)\]$'o ) {
+#	    print STDERR "DEBUG:array index. var=$var. 1=$1,2=$2";
+	    my $arr = $s->get($1);
+	    return $arr->[$2] if $arr;
+	    return; # return if nothing
+    }
+
+# return $s->get($1)->{$2} if $var =~ m'^(.+)\[(.+)\]$'o;
+    if($var =~ m'^(.+)\[(.+)\]$'o) {
+#	    print STDERR "DEBUG:obj property. var=$var. 1=$1,2=$2";
+	    my $obj = $s->get($1);
+	    return $obj->{$2} if $obj;
+	    return; # return if nothing
+    }
+
+
+STEP: while (@path) {
+	      my $crumb   = shift @path;
+	      my $reftype = ref $$cursor;
+	      if (Scalar::Util::blessed($$cursor) && $$cursor->can($crumb)) {
+		      my $can = $$cursor->can($crumb);
+		      my $val = $can->($$cursor);
+		      return $val if !scalar @path;
+		      $cursor = \$val;
+		      next STEP;
+	      }
+	      elsif ($reftype eq 'HASH') {
+		      if (exists $$cursor->{$crumb}) {
+			      return $$cursor->{$crumb} if !@path;
+			      $cursor = \$$cursor->{$crumb};
+			      next STEP;
+		      }
+		      return ();
+	      }
+	      elsif ($reftype eq 'ARRAY') {
+		      return scalar @{$$cursor} if $crumb eq 'size';
+		      $crumb = 0          if $crumb eq 'first';
+		      $crumb = $#$$cursor if $crumb eq 'last';
+		      return ()                 if $crumb =~ m[\D]o;
+		      return ()                 if scalar @$$cursor < $crumb;
+		      return $$cursor->[$crumb] if !scalar @path;
+		      $cursor = \$$cursor->[$crumb];
+		      next STEP;
+	      }
+	      return ();
+      }
 }
 
 sub set {
-    my ($s, $var, $val) = @_;
+	my ($s, $var, $val) = @_;
     my $var_reftype = ref $val;
     my @path = split $Template::Liquid::Utility::VariableAttributeSeparator,
         $var;
