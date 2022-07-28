@@ -24,7 +24,7 @@ sub parse {
     (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
     my $s     = ref $class ? $class : $class->new($args);
     my %_tags = $s->{template}->tags;
-NODE: while (my $token = shift @{$tokens}) {
+NODE: while (defined ( my $token = shift @{$tokens}) ) {
         if ($token =~ $Template::Liquid::Utility::TagMatch) {
             my ($tag, $attrs) = (split ' ', $1, 2);
             my $package = $_tags{$tag};
