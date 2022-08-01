@@ -34,14 +34,14 @@ sub new {
     }, $class;
     $s->{'conditions'} = (
         $args->{'tag_name'} eq 'else' ? [1] : sub {    # Oh, what a mess...
-            my @conditions = split m[\s+\b(and|or)\b\s+]o,
+	    my @conditions = split m/(?:\s+\b(and|or)\b\s+)(?![^"]*"(?:[^"]*"[^"]*")*[^"]*$)/o,
                 $args->{parent}->{tag_name} eq 'for'
                 ? 1
                 : (defined $args->{'attrs'} ? $args->{'attrs'} : '');
             my @equality;
             while (my $x = shift @conditions) {
                 push @equality, (
-                    $x =~ m[\b(?:and|or)\b]o           # XXX - ARG
+                    $x =~ m/(?:\b(and|or)\b)(?![^"]*"(?:[^"]*"[^"]*")*[^"]*$)/o
                     ? bless({template  => $args->{'template'},
                              parent    => $s,
                              condition => $x,

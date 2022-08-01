@@ -126,6 +126,7 @@ NODE: while (my $token = shift @{$tokens}) {
 sub render {
     my ($s) = @_;
     my $return = '';
+#    print STDERR "DEBUG RENDERING NODE\n";
     for my $node (@{$s->{'nodelist'}}) {
         my $rendering = ref $node ? $node->render() : $node;
         $return .= defined $rendering ? $rendering : '';
