@@ -1,5 +1,5 @@
 package Template::Liquid::Condition;
-our $VERSION = '1.0.19';
+our $VERSION = '1.0.20';
 require Template::Liquid::Error;
 use base 'Template::Liquid::Block';
 use strict;

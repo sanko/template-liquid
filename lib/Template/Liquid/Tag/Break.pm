@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Break;
-our $VERSION = '1.0.19';
+our $VERSION = '1.0.20';
 use strict;
 use warnings;
 require Template::Liquid::Error;
@@ -52,7 +52,7 @@ sub render {
 
 =begin stopwords
 
-LÃ¼tke jadedPixel
+Lütke jadedPixel
 
 =end stopwords
 

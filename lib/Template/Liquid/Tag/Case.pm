@@ -1,5 +1,5 @@
 package Template::Liquid::Tag::Case;
-our $VERSION = '1.0.19';
+our $VERSION = '1.0.20';
 use strict;
 use warnings;
 use base 'Template::Liquid::Tag::If';
@@ -108,7 +108,7 @@ sub push_block {
 
 =begin stopwords
 
-LÃ¼tke jadedPixel
+Lütke jadedPixel
 
 =end stopwords
 

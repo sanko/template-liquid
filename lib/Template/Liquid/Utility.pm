@@ -2,7 +2,7 @@ package Template::Liquid::Utility;
 use experimental 'signatures';
 use strict;
 use warnings;
-our $VERSION         = '1.0.19';
+our $VERSION         = '1.0.20';
 our $FilterSeparator = qr[\s*\|\s*]o;
 my $ArgumentSeparator = qr[,]o;
 our $FilterArgumentSeparator    = qr[\s*:\s*]o;
@@ -60,7 +60,7 @@ sub tokenize {
 
 =begin stopwords
 
-LÃ¼tke jadedPixel
+Lütke jadedPixel
 
 =end stopwords
 

@@ -1,5 +1,5 @@
 package Template::Liquid::Tag;
-our $VERSION = '1.0.19';
+our $VERSION = '1.0.20';
 use strict;
 use warnings;
 use base 'Template::Liquid::Document';
@@ -37,7 +37,7 @@ sub push_block {
 
 =begin stopwords
 
-LÃ¼tke jadedPixel kinda jibba jabba
+Lütke jadedPixel kinda jibba jabba
 
 =end stopwords
 
