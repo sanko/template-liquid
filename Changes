@@ -2,7 +2,9 @@
 
 {{$NEXT}}
 
-  - Resolve quadmath test failures (https://github.com/Perl/perl5/issues/18322, etc.)
+1.0.21 2022-08-02T20:14:16Z
+
+  - Resolve quadmath/128bit float test failures (https://github.com/Perl/perl5/issues/18322, etc.)
 
 1.0.20 2022-08-02T03:46:03Z
 
