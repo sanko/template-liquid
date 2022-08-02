@@ -2,6 +2,8 @@
 
 {{$NEXT}}
 
+  - Resolve quadmath test failures (https://github.com/Perl/perl5/issues/18322, etc.)
+
 1.0.20 2022-08-02T03:46:03Z
 
   - Fix template parsing if quoted string contined "and" or "or" (amit777++)
