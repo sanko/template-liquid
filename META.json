@@ -4,7 +4,7 @@
       "Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.8, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.19, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "artistic_2"
    ],
@@ -61,7 +61,7 @@
       "homepage" : "https://github.com/sanko/template-liquid",
       "repository" : {
          "type" : "git",
-         "url" : "git://github.com/sanko/template-liquid.git",
+         "url" : "https://github.com/sanko/template-liquid.git",
          "web" : "https://github.com/sanko/template-liquid"
       }
    },
@@ -69,9 +69,11 @@
    "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Ailin Nemui <ailin@z30a.localdomain>",
+      "Amit Gupta <amit777@gmail.com>",
       "Max Maischein <corion@corion.net>",
-      "Michal Wojciechowski <odyniec@odyniec.net>"
+      "Michal Wojciechowski <odyniec@odyniec.net>",
+      "raghu037 <raghu@exceleron.com>"
    ],
-   "x_serialization_backend" : "JSON::PP version 4.04",
+   "x_serialization_backend" : "JSON::PP version 4.10",
    "x_static_install" : 1
 }

@@ -97,7 +97,7 @@ CPAN ID: SANKO
 
 =head1 License and Legal
 
-Copyright (C) 2009-2012 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009-2022 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of L<The Artistic License

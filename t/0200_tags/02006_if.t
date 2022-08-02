@@ -246,7 +246,6 @@ INPUT
     Not foo and bar
 
 EXPECTED
-
 is( Template::Liquid->parse(
         <<'INPUT')->render(), <<'EXPECTED', 'compound condition with "or" in quotes if [A] (myvar == "foo or bar" and 5 > 1)');
 {% assign myvar = "foo or bar" %}{% if myvar == "foo or bar" and 5 > 1 %}

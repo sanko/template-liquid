@@ -2,6 +2,9 @@
 
 {{$NEXT}}
 
+  - Fix template parsing if quoted string contined "and" or "or" (amit777++)
+  - Render single, literal zero (Raghu037++)
+
 1.0.19 2020-03-15T00:44:42Z
 
   - Properly parse conditions in case tag

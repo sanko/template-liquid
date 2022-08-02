@@ -24,7 +24,7 @@ sub parse {
     (scalar @_ == 3 ? ($class, $args, $tokens) : ($class, $tokens)) = @_;
     my $s     = ref $class ? $class : $class->new($args);
     my %_tags = $s->{template}->tags;
-NODE: while (defined ( my $token = shift @{$tokens}) ) {
+NODE: while (defined(my $token = shift @{$tokens})) {
         if ($token =~ $Template::Liquid::Utility::TagMatch) {
             my ($tag, $attrs) = (split ' ', $1, 2);
             my $package = $_tags{$tag};
@@ -126,7 +126,8 @@ NODE: while (defined ( my $token = shift @{$tokens}) ) {
 sub render {
     my ($s) = @_;
     my $return = '';
-#    print STDERR "DEBUG RENDERING NODE\n";
+
+    #    print STDERR "DEBUG RENDERING NODE\n";
     for my $node (@{$s->{'nodelist'}}) {
         my $rendering = ref $node ? $node->render() : $node;
         $return .= defined $rendering ? $rendering : '';
@@ -139,6 +140,12 @@ sub conditional_tag { return $_[0]->{'conditional_tag'} || undef; }
 =pod
 
 =encoding UTF-8
+
+=begin stopwords
+
+Lütke jadedPixel
+
+=end stopwords
 
 =head1 NAME
 
@@ -159,7 +166,7 @@ The original Liquid template system was developed by jadedPixel
 
 =head1 License and Legal
 
-Copyright (C) 2009-2012 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
+Copyright (C) 2009-2022 by Sanko Robinson E<lt>sanko@cpan.orgE<gt>
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of The Artistic License 2.0.  See the F<LICENSE> file included with
