@@ -50,7 +50,7 @@ our $VarMatch = qr[^${Template::Liquid::Utility::VariableStart} # {{
                 $]sox;
 
 sub tokenize {
-    map { $_ ? $_ : () } split $TemplateParser, shift || '';
+    map { defined $_ ? $_ : () } split $TemplateParser, shift || '';
 }
 1;
 
