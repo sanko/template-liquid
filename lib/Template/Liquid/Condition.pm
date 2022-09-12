@@ -89,12 +89,17 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
     my $ref_l = ref $l;
     return !1 if $ref_l ne ref $r;
     if (!$ref_l) {
-        return
-              !!(grep {defined} $l, $r)
-            ? (grep {m[\D]o} $l, $r)
-                ? $l eq $r
-                : $l == $r
-            : !1;
+        if(!!(grep {defined} $l, $r)){
+            if ($l =~ m[^\d+(\.\d+)?$]o  &&  $r =~ m[^\d+(\.\d+)?$]o) {
+                return  $l == $r;
+             }
+             else{
+                 return $l eq $r;
+             }
+        }
+        else {
+            return !1;
+        }
     }
     elsif ($ref_l eq 'ARRAY') {
         return !1 unless scalar @$l == scalar @$r;
@@ -127,14 +132,42 @@ sub gt {
     my $_r = $s->{template}{context}->get($r);
     $l = $_l if defined $_l;
     $r = $_r if defined $_r;
-    return
-          !!(grep {defined} $l, $r)
-        ? (grep {m[\D]o} $l, $r)
-            ? $l gt $r
-            : $l > $r
-        : 0;
+    if(!!(grep {defined} $l, $r)){
+        if ($l =~ m[^\d+(\.\d+)?$]o  &&  $r =~ m[^\d+(\.\d+)?$]o) {
+            return  $l > $r;
+        }
+        else{
+            return $l gt $r;
+        }
+   }
+   else {
+       return 0;
+   }
 }
-sub lt { return !$_[0]->gt }
+
+sub lt { 
+    my ($s) = @_;
+    my ($l, $r)
+        = map { $s->{template}{context}->get($_) || $_ }
+        ($$s{'lvalue'}, $$s{'rvalue'});
+    # Might need to render these again
+    my $_l = $s->{template}{context}->get($l);
+    my $_r = $s->{template}{context}->get($r);
+    $l = $_l if defined $_l;
+    $r = $_r if defined $_r;   
+    if(!!(grep {defined} $l, $r)){
+        if ($l =~ m[^\d+(\.\d+)?$]o  &&  $r =~ m[^\d+(\.\d+)?$]o) {
+            return  $l < $r;
+        }
+        else{
+            return $l lt $r;
+        }
+   }
+   else {
+       return 0;
+   }
+
+}
 
 sub contains {
     my ($s) = @_;

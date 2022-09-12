@@ -10,13 +10,33 @@ is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', '1 == 1');
 INPUT
 One equals one
 EXPECTED
+is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', '1.1 == 1.1');
+{% if 1.1 == 1.1 %}1.1 equals 1.1{% endif %}
+INPUT
+1.1 equals 1.1
+EXPECTED
 is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', '1 != 1');
 {% if 1 != 1 %}One does not equal one{% endif %}
 INPUT
 
 EXPECTED
+is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', '1.1 != 1.1');
+{% if 1.1 != 1.1 %}1.1 does not equal 1.1{% endif %}
+INPUT
+
+EXPECTED
 is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', q[1 < 2]);
 {% if 1 < 2 %}Yep.{% endif %}
+INPUT
+Yep.
+EXPECTED
+is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', q[1.1 < 2.2]);
+{% if 1.1 < 2.2 %}Yep.{% endif %}
+INPUT
+Yep.
+EXPECTED
+is(Template::Liquid->parse(<<'INPUT')->render(), <<'EXPECTED', q[2.2 > 1.1]);
+{% if 2.2 > 1.1 %}Yep.{% endif %}
 INPUT
 Yep.
 EXPECTED
