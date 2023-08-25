@@ -134,7 +134,7 @@ sub gt {
             : $l > $r
         : 0;
 }
-sub lt { return !$_[0]->gt }
+sub lt { return (!$_[0]->gt && !$_[0]->eq) }
 
 sub contains {
     my ($s) = @_;
