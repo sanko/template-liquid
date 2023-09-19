@@ -109,7 +109,16 @@ sub render {
             $a =~ m[^\d+$] && $b =~ m[^\d+$] ? ($a <=> $b) : ($a cmp $b)
         } @$list;
     }
-    if (!defined $list || !$list || !@$list) {
+    if (! eval { \@$list } ) {
+        # list is a string
+        $list = [$list];
+    }
+    elsif(ref($list) eq 'ARRAY' && !@$list){
+        # empty array
+        $_undef_list = 1;
+        $list        = [1];
+    }
+    elsif (!defined $list || !$list) {
         $_undef_list = 1;
         $list        = [1];
     }
