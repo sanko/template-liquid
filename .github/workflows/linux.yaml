@@ -24,7 +24,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Set up perl
-      uses: shogo82148/actions-setup-perl@v1.11.0
+      uses: shogo82148/actions-setup-perl@v1.23.1
       with:
           perl-version: ${{ matrix.perl }}
           distribution: ${{ ( startsWith( matrix.runner, 'windows-' ) && 'strawberry' ) || 'default' }}
