@@ -24,7 +24,7 @@ sub new {
         if !defined $args->{'parent'};
     my ($lval, $condition, $rval)
         = ((defined $args->{'attrs'} ? $args->{'attrs'} : '')
-           =~ m[("[^"]+"|'[^']+'|(?:[\S]+))]go);
+          =~ m[("[^"]+"|'[^']+'|(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)|(?:[\w.]+))]go);
     if (defined $lval) {
         if (!defined $rval && !defined $condition) {
             return
@@ -134,7 +134,7 @@ sub gt {
             : $l > $r
         : 0;
 }
-sub lt { return !$_[0]->gt }
+sub lt { return (!$_[0]->gt && !$_[0]->eq) }
 
 sub contains {
     my ($s) = @_;
