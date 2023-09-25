@@ -24,7 +24,8 @@ sub new {
         if !defined $args->{'parent'};
     my ($lval, $condition, $rval)
         = ((defined $args->{'attrs'} ? $args->{'attrs'} : '')
-          =~ m[("[^"]+"|'[^']+'|(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)|(?:[\w.]+))]go);
+        =~ m[("[^"]+"|'[^']+'|(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)|(?:[\w.]+))]go
+        );
     if (defined $lval) {
         if (!defined $rval && !defined $condition) {
             return
@@ -55,11 +56,13 @@ sub new {
         else {
             ...;
         }
-        raise Template::Liquid::Error {
-             template => $args->{template},
-             type     => 'Context',
-             message  => 'Unknown operator "' . $condition . '" in ' .
-                 $lval . ' ' . $condition . ' ' . (defined $rval ? $rval : '')
+        raise Template::Liquid::Error {template => $args->{template},
+                                       type     => 'Context',
+                                       message  => 'Unknown operator "' .
+                                           $condition . '" in ' .
+                                           $lval . ' ' .
+                                           $condition . ' ' .
+                                           (defined $rval ? $rval : '')
         };
     }
     return

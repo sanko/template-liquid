@@ -1,10 +1,11 @@
 {
+   "X_No_Archive" : "Yes",
    "abstract" : "A Simple, Stateless Template System",
    "author" : [
       "Sanko Robinson <sanko@cpan.org> - http://sankorobinson.com/"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v3.1.19, CPAN::Meta::Converter version 2.150010",
+   "generated_by" : "Minilla/v3.1.22, CPAN::Meta::Converter version 2.150010",
    "license" : [
       "artistic_2"
    ],
@@ -18,11 +19,9 @@
          "t",
          "xt",
          "inc",
-         "share",
          "eg",
          "examples",
-         "author",
-         "builder"
+         "author"
       ]
    },
    "prereqs" : {
@@ -65,15 +64,16 @@
          "web" : "https://github.com/sanko/template-liquid"
       }
    },
-   "version" : "1.0.22",
+   "version" : "1.0.23",
    "x_authority" : "cpan:SANKO",
    "x_contributors" : [
       "Ailin Nemui <ailin@z30a.localdomain>",
       "Amit Gupta <amit777@gmail.com>",
+      "Amit Gupta <amit@amits-air.lan>",
       "Max Maischein <corion@corion.net>",
       "Michal Wojciechowski <odyniec@odyniec.net>",
       "raghu037 <raghu@exceleron.com>"
    ],
-   "x_serialization_backend" : "JSON::PP version 4.10",
+   "x_serialization_backend" : "JSON::PP version 4.16",
    "x_static_install" : 1
 }
