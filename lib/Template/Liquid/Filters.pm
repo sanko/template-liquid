@@ -950,6 +950,7 @@ commonly used to convert comma-separated items from a string to an array.
 sub split {
     my ($x, $y) = @_;
     return [] if !defined $x;
+    $y = quotemeta($y) if defined $y;
     [split $y, $x];
 }
 
