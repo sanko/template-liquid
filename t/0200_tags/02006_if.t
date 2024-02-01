@@ -125,6 +125,18 @@ INPUT
 
 EXPECTED
 is( Template::Liquid->parse(
+        <<'INPUT')->render(equals => 'BLOG'), <<'EXPECTED', q[equals starts with eq]);
+{% if equals %}{{equals}}{% endif %}
+INPUT
+BLOG
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(newsletter => 'BLOG'), <<'EXPECTED', q[newsletter starts with ne]);
+{% if newsletter %}{{newsletter}}{% endif %}
+INPUT
+BLOG
+EXPECTED
+is( Template::Liquid->parse(
         <<'INPUT')->render(hash_one => {key => 'value'}, hash_two => {key => 'value'}), <<'EXPECTED', q[hash_one == hash_two [A]]);
 {% if hash_one == hash_two %}Yep.{% endif %}
 INPUT

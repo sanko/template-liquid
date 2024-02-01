@@ -24,8 +24,12 @@ sub new {
         if !defined $args->{'parent'};
     my ($lval, $condition, $rval)
         = ((defined $args->{'attrs'} ? $args->{'attrs'} : '')
-        =~ m[("[^"]+"|'[^']+'|(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)|(?:[\w.]+))]go
+        =~ m[("[^"]+"|'[^']+'|(?:eq\s+|==|ne\s+|!=|lt\s+|<|gt\s+|>|contains|&&|\|\|)|(?:[\w.]+))]go
         );
+
+    if($condition) {
+        $condition =~ s/\s+$//;
+      }
     if (defined $lval) {
         if (!defined $rval && !defined $condition) {
             return
