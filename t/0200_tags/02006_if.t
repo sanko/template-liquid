@@ -351,6 +351,30 @@ is( Template::Liquid->parse(
 INPUT
 BLANKMOBILE
 EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank and undef');
+{% if foo and bar %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank and undef');
+{% if mobile and fax %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank or undef');
+{% if mobile or fax %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank or undef');
+{% if foo or bar %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
 
 
 # I'm finished
