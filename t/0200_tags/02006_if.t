@@ -322,22 +322,34 @@ INPUT
 Nope
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" == 5');
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" != undef');
 {% if foo == bar %}Yep.{% else %}Nope{% endif %}
 INPUT
 Nope
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" == 5');
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check if ""');
 {% if foo %}Yep.{% else %}Nope{% endif %}
 INPUT
 Nope
 EXPECTED
 is( Template::Liquid->parse(
-        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" == 5');
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check if undef');
 {% if bar %}Yep.{% else %}Nope{% endif %}
 INPUT
 Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check undef == ""');
+{% if mobile == "" %}BLANKMOBILE{% else %}NOTBLANK{% endif %}
+INPUT
+NOTBLANK
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check undef == ""');
+{% unless mobile %}BLANKMOBILE{% else %}NOTBLANK{% endunless %}
+INPUT
+BLANKMOBILE
 EXPECTED
 
 

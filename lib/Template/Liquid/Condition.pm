@@ -96,6 +96,9 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
     my $ref_l = ref $l;
     return !1 if $ref_l ne ref $r;
     if (!$ref_l) {
+        if(!defined $l or !defined $r) {
+          return !1;
+        }
         return
               !!(grep {defined} $l, $r)
             ? (grep {m[\D]o || m[^$]} $l, $r)
