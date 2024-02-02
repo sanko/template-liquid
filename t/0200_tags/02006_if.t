@@ -315,6 +315,31 @@ INPUT
     Not foo or bar
 
 EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => 5), <<'EXPECTED', 'Check "" == 5');
+{% if foo == bar %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" == 5');
+{% if foo == bar %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" == 5');
+{% if foo %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" == 5');
+{% if bar %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+
 
 # I'm finished
 done_testing();

@@ -98,7 +98,7 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
     if (!$ref_l) {
         return
               !!(grep {defined} $l, $r)
-            ? (grep {m[\D]o} $l, $r)
+            ? (grep {m[\D]o || m[^$]} $l, $r)
                 ? $l eq $r
                 : $l == $r
             : !1;
