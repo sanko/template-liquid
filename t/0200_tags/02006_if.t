@@ -375,6 +375,12 @@ is( Template::Liquid->parse(
 INPUT
 PASS
 EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(phone => "", bar => undef), <<'EXPECTED', 'Check empty string == "" ');
+{% if phone == '' %}PASS{% else %}FAIL{% endif %}
+INPUT
+PASS
+EXPECTED
 
 
 # I'm finished
