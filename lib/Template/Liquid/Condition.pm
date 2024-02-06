@@ -88,6 +88,7 @@ sub eq {
     my $_r = $s->{template}{context}->get($r);
     $l = $_l if defined $_l;
     $r = $_r if defined $_r;
+    $r = "" if !defined $r; # hack to match blank strings properly
     return _equal($l, $r);
 }
 
