@@ -24,8 +24,12 @@ sub new {
         if !defined $args->{'parent'};
     my ($lval, $condition, $rval)
         = ((defined $args->{'attrs'} ? $args->{'attrs'} : '')
-        =~ m[("[^"]+"|'[^']+'|(?:eq|==|ne|!=|lt|<|gt|>|contains|&&|\|\|)|(?:[\w.]+))]go
+        =~ m[("[^"]+"|'[^']+'|(?:eq\s+|==|ne\s+|!=|lt\s+|<|gt\s+|>|contains|&&|\|\|)|(?:[\w.]+))]go
         );
+
+    if($condition) {
+        $condition =~ s/\s+$//;
+      }
     if (defined $lval) {
         if (!defined $rval && !defined $condition) {
             return
@@ -84,6 +88,7 @@ sub eq {
     my $_r = $s->{template}{context}->get($r);
     $l = $_l if defined $_l;
     $r = $_r if defined $_r;
+    $r = "" if !defined $r; # hack to match blank strings properly
     return _equal($l, $r);
 }
 
@@ -92,9 +97,12 @@ sub _equal {    # XXX - Pray we don't have a recursive data structure...
     my $ref_l = ref $l;
     return !1 if $ref_l ne ref $r;
     if (!$ref_l) {
+        if(!defined $l or !defined $r) {
+          return !1;
+        }
         return
               !!(grep {defined} $l, $r)
-            ? (grep {m[\D]o} $l, $r)
+            ? (grep {m[\D]o || m[^$]} $l, $r)
                 ? $l eq $r
                 : $l == $r
             : !1;

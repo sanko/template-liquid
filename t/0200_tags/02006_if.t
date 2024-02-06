@@ -125,6 +125,18 @@ INPUT
 
 EXPECTED
 is( Template::Liquid->parse(
+        <<'INPUT')->render(equals => 'BLOG'), <<'EXPECTED', q[equals starts with eq]);
+{% if equals %}{{equals}}{% endif %}
+INPUT
+BLOG
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(newsletter => 'BLOG'), <<'EXPECTED', q[newsletter starts with ne]);
+{% if newsletter %}{{newsletter}}{% endif %}
+INPUT
+BLOG
+EXPECTED
+is( Template::Liquid->parse(
         <<'INPUT')->render(hash_one => {key => 'value'}, hash_two => {key => 'value'}), <<'EXPECTED', q[hash_one == hash_two [A]]);
 {% if hash_one == hash_two %}Yep.{% endif %}
 INPUT
@@ -303,6 +315,73 @@ INPUT
     Not foo or bar
 
 EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => 5), <<'EXPECTED', 'Check "" == 5');
+{% if foo == bar %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check "" != undef');
+{% if foo == bar %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check if ""');
+{% if foo %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check if undef');
+{% if bar %}Yep.{% else %}Nope{% endif %}
+INPUT
+Nope
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check undef == ""');
+{% if mobile == "" %}BLANKMOBILE{% else %}NOTBLANK{% endif %}
+INPUT
+NOTBLANK
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check undef == ""');
+{% unless mobile %}BLANKMOBILE{% else %}NOTBLANK{% endunless %}
+INPUT
+BLANKMOBILE
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank and undef');
+{% if foo and bar %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank and undef');
+{% if mobile and fax %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank or undef');
+{% if mobile or fax %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(foo => "", bar => undef), <<'EXPECTED', 'Check blank or undef');
+{% if foo or bar %}FAIL{% else %}PASS{% endif %}
+INPUT
+PASS
+EXPECTED
+is( Template::Liquid->parse(
+        <<'INPUT')->render(phone => "", bar => undef), <<'EXPECTED', 'Check empty string == "" ');
+{% if phone == '' %}PASS{% else %}FAIL{% endif %}
+INPUT
+PASS
+EXPECTED
+
 
 # I'm finished
 done_testing();

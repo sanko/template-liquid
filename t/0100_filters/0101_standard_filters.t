@@ -639,10 +639,40 @@ is( Template::Liquid->parse(
 );
 
 # split
-is( Template::Liquid->parse(q[{{ values | split: ',' | last }}])
+is( Template::Liquid->parse(q[{{ values | split: "," | last }}])
         ->render(values => 'foo,bar,baz'),
     'baz',
-    q[{{ values | split: ',' | last}}]
+    q[{{ values | split: "," | last}}]
+);
+is( Template::Liquid->parse(q[{{ values | split: "::" | last }}])
+        ->render(values => 'foo::bar::baz'),
+    'baz',
+    q[{{ values | split: "::" | last}}]
+);
+is( Template::Liquid->parse(q[{{ values | split: "|" | last }}])
+        ->render(values => 'foo|bar|baz'),
+    'baz',
+    q[{{ values | split: "|" | last}}]
+);
+is( Template::Liquid->parse(q[{{ values | split: "| " | last }}])
+        ->render(values => 'foo| bar| baz'),
+    'baz',
+    q[{{ values | split: "| " | last}}]
+);
+is( Template::Liquid->parse(q[{{ values | split: "| |" | last }}])
+        ->render(values => 'foo| |bar| |baz'),
+    'baz',
+    q[{{ values | split: "| |" | last}}]
+);
+is( Template::Liquid->parse(q[{{ values | split: "." | last }}])
+        ->render(values => 'foo.bar.baz'),
+    'baz',
+    q[{{ values | split: "." | last}}]
+);
+is( Template::Liquid->parse(q[{{ values | split: "(" | last }}])
+        ->render(values => 'foo(bar(baz'),
+    'baz',
+    q[{{ values | split: "(" | last}}]
 );
 is(Template::Liquid->parse(<<'END')->render, <<'OUT', q[...split: ', ' ]);
 {%- assign beatles = "John, Paul, George, Ringo" | split: ', ' -%}
